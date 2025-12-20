@@ -1,0 +1,29 @@
+{
+  "name": "loanlife-edge-desktop",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Electron + React desktop app for LoanLife Edge (LMA EDGE Hackathon)",
+  "main": "electron/main.js",
+  "type": "module",
+  "scripts": {
+    "dev": "concurrently \"vite\" \"wait-on http://localhost:5173 && electron .\"",
+    "build:react": "vite build",
+    "build": "npm run build:react && electron-builder",
+    "start": "electron ."
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.28.0",
+    "recharts": "^2.12.7",
+    "crypto-js": "^4.2.0"
+  },
+  "devDependencies": {
+    "electron": "^31.6.0",
+    "electron-builder": "^24.9.1",
+    "vite": "^5.0.10",
+    "@vitejs/plugin-react": "^4.2.0",
+    "concurrently": "^8.2.2",
+    "wait-on": "^7.2.0"
+  }
+}

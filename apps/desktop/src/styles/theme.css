@@ -1,0 +1,14 @@
+:root {
+  --navy: #0b1b2b;
+  --blue: #1f7cff;
+  --green: #15e38a;
+  --purple: #7b3df0;
+  --silver: #c0c7d1;
+  --bg: var(--navy);
+  --text: #e6eef7;
+  --card-bg: #0f2438;
+  --accent: var(--blue);
+  --danger: #ff3b6a;
+  --warning: #ffb020;
+  --success: var(--green);
+}

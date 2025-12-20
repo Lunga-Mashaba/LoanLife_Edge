@@ -1,0 +1,18 @@
+html, body, #root { height: 100%; margin: 0; }
+body {
+  background: radial-gradient(1200px 800px at 20% 10%, #0f2438 0%, #0b1b2b 60%, #071421 100%);
+  color: var(--text);
+  font-family: Inter, system-ui, sans-serif;
+}
+.app { display: grid; grid-template-columns: 240px 1fr; grid-template-rows: 56px 1fr; height: 100%; }
+.sidebar { grid-row: 1 / span 2; background: #0c1f33; padding: 16px; border-right: 1px solid rgba(192,199,209,0.15); }
+.topbar { grid-column: 2; background: #0c1f33; padding: 10px 16px; border-bottom: 1px solid rgba(192,199,209,0.15); }
+.content { grid-column: 2; padding: 16px; }
+.card { background: linear-gradient(180deg, rgba(31,124,255,0.06), rgba(123,61,240,0.06)); border: 1px solid rgba(192,199,209,0.15); border-radius: 12px; padding: 16px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
+.badge { padding: 6px 10px; border-radius: 999px; font-size: 12px; border: 1px solid rgba(192,199,209,0.35); }
+.badge.ok { color: var(--success); }
+.badge.warn { color: var(--warning); }
+.glow:hover { box-shadow: 0 0 18px rgba(31,124,255,0.35); transform: translateY(-1px); transition: all 160ms ease; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
