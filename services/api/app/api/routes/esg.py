@@ -6,16 +6,14 @@ from fastapi import APIRouter, HTTPException
 from typing import Optional
 from datetime import datetime
 from app.models import ESGStatus
-from app.services.digital_twin_service import DigitalTwinService
+from app.services.service_instances import twin_service, audit_service
 from app.services.esg_service import ESGService
-from app.services.audit_service import AuditService, AuditEventType
+from app.services.audit_service import AuditEventType
 
 router = APIRouter()
 
 # Initialize services
-twin_service = DigitalTwinService()
 esg_service = ESGService()
-audit_service = AuditService()
 
 
 @router.get("/esg/{loan_id}/score", response_model=dict)

@@ -9,15 +9,13 @@ import os
 
 from app.models import Loan, LoanDocument
 from app.services.ingestion_service import IngestionService
-from app.services.digital_twin_service import DigitalTwinService
-from app.services.audit_service import AuditService, AuditEventType
+from app.services.service_instances import twin_service, audit_service
+from app.services.audit_service import AuditEventType
 
 router = APIRouter()
 
 # Service instances - in prod would use dependency injection
 ingestion_service = IngestionService()
-twin_service = DigitalTwinService()
-audit_service = AuditService()
 
 
 @router.post("/loans/upload", response_model=dict)
