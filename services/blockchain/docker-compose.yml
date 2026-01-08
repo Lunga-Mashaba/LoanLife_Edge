@@ -1,0 +1,41 @@
+version: '3.8'
+services:
+  # Local Ethereum node for development
+  ganache:
+    image: trufflesuite/ganache-cli:latest
+    container_name: loanlife-ganache
+    command: >
+      --host 0.0.0.0
+      --port 8545
+      --networkId 1337
+      --chainId 1337
+      --gasLimit 8000000
+      --accounts 10
+      --defaultBalanceEther 1000
+      --deterministic
+      --mnemonic "test test test test test test test test test test test junk"
+    ports:
+      - "8545:8545"
+    networks:
+      - blockchain-net
+
+  # Explorer for blockchain visualization
+  blockscout:
+    image: blockscout/blockscout:latest
+    container_name: loanlife-blockscout
+    depends_on:
+      - ganache
+    environment:
+      - ETHEREUM_JSONRPC_HTTP_URL=http://ganache:8545
+      - ETHEREUM_JSONRPC_WS_URL=ws://ganache:8545
+      - DATABASE_URL=postgresql://postgres:@postgres:5432/blockscout?ssl=false
+      - SECRET_KEY_BASE=your_secret_key_base_here
+      - MIX_ENV=prod
+    ports:
+      - "4000:4000"
+    networks:
+      - blockchain-net
+
+networks:
+  blockchain-net:
+    driver: bridge
