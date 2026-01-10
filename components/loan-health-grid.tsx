@@ -1,71 +1,136 @@
 "use client"
 
 import { Card } from "@/components/ui/card"
-import { TrendingUp, TrendingDown, AlertTriangle, CheckCircle2 } from "lucide-react"
+import { TrendingUp, TrendingDown, AlertTriangle, CheckCircle2, Loader2 } from "lucide-react"
+import { useLoans } from "@/hooks/use-loans"
+import { useState, useEffect } from "react"
+import type { LoanState } from "@/lib/api/types"
+import { loansApi } from "@/lib/api/loans"
 
-const loans = [
-  {
-    id: "LN-2024-001",
-    borrower: "TechCorp Industries",
-    amount: "$45.2M",
-    health: 92,
-    status: "healthy",
-    trend: "up",
-    covenant: "Compliant",
-  },
-  {
-    id: "LN-2024-002",
-    borrower: "GreenEnergy Partners",
-    amount: "$32.5M",
-    health: 88,
-    status: "healthy",
-    trend: "up",
-    covenant: "Compliant",
-  },
-  {
-    id: "LN-2024-003",
-    borrower: "RetailMax Solutions",
-    amount: "$28.1M",
-    health: 65,
-    status: "warning",
-    trend: "down",
-    covenant: "At Risk",
-  },
-  {
-    id: "LN-2024-004",
-    borrower: "MediHealth Corp",
-    amount: "$52.8M",
-    health: 45,
-    status: "critical",
-    trend: "down",
-    covenant: "Breach Alert",
-  },
-  {
-    id: "LN-2024-005",
-    borrower: "AutoDrive Logistics",
-    amount: "$38.9M",
-    health: 95,
-    status: "healthy",
-    trend: "up",
-    covenant: "Compliant",
-  },
-  {
-    id: "LN-2024-006",
-    borrower: "BuildTech Construction",
-    amount: "$41.3M",
-    health: 72,
-    status: "warning",
-    trend: "down",
-    covenant: "At Risk",
-  },
-]
+interface LoanHealthData {
+  id: string
+  borrower: string
+  amount: string
+  health: number
+  status: "healthy" | "warning" | "critical"
+  trend: "up" | "down"
+  covenant: string
+}
+
+function formatCurrency(amount: number): string {
+  if (amount >= 1000000) {
+    return `$${(amount / 1000000).toFixed(1)}M`
+  } else if (amount >= 1000) {
+    return `$${(amount / 1000).toFixed(0)}K`
+  }
+  return `$${amount.toFixed(0)}`
+}
+
+function getCovenantStatus(covenantStatus: LoanState["covenant_status"]): { status: "healthy" | "warning" | "critical"; label: string } {
+  if (covenantStatus.breached > 0) {
+    return { status: "critical", label: "Breach Alert" }
+  }
+  if (covenantStatus.at_risk > 0) {
+    return { status: "warning", label: "At Risk" }
+  }
+  return { status: "healthy", label: "Compliant" }
+}
 
 export function LoanHealthGrid() {
+  const { loans, loading, error } = useLoans()
+  const [loanStates, setLoanStates] = useState<Record<string, LoanState>>({})
+  const [statesLoading, setStatesLoading] = useState(false)
+
+  // Fetch loan states for all loans
+  useEffect(() => {
+    if (loans.length === 0) return
+
+    let cancelled = false
+    setStatesLoading(true)
+
+    async function fetchStates() {
+      const states: Record<string, LoanState> = {}
+      for (const loan of loans) {
+        try {
+          const state = await loansApi.getState(loan.id)
+          if (!cancelled) {
+            states[loan.id] = state
+          }
+        } catch (err) {
+          console.error(`Failed to fetch state for loan ${loan.id}:`, err)
+        }
+      }
+      if (!cancelled) {
+        setLoanStates(states)
+        setStatesLoading(false)
+      }
+    }
+
+    fetchStates()
+
+    return () => {
+      cancelled = true
+    }
+  }, [loans])
+
+  // Transform loans data for display
+  const loanHealthData: LoanHealthData[] = loans.map((loan) => {
+    const state = loanStates[loan.id]
+    const health = state?.health_score ?? 0
+    const covenantInfo = state ? getCovenantStatus(state.covenant_status) : { status: "healthy" as const, label: "N/A" }
+    
+    // Determine trend based on health score (simplified - in production would compare with previous state)
+    const trend: "up" | "down" = health >= 75 ? "up" : "down"
+
+    return {
+      id: loan.id,
+      borrower: loan.borrower_name,
+      amount: formatCurrency(loan.loan_amount),
+      health: Math.round(health),
+      status: covenantInfo.status,
+      trend,
+      covenant: covenantInfo.label,
+    }
+  })
+
+  if (loading || statesLoading) {
+    return (
+      <Card className="p-6 bg-[oklch(0.15_0.03_250)] border-[oklch(0.25_0.04_250)]">
+        <h3 className="text-xl font-semibold text-[oklch(0.95_0.01_250)] mb-4">Loan Health Scores</h3>
+        <div className="flex items-center justify-center py-8">
+          <Loader2 className="h-6 w-6 animate-spin text-[oklch(0.55_0.20_220)]" />
+          <span className="ml-2 text-[oklch(0.60_0.02_250)]">Loading loans...</span>
+        </div>
+      </Card>
+    )
+  }
+
+  if (error) {
+    return (
+      <Card className="p-6 bg-[oklch(0.15_0.03_250)] border-[oklch(0.25_0.04_250)]">
+        <h3 className="text-xl font-semibold text-[oklch(0.95_0.01_250)] mb-4">Loan Health Scores</h3>
+        <div className="p-4 rounded-lg bg-[oklch(0.18_0.03_250)] border border-[oklch(0.55_0.20_25)]">
+          <p className="text-[oklch(0.55_0.20_25)]">Failed to load loans. Please check your API connection.</p>
+        </div>
+      </Card>
+    )
+  }
+
+  if (loanHealthData.length === 0) {
+    return (
+      <Card className="p-6 bg-[oklch(0.15_0.03_250)] border-[oklch(0.25_0.04_250)]">
+        <h3 className="text-xl font-semibold text-[oklch(0.95_0.01_250)] mb-4">Loan Health Scores</h3>
+        <div className="p-4 rounded-lg bg-[oklch(0.18_0.03_250)] border border-[oklch(0.25_0.04_250)]">
+          <p className="text-[oklch(0.60_0.02_250)]">No loans found. Upload a loan document to get started.</p>
+        </div>
+      </Card>
+    )
+  }
   return (
     <Card className="p-6 bg-[oklch(0.15_0.03_250)] border-[oklch(0.25_0.04_250)]">
       <h3 className="text-xl font-semibold text-[oklch(0.95_0.01_250)] mb-4">Loan Health Scores</h3>
       <div className="space-y-3">
-        {loans.map((loan) => (
+        {loanHealthData.map((loan) => (
           <div
             key={loan.id}
             className="p-4 rounded-lg bg-[oklch(0.18_0.03_250)] border border-[oklch(0.25_0.04_250)] hover:border-[oklch(0.55_0.20_220)] transition-all duration-200 cursor-pointer group"
