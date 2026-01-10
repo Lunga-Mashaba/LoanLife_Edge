@@ -167,7 +167,39 @@ async def get_loan_state(loan_id: str):
     state = twin_service.get_twin_state(loan_id)
     if not state:
         raise HTTPException(status_code=404, detail="Loan not found")
-    return state
+    
+    # Transform to match frontend expectations
+    health_metrics = state.get("health_metrics", {})
+    total_covenants = health_metrics.get("total_covenants", 0)
+    breached_covenants = health_metrics.get("breached_covenants", 0)
+    at_risk_covenants = health_metrics.get("at_risk_covenants", 0)
+    compliant_covenants = total_covenants - breached_covenants - at_risk_covenants
+    
+    total_esg = health_metrics.get("total_esg_clauses", 0)
+    non_compliant_esg = health_metrics.get("non_compliant_esg", 0)
+    at_risk_esg = 0  # Not tracked separately in backend yet
+    compliant_esg = total_esg - non_compliant_esg - at_risk_esg
+    
+    # Calculate health score (0-100)
+    compliance_rate = health_metrics.get("compliance_rate", 1.0)
+    esg_compliance_rate = health_metrics.get("esg_compliance_rate", 1.0)
+    health_score = int((compliance_rate * 0.7 + esg_compliance_rate * 0.3) * 100)
+    
+    return {
+        "loan": state.get("loan", {}),
+        "health_score": health_score,
+        "covenant_status": {
+            "compliant": max(0, compliant_covenants),
+            "at_risk": at_risk_covenants,
+            "breached": breached_covenants
+        },
+        "esg_status": {
+            "compliant": max(0, compliant_esg),
+            "at_risk": at_risk_esg,
+            "non_compliant": non_compliant_esg
+        },
+        "last_updated": state.get("last_updated", "")
+    }
 
 
 @router.post("/loans/{loan_id}/covenant-check", response_model=dict)

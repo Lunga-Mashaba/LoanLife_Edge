@@ -26,7 +26,10 @@ function formatCurrency(amount: number): string {
   return `$${amount.toFixed(0)}`
 }
 
-function getCovenantStatus(covenantStatus: LoanState["covenant_status"]): { status: "healthy" | "warning" | "critical"; label: string } {
+function getCovenantStatus(covenantStatus: LoanState["covenant_status"] | undefined | null): { status: "healthy" | "warning" | "critical"; label: string } {
+  if (!covenantStatus) {
+    return { status: "healthy", label: "N/A" }
+  }
   if (covenantStatus.breached > 0) {
     return { status: "critical", label: "Breach Alert" }
   }
@@ -77,7 +80,7 @@ export function LoanHealthGrid() {
   const loanHealthData: LoanHealthData[] = loans.map((loan) => {
     const state = loanStates[loan.id]
     const health = state?.health_score ?? 0
-    const covenantInfo = state ? getCovenantStatus(state.covenant_status) : { status: "healthy" as const, label: "N/A" }
+    const covenantInfo = getCovenantStatus(state?.covenant_status)
     
     // Determine trend based on health score (simplified - in production would compare with previous state)
     const trend: "up" | "down" = health >= 75 ? "up" : "down"
