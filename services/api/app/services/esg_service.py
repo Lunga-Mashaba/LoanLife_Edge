@@ -7,9 +7,24 @@ from typing import Dict, Any, List
 import random
 from app.models import Loan, ESGClause, ESGCompliance, ESGScore, ESGStatus
 
+# Optional blockchain integration
+try:
+    from app.services.blockchain_client import get_blockchain_client
+    BLOCKCHAIN_AVAILABLE = True
+except ImportError:
+    BLOCKCHAIN_AVAILABLE = False
+
 
 class ESGService:
     """Handles ESG scoring and breach risk prediction"""
+    
+    def __init__(self):
+        self.blockchain_client = None
+        if BLOCKCHAIN_AVAILABLE:
+            try:
+                self.blockchain_client = get_blockchain_client()
+            except Exception:
+                pass
     
     def calculate_esg_score(
         self,
@@ -81,7 +96,7 @@ class ESGService:
         governance_score = max(0.0, min(100.0, governance_score))
         overall_score = max(0.0, min(100.0, overall_score))
         
-        return ESGScore(
+        score = ESGScore(
             loan_id=loan.id,
             environmental_score=round(environmental_score, 1),
             social_score=round(social_score, 1),
@@ -102,6 +117,24 @@ class ESGService:
                 ),
             }
         )
+        
+        # Record ESG score on blockchain (non-blocking)
+        if self.blockchain_client:
+            try:
+                blockchain_result = self.blockchain_client.record_esg_score(
+                    loan_id=loan.id,
+                    environmental=score.environmental_score,
+                    social=score.social_score,
+                    governance=score.governance_score
+                )
+                # Add blockchain info to factors if successful
+                if blockchain_result.get("success"):
+                    score.factors["blockchain_tx_hash"] = blockchain_result.get("transactionHash")
+            except Exception:
+                # Blockchain recording failed - continue without it
+                pass
+        
+        return score
     
     def predict_esg_breach_risk(
         self,

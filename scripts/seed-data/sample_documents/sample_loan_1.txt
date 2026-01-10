@@ -1,0 +1,36 @@
+LOAN AGREEMENT
+
+Borrower: TechStartup Inc.
+Loan Amount: $5,000,000
+Interest Rate: 6.5% per annum
+Start Date: January 1, 2024
+Maturity Date: December 31, 2029
+
+COVENANTS:
+
+1. Debt-to-Equity Ratio
+   The borrower must maintain a debt-to-equity ratio of less than or equal to 2.0.
+   This ratio will be checked quarterly.
+
+2. Current Ratio
+   The borrower must maintain a current ratio of greater than or equal to 1.5.
+   This ratio will be checked quarterly.
+
+3. Interest Coverage Ratio
+   The borrower must maintain an interest coverage ratio of greater than or equal to 3.0.
+   This ratio will be checked quarterly.
+
+ESG REQUIREMENTS:
+
+Environmental:
+- Annual carbon emissions report required
+- Sustainability compliance reporting
+
+Social:
+- Workplace safety standards compliance
+- Diversity and inclusion reporting
+
+Governance:
+- Board composition reporting
+- Ethics and compliance certification
+

@@ -8,6 +8,13 @@ from app.ai.feature_engineering import FeatureEngineer
 from app.ai.risk_model import RiskPredictionModel
 from app.ai.explainability import ExplainabilityEngine
 
+# Optional blockchain integration for breach detection
+try:
+    from app.services.blockchain_client import get_blockchain_client
+    BLOCKCHAIN_AVAILABLE = True
+except ImportError:
+    BLOCKCHAIN_AVAILABLE = False
+
 
 class PredictionService:
     """Main service for risk predictions - coordinates AI components"""
@@ -16,6 +23,14 @@ class PredictionService:
         self.feature_engineer = FeatureEngineer()
         self.risk_model = RiskPredictionModel()
         self.explainability = ExplainabilityEngine()
+        
+        # Optional blockchain client for breach detection
+        self.blockchain_client = None
+        if BLOCKCHAIN_AVAILABLE:
+            try:
+                self.blockchain_client = get_blockchain_client()
+            except Exception:
+                pass
     
     def predict_risk(
         self,
@@ -67,12 +82,34 @@ class PredictionService:
         # Overall risk assessment
         overall_risk = self._calculate_overall_risk(predictions)
         
-        return {
+        result = {
             "loan_id": loan.id,
             "predictions": predictions,
             "overall_risk": overall_risk,
             "generated_at": datetime.now().isoformat()
         }
+        
+        # If critical/high risk, detect breach on blockchain (non-blocking)
+        if self.blockchain_client and overall_risk["level"] in ["critical", "high"]:
+            try:
+                breach_id = f"breach-{loan.id}-{datetime.now().timestamp()}"
+                blockchain_result = self.blockchain_client.detect_breach(
+                    breach_id=breach_id,
+                    loan_id=loan.id,
+                    rule_id="ai-prediction-rule",
+                    severity=3 if overall_risk["level"] == "critical" else 2,
+                    predicted_value=overall_risk["max_probability"]
+                )
+                if blockchain_result.get("success"):
+                    result["blockchain_breach_detected"] = {
+                        "breach_id": breach_id,
+                        "tx_hash": blockchain_result.get("transactionHash")
+                    }
+            except Exception:
+                # Blockchain breach detection failed - continue without it
+                pass
+        
+        return result
     
     def _calculate_overall_risk(self, predictions: Dict[str, Any]) -> Dict[str, Any]:
         """Calculate overall risk assessment across all horizons"""

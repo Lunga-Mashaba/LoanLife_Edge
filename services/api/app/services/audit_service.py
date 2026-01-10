@@ -1,11 +1,20 @@
 """
 Audit Service
 Manages immutable audit logs for all system actions
+Integrates with blockchain for immutable audit trail
 """
 from datetime import datetime
 from typing import Dict, Any, List, Optional
 from enum import Enum
 import uuid
+import os
+
+# Import blockchain client (optional - graceful fallback if not available)
+try:
+    from app.services.blockchain_client import get_blockchain_client
+    BLOCKCHAIN_AVAILABLE = True
+except ImportError:
+    BLOCKCHAIN_AVAILABLE = False
 
 
 class AuditEventType(str, Enum):
@@ -31,6 +40,15 @@ class AuditService:
     def __init__(self):
         # In-memory storage for demo (replace with blockchain/immutable storage in production)
         self.audit_logs: List[Dict[str, Any]] = []
+        
+        # Initialize blockchain client if available
+        self.blockchain_client = None
+        if BLOCKCHAIN_AVAILABLE:
+            try:
+                self.blockchain_client = get_blockchain_client()
+            except Exception as e:
+                # Graceful fallback - continue without blockchain
+                pass
     
     def log_event(
         self,
@@ -65,6 +83,46 @@ class AuditService:
         }
         
         self.audit_logs.append(log_entry)
+        
+        # Try to log to blockchain (non-blocking, graceful fallback)
+        if self.blockchain_client:
+            try:
+                # Map event types to blockchain action types
+                action_type_map = {
+                    AuditEventType.LOAN_CREATED: 1,
+                    AuditEventType.LOAN_UPDATED: 2,
+                    AuditEventType.DOCUMENT_UPLOADED: 3,
+                    AuditEventType.COVENANT_CHECKED: 4,
+                    AuditEventType.COVENANT_BREACHED: 5,
+                    AuditEventType.PREDICTION_GENERATED: 6,
+                    AuditEventType.ESG_SCORE_CALCULATED: 7,
+                    AuditEventType.ESG_NON_COMPLIANCE: 8,
+                    AuditEventType.GOVERNANCE_ACTION: 9,
+                    AuditEventType.APPROVAL_REQUESTED: 10,
+                    AuditEventType.APPROVAL_GRANTED: 11,
+                    AuditEventType.APPROVAL_DENIED: 12,
+                    AuditEventType.REMEDIATION_ACTION: 13,
+                }
+                
+                action_type = action_type_map.get(event_type, 0)
+                blockchain_result = self.blockchain_client.log_audit_entry(
+                    action_type=action_type,
+                    loan_id=loan_id,
+                    actor=user_id,
+                    metadata=metadata or {}
+                )
+                
+                # Add blockchain transaction info if successful
+                if blockchain_result.get("success"):
+                    log_entry["blockchain_tx_hash"] = blockchain_result.get("transactionHash")
+                    log_entry["blockchain_block"] = blockchain_result.get("blockNumber")
+                else:
+                    # Log blockchain failure but don't fail the audit log
+                    log_entry["blockchain_error"] = blockchain_result.get("error")
+            except Exception as e:
+                # Blockchain logging failed - continue without it
+                log_entry["blockchain_error"] = str(e)
+        
         return log_entry
     
     def get_audit_logs(

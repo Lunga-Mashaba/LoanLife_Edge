@@ -9,15 +9,22 @@ import os
 
 from app.models import Loan, LoanDocument
 from app.services.ingestion_service import IngestionService
-from app.services.digital_twin_service import DigitalTwinService
-from app.services.audit_service import AuditService, AuditEventType
+from app.services.service_instances import twin_service, audit_service
+from app.services.audit_service import AuditEventType
+
+# Optional blockchain integration
+try:
+    from app.services.blockchain_client import get_blockchain_client
+    blockchain_client = get_blockchain_client()
+    BLOCKCHAIN_ENABLED = True
+except ImportError:
+    blockchain_client = None
+    BLOCKCHAIN_ENABLED = False
 
 router = APIRouter()
 
 # Service instances - in prod would use dependency injection
 ingestion_service = IngestionService()
-twin_service = DigitalTwinService()
-audit_service = AuditService()
 
 
 @router.post("/loans/upload", response_model=dict)
@@ -98,6 +105,27 @@ async def upload_loan_document(
             description=f"Loan digital twin created for {borrower_name}",
             metadata={"loan_amount": loan_amount, "covenants_count": len(covenants)}
         )
+        
+        # Register covenants on blockchain (non-blocking)
+        if BLOCKCHAIN_ENABLED and blockchain_client:
+            try:
+                for covenant in covenants:
+                    blockchain_result = blockchain_client.register_covenant(
+                        loan_id=loan.id,
+                        covenant_data={
+                            "id": covenant.id,
+                            "name": covenant.name,
+                            "type": covenant.type,
+                            "threshold": covenant.threshold,
+                            "operator": covenant.operator
+                        }
+                    )
+                    # Log blockchain result but don't fail if it doesn't work
+                    if not blockchain_result.get("success"):
+                        pass  # Graceful degradation
+            except Exception as e:
+                # Blockchain registration failed - continue without it
+                pass
         
         return {
             "loan": loan.dict(),

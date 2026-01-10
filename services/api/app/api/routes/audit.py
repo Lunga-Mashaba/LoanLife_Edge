@@ -5,12 +5,10 @@ Handles audit log retrieval
 from fastapi import APIRouter, HTTPException
 from typing import Optional
 from datetime import datetime
-from app.services.audit_service import AuditService, AuditEventType
+from app.services.service_instances import audit_service
+from app.services.audit_service import AuditEventType
 
 router = APIRouter()
-
-# Initialize service
-audit_service = AuditService()
 
 
 @router.get("/audit", response_model=list)

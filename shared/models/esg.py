@@ -3,7 +3,7 @@ ESG-specific models
 """
 from datetime import datetime
 from typing import Optional, Dict, Any, List
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from enum import Enum
 
 

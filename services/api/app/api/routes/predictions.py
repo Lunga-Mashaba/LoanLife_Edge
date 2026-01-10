@@ -5,16 +5,14 @@ Handles AI-based risk predictions
 from fastapi import APIRouter, HTTPException
 from typing import List, Optional
 from app.models import Loan
-from app.services.digital_twin_service import DigitalTwinService
+from app.services.service_instances import twin_service, audit_service
 from app.services.prediction_service import PredictionService
-from app.services.audit_service import AuditService, AuditEventType
+from app.services.audit_service import AuditEventType
 
 router = APIRouter()
 
 # Initialize services
-twin_service = DigitalTwinService()
 prediction_service = PredictionService()
-audit_service = AuditService()
 
 
 @router.get("/predictions/{loan_id}", response_model=dict)
