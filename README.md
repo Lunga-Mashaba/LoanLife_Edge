@@ -10,33 +10,65 @@ LoanLife Edge predicts loan covenant breaches and ESG non-compliance 30–90 day
 
 - **Nicolette** - Backend & AI Integration Lead (APIs, AI, digital twin logic) ✅ **Complete**
 - **Lunga** - Blockchain & Backend Engineer (Blockchain, smart contracts) ✅ **Complete**
-- **Siya** - Frontend Engineer – Core UI (Dashboards, visualisation) 🚧 **In Progress**
-- **Sharon** - Frontend Engineer – Desktop & UX (Electron, navigation, UX) 🚧 **In Progress**
+- **Siya** - Frontend Engineer – Core UI (Dashboards, visualisation) ✅ **Complete**
+- **Sharon** - Frontend Engineer – Desktop & UX (Electron, navigation, UX) ✅ **Complete**
 
 ## Repository Structure
 
 ```
-loanlife-edge/
+LoanLife_Edge/
 ├── README.md
 ├── .gitignore
-├── apps/
-│   └── desktop/          # Electron + React (Siya + Sharon)
+├── package.json          # Frontend dependencies (Next.js + Electron)
+├── app/                  # Next.js App Router pages
+│   ├── page.tsx          # Portfolio dashboard
+│   ├── digital-twins/    # Digital twin monitor page
+│   ├── risk-analytics/   # Risk analytics page
+│   ├── audit-log/        # Audit log page
+│   └── ...
+├── components/           # React components
+│   ├── portfolio-dashboard.tsx
+│   ├── loan-health-grid.tsx
+│   ├── audit-log-panel.tsx
+│   ├── esg-compliance.tsx
+│   └── ui/              # shadcn/ui components
+├── lib/                  # Frontend utilities
+│   ├── api/             # API client & hooks
+│   │   ├── client.ts    # HTTP client
+│   │   ├── loans.ts     # Loans API
+│   │   ├── predictions.ts
+│   │   ├── esg.ts
+│   │   └── audit.ts
+│   └── utils.ts
+├── hooks/                # React hooks
+│   ├── use-loans.ts
+│   ├── use-predictions.ts
+│   ├── use-audit.ts
+│   └── use-esg.ts
 ├── services/
 │   ├── api/              # Backend API & AI (Nicolette) ✅
+│   │   ├── app/
+│   │   │   ├── main.py
+│   │   │   ├── api/routes/
+│   │   │   └── services/
+│   │   └── requirements.txt
 │   └── blockchain/       # Blockchain & smart contracts (Lunga) ✅
+│       ├── contracts/    # Solidity smart contracts
+│       └── api/          # Blockchain API bridge (Node.js)
 ├── shared/
-│   ├── models/           # Shared data models
-│   ├── constants/        # Shared constants
-│   └── utils/            # Shared utilities
+│   └── models/           # Shared data models (Python)
 ├── scripts/
-│   ├── seed-data/        # Mock loan & ESG data
+│   ├── seed-data/        # Seed data scripts
 │   ├── start-all.sh      # Start all services (Linux/Mac)
-│   └── start-all.ps1     # Start all services (Windows)
+│   ├── start-all.ps1     # Start all services (Windows)
+│   └── test_api.py       # API testing script
+├── electron/             # Electron main process
 └── docs/
     ├── architecture.md
     ├── api-spec.md
     ├── srs.md
-    └── demo-script.md
+    ├── frontend-backend-integration.md  # Integration guide
+    └── ui-ux-review.md                  # UI/UX review & improvements
 ```
 
 ## Quick Start
@@ -58,6 +90,26 @@ This will start:
 1. Hardhat blockchain node (port 8545)
 2. Blockchain API bridge (port 3001)
 3. Backend API (port 8000)
+
+### Option 3: Frontend Application
+
+**Start Frontend (Next.js + Electron):**
+```bash
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+
+# Or start with Electron
+npm run electron:dev
+```
+
+Frontend will be available at:
+- Web: http://localhost:3000
+- Electron app launches automatically with `electron:dev`
+
+**Note:** Make sure the backend API is running on port 8000 for the frontend to connect.
 
 ### Option 2: Manual Setup
 
@@ -126,10 +178,13 @@ API will be available at:
   - Breach detection on-chain
   - Audit log hashing on-chain
 
-### 🚧 In Progress
+### ✅ Frontend & Integration - **Complete**
 
-- **Desktop Application**: Electron-based desktop app (Siya + Sharon)
-- **Frontend Dashboards**: Portfolio view, loan detail, risk visualization
+- **Desktop Application**: Electron-based desktop app (Next.js + Electron)
+- **Frontend Dashboards**: Portfolio overview, loan health grid, risk timeline
+- **API Integration**: Complete frontend-backend integration with React hooks
+- **Real-time Updates**: Auto-refreshing components for live data
+- **Component Library**: shadcn/ui components with custom styling
 
 ## Implementation Status
 
@@ -154,12 +209,23 @@ API will be available at:
 - ✅ Governance rule engine
 - ✅ Immutable audit ledger
 
-### Frontend (Siya + Sharon) - 🚧 **In Progress**
+### Frontend (Siya + Sharon) - ✅ **100% Complete**
 
-- 🚧 Electron application setup
-- 🚧 React components
-- 🚧 Dashboard UI
-- 🚧 API integration
+- ✅ Next.js application with App Router
+- ✅ Electron desktop application setup
+- ✅ React components (Portfolio, Digital Twins, Risk Analytics, Audit Log)
+- ✅ Complete API integration with React hooks
+- ✅ Real-time data fetching with auto-refresh
+- ✅ Responsive UI components with shadcn/ui
+- ✅ TypeScript type safety throughout
+
+**Frontend Features:**
+- Portfolio dashboard with loan health scores
+- Digital twin monitoring with real-time state
+- Risk analytics timeline
+- ESG compliance tracking
+- Audit log viewer with blockchain transaction hashes
+- AI insights panel
 
 ## API Endpoints
 
@@ -199,11 +265,20 @@ API will be available at:
 - `BLOCKCHAIN_ENABLED` - Set to `"true"` to enable blockchain integration
 - `BLOCKCHAIN_API_URL` - Blockchain API bridge URL (default: `http://localhost:3001`)
 
+### Frontend
+Create a `.env.local` file in the root directory:
+```env
+NEXT_PUBLIC_API_URL=http://localhost:8000
+```
+The frontend defaults to `http://localhost:8000` if not specified.
+
 ### Blockchain
 - `BLOCKCHAIN_RPC_URL` - Hardhat node RPC URL (default: `http://127.0.0.1:8545`)
 - `BLOCKCHAIN_API_PORT` - Blockchain API bridge port (default: `3001`)
 
 ## Testing the Integration
+
+### Backend & Blockchain
 
 1. **Start all services** using the startup scripts
 2. **Check health endpoints:**
@@ -217,55 +292,129 @@ API will be available at:
 5. **View predictions** via `/api/v1/predictions/{loan_id}`
 6. **Check audit logs** via `/api/v1/audit`
 
+### Frontend Application
+
+1. **Start backend services** (API + Blockchain) - see above
+2. **Start frontend:**
+   ```bash
+   npm install
+   npm run dev
+   ```
+3. **Open the application:**
+   - Web: http://localhost:3000
+   - Or Electron: `npm run electron:dev`
+4. **Verify integration:**
+   - Portfolio dashboard loads real loan data
+   - Loan health scores display correctly
+   - Audit logs show blockchain transaction hashes
+   - ESG compliance aggregates across all loans
+   - Risk timeline displays predictions
+
+### API Testing Script
+
+```bash
+# Run the test script
+cd scripts
+python test_api.py
+```
+
+This will test all major API endpoints and verify the integration.
+
 ## Architecture
 
 ```
-┌─────────────────────────────────────────────────────────┐
-│              Electron Desktop App (Frontend)             │
-│                    (Siya + Sharon)                      │
-└────────────────────┬────────────────────────────────────┘
-                     │ HTTP API
-┌────────────────────▼────────────────────────────────────┐
-│              Backend API (FastAPI)                      │
-│                    (Nicolette)                          │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐ │
-│  │  Ingestion   │  │ Digital Twin │  │ AI Prediction│ │
-│  │   Service    │  │   Service    │  │   Service    │ │
-│  └──────────────┘  └──────────────┘  └──────────────┘ │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐ │
-│  │ ESG Service  │  │Audit Service │  │ Blockchain   │ │
-│  │              │  │              │  │   Client     │ │
-│  └──────────────┘  └──────────────┘  └──────┬───────┘ │
-└──────────────────────────────────────────────┼─────────┘
+┌─────────────────────────────────────────────────────────────┐
+│        Electron Desktop App / Web App (Frontend)            │
+│                   Next.js + React + Electron                │
+│                      (Siya + Sharon) ✅                     │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐     │
+│  │   React      │  │   API Client │  │   Hooks      │     │
+│  │  Components  │  │   (lib/api)  │  │  (hooks/)    │     │
+│  └──────────────┘  └──────┬───────┘  └──────────────┘     │
+└────────────────────────────┼────────────────────────────────┘
+                             │ HTTP/REST API
+┌────────────────────────────▼────────────────────────────────┐
+│              Backend API (FastAPI)                          │
+│                    (Nicolette) ✅                           │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐     │
+│  │  Ingestion   │  │ Digital Twin │  │ AI Prediction│     │
+│  │   Service    │  │   Service    │  │   Service    │     │
+│  └──────────────┘  └──────────────┘  └──────────────┘     │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐     │
+│  │ ESG Service  │  │Audit Service │  │ Blockchain   │     │
+│  │              │  │              │  │   Client     │     │
+│  └──────────────┘  └──────────────┘  └──────┬───────┘     │
+└──────────────────────────────────────────────┼─────────────┘
                                                 │ HTTP
-┌───────────────────────────────────────────────▼─────────┐
-│         Blockchain API Bridge (Node.js/Express)         │
-│                    (Lunga)                             │
-└────────────────────┬───────────────────────────────────┘
+┌───────────────────────────────────────────────▼─────────────┐
+│         Blockchain API Bridge (Node.js/Express)            │
+│                    (Lunga) ✅                               │
+└────────────────────┬────────────────────────────────────────┘
                      │ Web3.js
-┌────────────────────▼───────────────────────────────────┐
-│         Hardhat Local Blockchain Node                  │
-│         (Permissioned Blockchain Mock)                │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐│
-│  │  Covenant    │  │ Governance   │  │ Audit        ││
-│  │  Registry    │  │   Rules      │  │ Ledger       ││
-│  └──────────────┘  └──────────────┘  └──────────────┘│
-└────────────────────────────────────────────────────────┘
+┌────────────────────▼────────────────────────────────────────┐
+│         Hardhat Local Blockchain Node                      │
+│         (Permissioned Blockchain Mock)                     │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐    │
+│  │  Covenant    │  │ Governance   │  │ Audit        │    │
+│  │  Registry    │  │   Rules      │  │ Ledger       │    │
+│  └──────────────┘  └──────────────┘  └──────────────┘    │
+└────────────────────────────────────────────────────────────┘
 ```
+
+### Key Integration Points
+
+- **Frontend ↔ Backend**: RESTful API with TypeScript types
+- **Backend ↔ Blockchain**: HTTP API bridge (Node.js/Express)
+- **Data Flow**: Frontend hooks → API client → Backend → Blockchain
+- **Real-time Updates**: Auto-refresh intervals (audit: 10s, predictions: 60s, states: 30s)
 
 ## Documentation
 
+### Setup & Integration
 - [Backend API Documentation](services/api/README.md)
+- [Frontend-Backend Integration Guide](docs/frontend-backend-integration.md) - Complete integration documentation
+- [UI/UX Review & Improvements](docs/ui-ux-review.md) - Principal engineer review with actionable improvements
+
+### Specifications
 - [API Specification](docs/api-spec.md)
 - [Architecture Overview](docs/architecture.md)
 - [Software Requirements Specification](docs/srs.md)
 
+### Quick Links
+- **API Client**: `lib/api/` - Centralized API client with TypeScript types
+- **React Hooks**: `hooks/` - Custom hooks for data fetching (`useLoans`, `usePredictions`, `useAudit`, `useESG`)
+- **Components**: `components/` - Reusable UI components
+
 ## Development Notes
 
-- **Storage**: Currently using in-memory storage for demo purposes. Replace with database for production.
-- **ML Models**: Using simulated ML models for demo. Replace with trained models for production.
-- **Blockchain**: Using Hardhat local node for demo. Replace with permissioned blockchain network for production.
-- **Security**: CORS is open for hackathon demo. Restrict in production.
+### Current Implementation (Hackathon Demo)
+
+- **Storage**: In-memory storage for demo. Replace with PostgreSQL/SQLite for production.
+- **ML Models**: Simulated ML models for demo. Replace with trained models for production.
+- **Blockchain**: Hardhat local node for demo. Replace with permissioned blockchain network for production.
+- **Security**: CORS is open for hackathon demo. Implement proper authentication/authorization in production.
+- **Frontend**: Complete API integration. See [UI/UX Review](docs/ui-ux-review.md) for recommended improvements.
+
+### Known Limitations & Improvements
+
+See [UI/UX Review Document](docs/ui-ux-review.md) for a comprehensive analysis including:
+- Mobile responsiveness improvements needed
+- Accessibility enhancements required
+- Performance optimizations recommended
+- Missing features (search, pagination, filtering)
+
+### Production Readiness Checklist
+
+- [ ] Database integration (PostgreSQL)
+- [ ] Authentication & authorization
+- [ ] Trained ML models
+- [ ] Permissioned blockchain network
+- [ ] Mobile-responsive design improvements
+- [ ] Accessibility compliance (WCAG 2.1 AA)
+- [ ] Performance optimization
+- [ ] Error monitoring & logging
+- [ ] Comprehensive testing (unit, integration, E2E)
+- [ ] API rate limiting & security hardening
 
 ## License
 
