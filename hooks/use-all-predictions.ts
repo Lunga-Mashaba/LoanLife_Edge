@@ -61,7 +61,15 @@ export function useAllPredictions() {
         const allEvents: TimelineEvent[] = []
 
         // Fetch predictions for each loan (with error handling per loan)
-        for (const loan of loans) {
+        // Limit to first 10 loans to prevent timeout issues with many loans
+        const loansToProcess = loans.slice(0, 10)
+        
+        for (const loan of loansToProcess) {
+          if (cancelled) {
+            setLoading(false)
+            return
+          }
+          
           try {
             const prediction = await predictionsApi.getPredictions(loan.id, [30, 60, 90])
             
