@@ -12,14 +12,21 @@ from app.services.ingestion_service import IngestionService
 from app.services.service_instances import twin_service, audit_service
 from app.services.audit_service import AuditEventType
 
-# Optional blockchain integration
-try:
-    from app.services.blockchain_client import get_blockchain_client
-    blockchain_client = get_blockchain_client()
-    BLOCKCHAIN_ENABLED = True
-except ImportError:
-    blockchain_client = None
-    BLOCKCHAIN_ENABLED = False
+# Optional blockchain integration - check environment variable first
+BLOCKCHAIN_ENABLED = os.getenv("BLOCKCHAIN_ENABLED", "false").lower() == "true"
+blockchain_client = None
+if BLOCKCHAIN_ENABLED:
+    try:
+        from app.services.blockchain_client import get_blockchain_client
+        blockchain_client = get_blockchain_client()
+        # Verify client is actually enabled and available
+        if not blockchain_client.enabled:
+            blockchain_client = None
+            BLOCKCHAIN_ENABLED = False
+    except Exception:
+        # Graceful fallback - continue without blockchain
+        blockchain_client = None
+        BLOCKCHAIN_ENABLED = False
 
 router = APIRouter()
 

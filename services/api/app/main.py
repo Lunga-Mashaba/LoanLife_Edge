@@ -60,6 +60,18 @@ async def root():
 @app.get("/health")
 async def health():
     """Detailed health check"""
+    # Check blockchain status if enabled
+    blockchain_status = "disabled"
+    blockchain_available = False
+    if os.getenv("BLOCKCHAIN_ENABLED", "false").lower() == "true":
+        try:
+            from app.services.blockchain_client import get_blockchain_client
+            blockchain_client = get_blockchain_client()
+            blockchain_available = blockchain_client.is_available()
+            blockchain_status = "available" if blockchain_available else "unavailable"
+        except Exception:
+            blockchain_status = "error"
+    
     return {
         "status": "healthy",
         "service": "LoanLife Edge API",
@@ -68,7 +80,13 @@ async def health():
             "api": "operational",
             "digital_twin": "operational",
             "ai_prediction": "operational",
-            "esg_scoring": "operational"
+            "esg_scoring": "operational",
+            "blockchain": blockchain_status
+        },
+        "blockchain": {
+            "enabled": os.getenv("BLOCKCHAIN_ENABLED", "false").lower() == "true",
+            "available": blockchain_available,
+            "url": os.getenv("BLOCKCHAIN_API_URL", "http://localhost:3001")
         }
     }
 

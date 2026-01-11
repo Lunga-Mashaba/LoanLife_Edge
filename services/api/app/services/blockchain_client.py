@@ -19,7 +19,8 @@ class BlockchainClient:
             "BLOCKCHAIN_API_URL", 
             "http://localhost:3001"
         )
-        self.enabled = os.getenv("BLOCKCHAIN_ENABLED", "true").lower() == "true"
+        # Check if blockchain is enabled via environment variable
+        self.enabled = os.getenv("BLOCKCHAIN_ENABLED", "false").lower() == "true"
         self.timeout = 5  # 5 second timeout
     
     def _make_request(
