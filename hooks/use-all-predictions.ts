@@ -32,8 +32,25 @@ export function useAllPredictions() {
         setError(null)
 
         // Get all loans
-        const loans = await loansApi.getAll()
+        let loans: Loan[] = []
+        try {
+          loans = await loansApi.getAll()
+        } catch (err) {
+          console.error('Failed to fetch loans:', err)
+          // Continue with empty array if loans fetch fails
+          loans = []
+        }
+        
         if (cancelled) return
+
+        // If no loans, set loading to false immediately
+        if (loans.length === 0) {
+          if (!cancelled) {
+            setEvents([])
+            setLoading(false)
+          }
+          return
+        }
 
         const allEvents: TimelineEvent[] = []
 
@@ -112,13 +129,12 @@ export function useAllPredictions() {
 
         if (!cancelled) {
           setEvents(allEvents)
+          setLoading(false)
         }
       } catch (err) {
+        console.error('Error in fetchAllPredictions:', err)
         if (!cancelled) {
           setError(err instanceof Error ? err : new Error('Failed to fetch predictions'))
-        }
-      } finally {
-        if (!cancelled) {
           setLoading(false)
         }
       }

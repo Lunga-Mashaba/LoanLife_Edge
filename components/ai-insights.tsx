@@ -8,7 +8,7 @@ import Link from "next/link"
 
 export function AIInsights() {
   const [expanded, setExpanded] = useState(false)
-  const { events, loading } = useAllPredictions()
+  const { events, loading, error } = useAllPredictions()
 
   // Get the most critical prediction
   const criticalEvent = useMemo(() => {
@@ -22,9 +22,31 @@ export function AIInsights() {
   if (loading) {
     return (
       <Card className="p-6 bg-gradient-to-r from-[oklch(0.50_0.22_290)]/20 to-[oklch(0.55_0.20_220)]/20 border-[oklch(0.50_0.22_290)]">
-        <div className="flex items-center justify-center py-4">
+        <div className="flex items-center justify-center py-4" role="status" aria-live="polite" aria-label="Loading AI insights">
           <Loader2 className="h-5 w-5 animate-spin text-[oklch(0.55_0.20_220)]" />
           <span className="ml-2 text-sm text-[oklch(0.60_0.02_250)]">Loading AI insights...</span>
+        </div>
+      </Card>
+    )
+  }
+
+  // Handle error state
+  if (error) {
+    return (
+      <Card className="p-6 bg-gradient-to-r from-[oklch(0.50_0.22_290)]/20 to-[oklch(0.55_0.20_220)]/20 border-[oklch(0.50_0.22_290)]">
+        <div className="flex items-start gap-4">
+          <div className="p-3 rounded-lg bg-[oklch(0.50_0.22_290)]">
+            <Brain className="h-6 w-6 text-white" aria-hidden="true" />
+          </div>
+          <div className="flex-1">
+            <div className="flex items-center gap-2 mb-2">
+              <Sparkles className="h-5 w-5 text-[oklch(0.60_0.22_290)]" aria-hidden="true" />
+              <h3 className="text-lg font-semibold text-[oklch(0.95_0.01_250)]">AI Risk Prediction</h3>
+            </div>
+            <p className="text-sm text-[oklch(0.80_0.01_250)]">
+              Unable to load predictions. Please try refreshing the page.
+            </p>
+          </div>
         </div>
       </Card>
     )
