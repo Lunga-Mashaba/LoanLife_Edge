@@ -56,10 +56,11 @@ export interface RiskPrediction {
   }
   predictions: {
     [key: string]: {
-      breach_probability: number
+      breach_probability?: number  // May be probability in some cases
+      probability?: number  // Backend returns this as decimal 0-1
       risk_level: 'low' | 'medium' | 'high' | 'critical'
-      key_factors: string[]
-      explanation: {
+      key_factors?: string[]
+      explanation?: {
         summary: string
         factors: Array<{
           factor: string
@@ -67,6 +68,8 @@ export interface RiskPrediction {
           description: string
         }>
       }
+      horizon_days?: number
+      prediction_date?: string
     }
   }
   generated_at: string
