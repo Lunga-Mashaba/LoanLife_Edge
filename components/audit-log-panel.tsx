@@ -1,11 +1,13 @@
 "use client"
 
 import { Card } from "@/components/ui/card"
-import { Lock, Database, FileCheck, AlertTriangle, Shield } from "lucide-react"
+import { Lock, Database, FileCheck, AlertTriangle, Shield, ExternalLink } from "lucide-react"
 import { useAuditLogs } from "@/hooks/use-audit"
 import { formatDistanceToNow } from "date-fns"
 import { SkeletonCard } from "@/components/ui/skeleton-loader"
-import { memo } from "react"
+import { memo, useState } from "react"
+import Link from "next/link"
+import { Button } from "@/components/ui/button"
 
 function getEventIcon(eventType: string) {
   if (eventType.includes("COVENANT")) return FileCheck
@@ -30,9 +32,11 @@ function formatTxHash(hash?: string): string {
 
 export function AuditLogPanel() {
   const { logs, loading, error } = useAuditLogs({})
+  const [showAll, setShowAll] = useState(false)
 
-  // Show only the 5 most recent logs
-  const recentLogs = logs.slice(0, 5)
+  // Show 5 by default, or all if expanded
+  const displayLogs = showAll ? logs : logs.slice(0, 5)
+  const hasMore = logs.length > 5
 
   if (loading) {
     return (
@@ -71,12 +75,13 @@ export function AuditLogPanel() {
         <Lock className="h-5 w-5 text-[oklch(0.55_0.20_220)]" aria-hidden="true" />
       </div>
       <div className="space-y-3">
-        {recentLogs.length === 0 ? (
+        {displayLogs.length === 0 ? (
           <div className="p-4 rounded-lg bg-[oklch(0.18_0.03_250)] border border-[oklch(0.25_0.04_250)]">
             <p className="text-sm text-[oklch(0.60_0.02_250)]">No audit logs found</p>
           </div>
         ) : (
-          recentLogs.map((log) => {
+          <>
+            {displayLogs.map((log) => {
             const Icon = getEventIcon(log.event_type)
             const timeAgo = formatDistanceToNow(new Date(log.timestamp), { addSuffix: true })
             const txHash = log.blockchain_tx_hash
@@ -102,7 +107,32 @@ export function AuditLogPanel() {
                 </div>
               </div>
             )
-          })
+            })}
+            {hasMore && (
+              <div className="pt-2 border-t border-[oklch(0.25_0.04_250)]">
+                {!showAll ? (
+                  <button
+                    onClick={() => setShowAll(true)}
+                    className="w-full text-sm text-[oklch(0.55_0.20_220)] hover:text-[oklch(0.70_0.25_145)] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[oklch(0.55_0.20_220)] rounded px-2 py-1"
+                    aria-label={`Show all ${logs.length} audit logs`}
+                  >
+                    Show all {logs.length} logs
+                  </button>
+                ) : (
+                  <div className="flex items-center justify-between">
+                    <p className="text-sm text-[oklch(0.60_0.02_250)]">Showing all {logs.length} logs</p>
+                    <Link
+                      href="/audit-log"
+                      className="text-sm text-[oklch(0.55_0.20_220)] hover:text-[oklch(0.70_0.25_145)] transition-colors flex items-center gap-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[oklch(0.55_0.20_220)] rounded px-2 py-1"
+                      aria-label="View full audit log page"
+                    >
+                      View full log <ExternalLink className="h-3 w-3" aria-hidden="true" />
+                    </Link>
+                  </div>
+                )}
+              </div>
+            )}
+          </>
         )}
       </div>
     </Card>

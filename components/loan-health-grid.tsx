@@ -3,6 +3,7 @@
 import { Card } from "@/components/ui/card"
 import { TrendingUp, TrendingDown, AlertTriangle, CheckCircle2 } from "lucide-react"
 import { useLoans } from "@/hooks/use-loans"
+import Link from "next/link"
 import { useState, useEffect, useMemo, memo } from "react"
 import type { LoanState, Loan } from "@/lib/api/types"
 import { loansApi } from "@/lib/api/loans"
@@ -166,12 +167,11 @@ export function LoanHealthGrid() {
       </div>
       <div className="space-y-3">
         {loanHealthData.map((loan) => (
-          <div
+          <Link
             key={loan.id}
-            className="p-4 rounded-lg bg-[oklch(0.18_0.03_250)] border border-[oklch(0.25_0.04_250)] hover:border-[oklch(0.55_0.20_220)] transition-all duration-200 cursor-pointer group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[oklch(0.55_0.20_220)] focus-visible:ring-offset-2 focus-visible:ring-offset-[oklch(0.15_0.03_250)]"
-            tabIndex={0}
-            role="button"
-            aria-label={`Loan ${loan.borrower}, ${loan.amount}, Health: ${loan.health}%, Status: ${loan.covenant}`}
+            href={`/digital-twins?loan=${loan.id}`}
+            className="block p-4 rounded-lg bg-[oklch(0.18_0.03_250)] border border-[oklch(0.25_0.04_250)] hover:border-[oklch(0.55_0.20_220)] transition-all duration-200 cursor-pointer group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[oklch(0.55_0.20_220)] focus-visible:ring-offset-2 focus-visible:ring-offset-[oklch(0.15_0.03_250)]"
+            aria-label={`Loan ${loan.borrower}, ${loan.amount}, Health: ${loan.health}%, Status: ${loan.covenant}. Click to view details`}
           >
             <div className="flex items-center justify-between mb-2">
               <div className="flex-1">
@@ -245,7 +245,7 @@ export function LoanHealthGrid() {
                 </span>
               </div>
             </div>
-          </div>
+          </Link>
         ))}
       </div>
     </Card>
