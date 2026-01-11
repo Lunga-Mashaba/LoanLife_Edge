@@ -37,35 +37,73 @@ export function useAllPredictions() {
 
         const allEvents: TimelineEvent[] = []
 
-        // Fetch predictions for each loan
+        // Fetch predictions for each loan (with error handling per loan)
         for (const loan of loans) {
           try {
             const prediction = await predictionsApi.getPredictions(loan.id, [30, 60, 90])
             
+            // Verify prediction has the expected structure
+            if (!prediction || !prediction.predictions) {
+              console.warn(`Invalid prediction response for loan ${loan.id}`)
+              continue
+            }
+            
             // Extract events for timeline (30, 60, 90 days)
-            Object.entries(prediction.predictions).forEach(([horizonKey, pred]) => {
-              const days = parseInt(horizonKey.replace('_days', ''))
-              const prob = Math.round(pred.breach_probability * 100)
-              
-              // Only show if risk is significant (>30% probability)
-              if (prob > 30) {
-                allEvents.push({
-                  loan_id: loan.id,
-                  loan_name: loan.borrower_name,
-                  day: days,
-                  event: pred.risk_level === 'critical' 
-                    ? 'Covenant Breach Risk' 
-                    : pred.risk_level === 'high'
-                    ? 'High Risk Alert'
-                    : 'Risk Warning',
-                  severity: pred.risk_level === 'critical' ? 'critical' : 'warning',
-                  probability: prob,
-                  prediction: pred,
-                })
+            Object.entries(prediction.predictions).forEach(([horizonKey, pred]: [string, any]) => {
+              try {
+                const days = parseInt(horizonKey.replace('_days', ''))
+                
+                // Handle different probability formats (percentage or decimal)
+                // Backend returns `probability` as decimal (0-1), frontend type expects `breach_probability`
+                let prob: number
+                const probability = pred.breach_probability ?? pred.probability
+                
+                if (typeof probability === 'number') {
+                  // Convert decimal to percentage if needed
+                  prob = probability <= 1 ? Math.round(probability * 100) : Math.round(probability)
+                } else {
+                  console.warn(`Invalid probability format for loan ${loan.id}, horizon ${horizonKey}:`, pred)
+                  return
+                }
+                
+                // Validate risk level
+                const riskLevel = pred.risk_level || 'low'
+                
+                // Only show if risk is significant (>30% probability)
+                if (prob > 30 && !isNaN(days)) {
+                  allEvents.push({
+                    loan_id: loan.id,
+                    loan_name: loan.borrower_name || 'Unknown Loan',
+                    day: days,
+                    event: riskLevel === 'critical' 
+                      ? 'Covenant Breach Risk' 
+                      : riskLevel === 'high'
+                      ? 'High Risk Alert'
+                      : 'Risk Warning',
+                    severity: (riskLevel === 'critical' ? 'critical' : 'warning') as 'warning' | 'critical',
+                    probability: prob,
+                    prediction: pred,
+                  })
+                }
+              } catch (entryErr) {
+                console.warn(`Error processing prediction entry for loan ${loan.id}, horizon ${horizonKey}:`, entryErr)
               }
             })
-          } catch (err) {
-            console.error(`Failed to fetch predictions for loan ${loan.id}:`, err)
+          } catch (err: any) {
+            // Log but continue - some loans may not have predictions yet
+            // This is expected for new loans or if the backend is still processing
+            if (err?.status === 404) {
+              // Loan not found - skip silently (might be deleted or not yet created)
+              continue
+            } else if (err?.status === 500) {
+              // Server error - might be generating predictions, skip this loan
+              console.warn(`Server error fetching predictions for loan ${loan.id}:`, err.message || err)
+              continue
+            } else {
+              // Other errors - log and continue
+              console.warn(`Failed to fetch predictions for loan ${loan.id}:`, err.message || err)
+              continue
+            }
           }
         }
 
