@@ -31,24 +31,30 @@ export function useAllPredictions() {
         setLoading(true)
         setError(null)
 
-        // Get all loans
+        // Get all loans with timeout protection
         let loans: Loan[] = []
         try {
-          loans = await loansApi.getAll()
+          // Use Promise.race to add a timeout
+          const timeoutPromise = new Promise<never>((_, reject) => 
+            setTimeout(() => reject(new Error('Loans fetch timeout')), 10000) // 10 second timeout
+          )
+          
+          loans = await Promise.race([loansApi.getAll(), timeoutPromise])
         } catch (err) {
           console.error('Failed to fetch loans:', err)
           // Continue with empty array if loans fetch fails
           loans = []
         }
         
-        if (cancelled) return
+        if (cancelled) {
+          setLoading(false)
+          return
+        }
 
         // If no loans, set loading to false immediately
         if (loans.length === 0) {
-          if (!cancelled) {
-            setEvents([])
-            setLoading(false)
-          }
+          setEvents([])
+          setLoading(false)
           return
         }
 
