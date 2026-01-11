@@ -36,8 +36,8 @@ export function useAuditLogs(filters: AuditLogFilters = {}) {
 
     fetchLogs()
 
-    // Refetch every 10 seconds for real-time updates
-    const interval = setInterval(fetchLogs, 10000)
+    // Refetch every 60 seconds for real-time updates (throttled for performance)
+    const interval = setInterval(fetchLogs, 60000)
 
     return () => {
       cancelled = true

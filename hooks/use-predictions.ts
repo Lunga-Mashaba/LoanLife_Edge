@@ -25,7 +25,7 @@ export function usePredictions(loanId: string | null, horizons: number[] = [30, 
       try {
         setLoading(true)
         setError(null)
-        const data = await predictionsApi.getPredictions(loanId, horizons)
+        const data = await predictionsApi.getPredictions(loanId as string, horizons)
         if (!cancelled) {
           setPredictions(data)
         }

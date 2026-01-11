@@ -66,7 +66,7 @@ export function useLoan(loanId: string | null) {
       try {
         setLoading(true)
         setError(null)
-        const data = await loansApi.getById(loanId)
+        const data = await loansApi.getById(loanId as string)
         if (!cancelled) {
           setLoan(data)
         }
@@ -109,7 +109,7 @@ export function useLoanState(loanId: string | null) {
       try {
         setLoading(true)
         setError(null)
-        const data = await loansApi.getState(loanId)
+        const data = await loansApi.getState(loanId as string)
         if (!cancelled) {
           setState(data)
         }
@@ -126,8 +126,8 @@ export function useLoanState(loanId: string | null) {
 
     fetchState()
 
-    // Refetch every 30 seconds for real-time updates
-    const interval = setInterval(fetchState, 30000)
+    // Refetch every 60 seconds for real-time updates (throttled for performance)
+    const interval = setInterval(fetchState, 60000)
 
     return () => {
       cancelled = true

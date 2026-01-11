@@ -25,7 +25,7 @@ export function useESGScore(loanId: string | null) {
       try {
         setLoading(true)
         setError(null)
-        const data = await esgApi.getScore(loanId)
+        const data = await esgApi.getScore(loanId as string)
         if (!cancelled) {
           setScore(data)
         }
@@ -68,7 +68,7 @@ export function useESGCompliance(loanId: string | null) {
       try {
         setLoading(true)
         setError(null)
-        const data = await esgApi.getCompliance(loanId)
+        const data = await esgApi.getCompliance(loanId as string)
         if (!cancelled) {
           setCompliance(data)
         }
