@@ -1,13 +1,13 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, memo } from "react"
 
-export function AnimatedBackground() {
+function AnimatedBackgroundComponent() {
   const [particles, setParticles] = useState<Array<{ id: number; x: number; delay: number }>>([])
 
   useEffect(() => {
-    // Generate random data stream particles
-    const newParticles = Array.from({ length: 20 }, (_, i) => ({
+    // Generate random data stream particles (reduced count for performance)
+    const newParticles = Array.from({ length: 10 }, (_, i) => ({
       id: i,
       x: Math.random() * 100,
       delay: Math.random() * 20,
@@ -46,3 +46,6 @@ export function AnimatedBackground() {
     </div>
   )
 }
+
+// Memoize to prevent re-renders on every parent update
+export const AnimatedBackground = memo(AnimatedBackgroundComponent)

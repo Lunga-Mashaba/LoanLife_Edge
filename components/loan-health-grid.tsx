@@ -1,11 +1,13 @@
 "use client"
 
 import { Card } from "@/components/ui/card"
-import { TrendingUp, TrendingDown, AlertTriangle, CheckCircle2, Loader2 } from "lucide-react"
+import { TrendingUp, TrendingDown, AlertTriangle, CheckCircle2 } from "lucide-react"
 import { useLoans } from "@/hooks/use-loans"
-import { useState, useEffect } from "react"
-import type { LoanState } from "@/lib/api/types"
+import { useState, useEffect, useMemo, memo } from "react"
+import type { LoanState, Loan } from "@/lib/api/types"
 import { loansApi } from "@/lib/api/loans"
+import { useSearchContext } from "@/lib/search-context"
+import { SkeletonLoanCard } from "@/components/ui/skeleton-loader"
 
 interface LoanHealthData {
   id: string
@@ -41,8 +43,26 @@ function getCovenantStatus(covenantStatus: LoanState["covenant_status"] | undefi
 
 export function LoanHealthGrid() {
   const { loans, loading, error } = useLoans()
+  const { searchQuery } = useSearchContext()
   const [loanStates, setLoanStates] = useState<Record<string, LoanState>>({})
   const [statesLoading, setStatesLoading] = useState(false)
+
+  // Filter loans based on search query
+  const filteredLoans = useMemo(() => {
+    if (!searchQuery.trim()) {
+      return loans
+    }
+
+    const query = searchQuery.toLowerCase().trim()
+    return loans.filter((loan) => {
+      return (
+        loan.borrower_name.toLowerCase().includes(query) ||
+        loan.id.toLowerCase().includes(query) ||
+        loan.loan_amount.toString().includes(query) ||
+        (loan.metadata && JSON.stringify(loan.metadata).toLowerCase().includes(query))
+      )
+    })
+  }, [loans, searchQuery])
 
   // Fetch loan states for all loans
   useEffect(() => {
@@ -77,7 +97,7 @@ export function LoanHealthGrid() {
   }, [loans])
 
   // Transform loans data for display
-  const loanHealthData: LoanHealthData[] = loans.map((loan) => {
+  const loanHealthData: LoanHealthData[] = filteredLoans.map((loan) => {
     const state = loanStates[loan.id]
     const health = state?.health_score ?? 0
     const covenantInfo = getCovenantStatus(state?.covenant_status)
@@ -100,9 +120,10 @@ export function LoanHealthGrid() {
     return (
       <Card className="p-6 bg-[oklch(0.15_0.03_250)] border-[oklch(0.25_0.04_250)]">
         <h3 className="text-xl font-semibold text-[oklch(0.95_0.01_250)] mb-4">Loan Health Scores</h3>
-        <div className="flex items-center justify-center py-8">
-          <Loader2 className="h-6 w-6 animate-spin text-[oklch(0.55_0.20_220)]" />
-          <span className="ml-2 text-[oklch(0.60_0.02_250)]">Loading loans...</span>
+        <div className="space-y-3" role="status" aria-live="polite" aria-label="Loading loans">
+          <SkeletonLoanCard />
+          <SkeletonLoanCard />
+          <SkeletonLoanCard />
         </div>
       </Card>
     )
@@ -124,19 +145,33 @@ export function LoanHealthGrid() {
       <Card className="p-6 bg-[oklch(0.15_0.03_250)] border-[oklch(0.25_0.04_250)]">
         <h3 className="text-xl font-semibold text-[oklch(0.95_0.01_250)] mb-4">Loan Health Scores</h3>
         <div className="p-4 rounded-lg bg-[oklch(0.18_0.03_250)] border border-[oklch(0.25_0.04_250)]">
-          <p className="text-[oklch(0.60_0.02_250)]">No loans found. Upload a loan document to get started.</p>
+          <p className="text-[oklch(0.60_0.02_250)]">
+            {searchQuery.trim() 
+              ? `No loans found matching "${searchQuery}".` 
+              : "No loans found. Upload a loan document to get started."}
+          </p>
         </div>
       </Card>
     )
   }
   return (
     <Card className="p-6 bg-[oklch(0.15_0.03_250)] border-[oklch(0.25_0.04_250)]">
-      <h3 className="text-xl font-semibold text-[oklch(0.95_0.01_250)] mb-4">Loan Health Scores</h3>
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="text-xl font-semibold text-[oklch(0.95_0.01_250)]">Loan Health Scores</h3>
+        {searchQuery.trim() && (
+          <span className="text-sm text-[oklch(0.60_0.02_250)]" role="status" aria-live="polite">
+            {filteredLoans.length} of {loans.length} loans
+          </span>
+        )}
+      </div>
       <div className="space-y-3">
         {loanHealthData.map((loan) => (
           <div
             key={loan.id}
-            className="p-4 rounded-lg bg-[oklch(0.18_0.03_250)] border border-[oklch(0.25_0.04_250)] hover:border-[oklch(0.55_0.20_220)] transition-all duration-200 cursor-pointer group"
+            className="p-4 rounded-lg bg-[oklch(0.18_0.03_250)] border border-[oklch(0.25_0.04_250)] hover:border-[oklch(0.55_0.20_220)] transition-all duration-200 cursor-pointer group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[oklch(0.55_0.20_220)] focus-visible:ring-offset-2 focus-visible:ring-offset-[oklch(0.15_0.03_250)]"
+            tabIndex={0}
+            role="button"
+            aria-label={`Loan ${loan.borrower}, ${loan.amount}, Health: ${loan.health}%, Status: ${loan.covenant}`}
           >
             <div className="flex items-center justify-between mb-2">
               <div className="flex-1">
@@ -216,3 +251,6 @@ export function LoanHealthGrid() {
     </Card>
   )
 }
+
+// Memoize component to prevent unnecessary re-renders
+export const MemoizedLoanHealthGrid = memo(LoanHealthGrid)

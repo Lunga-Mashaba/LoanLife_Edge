@@ -1,9 +1,11 @@
 "use client"
 
 import { Card } from "@/components/ui/card"
-import { Lock, Database, FileCheck, AlertTriangle, Loader2, Shield } from "lucide-react"
+import { Lock, Database, FileCheck, AlertTriangle, Shield } from "lucide-react"
 import { useAuditLogs } from "@/hooks/use-audit"
 import { formatDistanceToNow } from "date-fns"
+import { SkeletonCard } from "@/components/ui/skeleton-loader"
+import { memo } from "react"
 
 function getEventIcon(eventType: string) {
   if (eventType.includes("COVENANT")) return FileCheck
@@ -37,10 +39,12 @@ export function AuditLogPanel() {
       <Card className="p-6 bg-[oklch(0.15_0.03_250)] border-[oklch(0.25_0.04_250)]">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-xl font-semibold text-[oklch(0.95_0.01_250)]">Audit Log</h3>
-          <Lock className="h-5 w-5 text-[oklch(0.55_0.20_220)]" />
+          <Lock className="h-5 w-5 text-[oklch(0.55_0.20_220)]" aria-hidden="true" />
         </div>
-        <div className="flex items-center justify-center py-8">
-          <Loader2 className="h-5 w-5 animate-spin text-[oklch(0.55_0.20_220)]" />
+        <div className="space-y-3" role="status" aria-live="polite" aria-label="Loading audit logs">
+          <SkeletonCard />
+          <SkeletonCard />
+          <SkeletonCard />
         </div>
       </Card>
     )
@@ -64,7 +68,7 @@ export function AuditLogPanel() {
     <Card className="p-6 bg-[oklch(0.15_0.03_250)] border-[oklch(0.25_0.04_250)]">
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-xl font-semibold text-[oklch(0.95_0.01_250)]">Audit Log</h3>
-        <Lock className="h-5 w-5 text-[oklch(0.55_0.20_220)]" />
+        <Lock className="h-5 w-5 text-[oklch(0.55_0.20_220)]" aria-hidden="true" />
       </div>
       <div className="space-y-3">
         {recentLogs.length === 0 ? (
@@ -104,3 +108,6 @@ export function AuditLogPanel() {
     </Card>
   )
 }
+
+// Memoize component to prevent unnecessary re-renders
+export const MemoizedAuditLogPanel = memo(AuditLogPanel)
