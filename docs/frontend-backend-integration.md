@@ -1,6 +1,6 @@
-# How Frontend Talks to Backend
+# Frontend-Backend Integration
 
-We connected everything. The frontend now pulls real data from the backend API instead of using fake mock data.
+Everything's connected. The frontend pulls real data from the backend instead of using mock data.
 
 ## How It Works
 
@@ -8,25 +8,25 @@ We connected everything. The frontend now pulls real data from the backend API i
 Frontend (React) → API Client (lib/api/) → Backend (FastAPI)
 ```
 
-Simple HTTP requests, nothing fancy.
+Just HTTP requests, nothing complicated.
 
-## What We Built
+## What's Built
 
 **API Client (`lib/api/`):**
-- `config.ts` - Where the API URL lives
-- `client.ts` - Handles all HTTP requests and errors
-- `types.ts` - TypeScript types so we don't mess up
-- `loans.ts`, `predictions.ts`, `esg.ts`, `audit.ts` - Functions for each API endpoint
+- `config.ts` - API URL configuration
+- `client.ts` - Handles HTTP requests and errors
+- `types.ts` - TypeScript types
+- `loans.ts`, `predictions.ts`, `esg.ts`, `audit.ts` - Functions for each endpoint
 
 **React Hooks (`hooks/`):**
-- `use-loans.ts` - Gets loans and their states
+- `use-loans.ts` - Gets loans and states
 - `use-predictions.ts` - Gets risk predictions
 - `use-audit.ts` - Gets audit logs
 - `use-esg.ts` - Gets ESG scores
 
 **Components:**
-- All components now use these hooks to get real data
-- No more mock data!
+- All components use these hooks for real data
+- No more mock data
 
 ## Setup
 
@@ -36,7 +36,7 @@ Create `.env.local` in the root:
 NEXT_PUBLIC_API_URL=http://localhost:8000
 ```
 
-If you don't set this, it defaults to `localhost:8000` anyway.
+If you don't set this, it defaults to `localhost:8000`.
 
 ## Usage Examples
 
@@ -122,13 +122,13 @@ The API client handles errors gracefully:
 
 Components display loading states and error messages appropriately.
 
-## Real-time Updates
+## Auto-refresh
 
-Some components automatically refresh data:
+Some components refresh automatically:
 
-- **Loan Health Grid**: Refetches loan states periodically
-- **Audit Log Panel**: Refreshes every 10 seconds
-- **Predictions**: Refreshes every 60 seconds
+- Loan Health Grid: Refetches loan states periodically
+- Audit Log Panel: Refreshes every 60 seconds
+- Predictions: Refreshes every 120 seconds
 
 ## Testing the Integration
 
@@ -151,10 +151,10 @@ Some components automatically refresh data:
    - Check the browser console for any API errors
    - Verify that loan data is displayed (if SEED_DATA=true)
 
-## If Something Breaks
+## Troubleshooting
 
 **Can't connect?**
-- Check that backend is running on port 8000
+- Check backend is running on port 8000
 - Check `NEXT_PUBLIC_API_URL` matches your backend URL
 - CORS is wide open, so that shouldn't be an issue
 
@@ -164,5 +164,5 @@ Some components automatically refresh data:
 - Check Network tab to see if requests are failing
 
 **TypeScript errors?**
-- Make sure `lib/api/types.ts` matches what the backend actually returns
+- Make sure `lib/api/types.ts` matches what the backend returns
 - Check that `@/` alias works in `tsconfig.json`

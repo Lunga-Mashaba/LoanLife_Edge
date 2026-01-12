@@ -1,8 +1,10 @@
-# Quick Start Guide
+# Quick Start
 
-## Running Locally
+Getting this running locally is pretty straightforward. Here's what you need to do.
 
-### Step 1: Install Dependencies
+## Install Everything
+
+First, install the dependencies:
 
 **Frontend:**
 ```bash
@@ -18,7 +20,7 @@ venv\Scripts\activate  # Windows
 pip install -r requirements.txt
 ```
 
-**Blockchain (optional):**
+**Blockchain (optional, but nice to have):**
 ```bash
 cd services/blockchain
 npm install
@@ -26,9 +28,11 @@ cd api
 npm install
 ```
 
-### Step 2: Start Services
+## Start the Services
 
-**Option A: Use the Script (Easiest)**
+You've got two options here.
+
+**Easiest way - use the script:**
 
 Windows:
 ```powershell
@@ -41,9 +45,11 @@ chmod +x scripts/start-all.sh
 ./scripts/start-all.sh
 ```
 
-**Option B: Manual Start**
+**Or do it manually (if you want more control):**
 
-Terminal 1 - Blockchain Node:
+Open 4 terminals:
+
+Terminal 1 - Blockchain node:
 ```bash
 cd services/blockchain
 npx hardhat node
@@ -55,13 +61,13 @@ cd services/blockchain/api
 npm start
 ```
 
-Terminal 3 - Backend API:
+Terminal 3 - Backend:
 ```bash
 cd services/api
 venv\Scripts\activate  # Windows
 # or: source venv/bin/activate  # Mac/Linux
 
-# Set environment variables
+# Set these env vars
 $env:SEED_DATA="true"  # Windows PowerShell
 $env:BLOCKCHAIN_ENABLED="true"
 $env:BLOCKCHAIN_API_URL="http://localhost:3001"
@@ -79,92 +85,69 @@ Terminal 4 - Frontend:
 npm run dev
 ```
 
-### Step 3: Open the App
+## Open It Up
 
+Once everything's running:
 - Frontend: http://localhost:3000
-- Backend API: http://localhost:8000
-- API Docs: http://localhost:8000/docs
+- Backend: http://localhost:8000
+- API docs: http://localhost:8000/docs
 - Blockchain API: http://localhost:3001
 
 ---
 
-## Deploying to Free Platforms
+## Deploying (Free Options)
 
-### Deploy Backend to Render
+We're using Render for the backend and Vercel for the frontend. Both have free tiers that work fine for demos.
 
-1. **Push code to GitHub** (if not already there)
-   ```bash
-   git add .
-   git commit -m "Prepare for deployment"
-   git push origin main
-   ```
+### Backend on Render
 
-2. **Go to Render.com**
-   - Sign up/login with GitHub
-   - Click "New +" → "Web Service"
+First, make sure your code is on GitHub:
+```bash
+git add .
+git commit -m "Prepare for deployment"
+git push origin main
+```
 
-3. **Connect Repository**
-   - Select your GitHub repo
-   - Click "Connect"
-
-4. **Configure Service**
-   - **Name:** `loanlife-api` (or whatever you want)
-   - **Root Directory:** `services/api`
-   - **Environment:** `Python 3`
-   - **Build Command:** `pip install -r requirements.txt`
-   - **Start Command:** `uvicorn app.main:app --host 0.0.0.0 --port $PORT`
-   - **Plan:** Free
-
-5. **Add Environment Variables**
-   Click "Environment" tab and add:
+Then:
+1. Go to render.com and sign up with GitHub
+2. Click "New +" → "Web Service"
+3. Connect your repo
+4. Fill in these settings:
+   - Name: `loanlife-api` (or whatever)
+   - Root Directory: `services/api`
+   - Environment: `Python 3`
+   - Build Command: `pip install -r requirements.txt`
+   - Start Command: `uvicorn app.main:app --host 0.0.0.0 --port $PORT`
+   - Plan: Free
+5. Add environment variables (click "Environment" tab):
    ```
    SEED_DATA=false
    BLOCKCHAIN_ENABLED=false
    ```
-   (Render sets `PORT` automatically, don't add it)
+   (Don't add PORT - Render sets that automatically)
+6. Click "Create Web Service" and wait 3-5 minutes
+7. Copy your URL when it's done: `https://loanlife-api.onrender.com`
 
-6. **Deploy**
-   - Click "Create Web Service"
-   - Wait 3-5 minutes for build
-   - Copy your URL: `https://loanlife-api.onrender.com`
-
-**Important:** Free tier spins down after 15min. First request after that takes ~30 seconds.
+**Note:** The free tier spins down after 15 minutes of no traffic. First request after that takes about 30 seconds to wake up. It's annoying but free.
 
 ---
 
-### Deploy Frontend to Vercel
+### Frontend on Vercel
 
-1. **Go to Vercel.com**
-   - Sign up/login with GitHub
-   - Click "New Project"
-
-2. **Import Repository**
-   - Select your GitHub repo
-   - Click "Import"
-
-3. **Configure Project**
-   - Framework: Vercel auto-detects Next.js ✅
-   - Root Directory: `./` (leave default)
-   - Build Command: Leave default
-   - Output Directory: Leave default
-
-4. **Add Environment Variable**
-   Click "Environment Variables" and add:
+1. Go to vercel.com and sign up with GitHub
+2. Click "New Project" and import your repo
+3. Vercel will detect Next.js automatically, so leave the defaults
+4. Add this environment variable:
    ```
    NEXT_PUBLIC_API_URL=https://loanlife-api.onrender.com
    ```
-   (Replace with your actual Render backend URL)
+   (Use your actual Render backend URL)
+5. Click "Deploy" and wait 1-2 minutes
+6. Copy your URL: `https://your-project.vercel.app`
 
-5. **Deploy**
-   - Click "Deploy"
-   - Wait 1-2 minutes
-   - Copy your URL: `https://your-project.vercel.app`
+### Fix CORS (Do This After Frontend Deploys)
 
----
-
-### Update Backend CORS (Important!)
-
-After deploying frontend, update CORS in `services/api/app/main.py`:
+Once your frontend is live, you need to update CORS in the backend. Edit `services/api/app/main.py`:
 
 ```python
 app.add_middleware(
@@ -179,73 +162,65 @@ app.add_middleware(
 )
 ```
 
-Then commit and push:
+Then push the change:
 ```bash
 git add services/api/app/main.py
 git commit -m "Update CORS for production"
 git push origin main
 ```
 
-Render will auto-redeploy.
+Render will redeploy automatically.
 
----
+## Testing
 
-## Testing Your Deployment
+**Backend:**
+- Visit `https://your-backend.onrender.com/health`
+- Should return `{"status": "healthy", ...}`
 
-1. **Check Backend**
-   - Visit: `https://your-backend.onrender.com/health`
-   - Should see: `{"status": "healthy", ...}`
+**Frontend:**
+- Visit your Vercel URL
+- Open browser console (F12) and check for errors
+- Should see loans loading if you had seed data
 
-2. **Check Frontend**
-   - Visit: `https://your-project.vercel.app`
-   - Open browser console (F12)
-   - Check for any API errors
-   - Should see loans loading (if you had seed data)
+**Connection:**
+- Check the Network tab in DevTools
+- API requests should go to your Render URL
 
-3. **Test API Connection**
-   - Frontend should be calling backend API
-   - Check Network tab in browser DevTools
-   - API requests should go to your Render URL
+## Common Issues
 
----
-
-## Troubleshooting
-
-### Backend won't start on Render
-- Check build logs in Render dashboard
+**Backend won't start:**
+- Check build logs in Render
 - Make sure `requirements.txt` is in `services/api/`
-- Verify start command uses `$PORT`
+- Start command must use `$PORT`
 
-### Frontend can't connect to backend
-- Check `NEXT_PUBLIC_API_URL` in Vercel environment variables
+**Frontend can't connect:**
+- Check `NEXT_PUBLIC_API_URL` in Vercel
 - Make sure backend URL is correct (no trailing slash)
-- Check CORS settings in backend
-- Check browser console for CORS errors
+- Check CORS settings
+- Look for CORS errors in browser console
 
-### Backend is slow on first request
-- Free tier spins down after 15min inactivity
-- First request takes ~30 seconds to wake up
-- This is normal for free tier
+**Slow first request:**
+- Free tier spins down after 15min
+- First request takes ~30 seconds
+- This is normal, just wait it out
 
-### Need to update environment variables
-- Render: Dashboard → Your Service → Environment → Edit
-- Vercel: Dashboard → Your Project → Settings → Environment Variables
-- Changes require redeploy (usually automatic)
-
----
+**Update env vars:**
+- Render: Dashboard → Service → Environment → Edit
+- Vercel: Dashboard → Project → Settings → Environment Variables
+- Changes auto-redeploy
 
 ## Quick Reference
 
-**Local URLs:**
+**Local:**
 - Frontend: http://localhost:3000
 - Backend: http://localhost:8000
-- API Docs: http://localhost:8000/docs
+- API docs: http://localhost:8000/docs
 
-**Deployment URLs:**
+**Deployed:**
 - Frontend: `https://your-project.vercel.app`
 - Backend: `https://your-api.onrender.com`
 
-**Environment Variables:**
+**Env vars:**
 
 Frontend (Vercel):
 ```
@@ -258,6 +233,4 @@ SEED_DATA=false
 BLOCKCHAIN_ENABLED=false
 ```
 
----
-
-That's it! Your app should be live. 🚀
+That's it. Should be working now.

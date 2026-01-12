@@ -2,6 +2,8 @@
 
 A secure desktop application that transforms each loan into a Digital Twin, continuously monitored by AI, governed by smart contracts, and logged on a permissioned blockchain.
 
+**TechBridle Team**
+
 ## Tech Stack
 
 ![Next.js](https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=next.js&logoColor=white)
@@ -20,11 +22,10 @@ A secure desktop application that transforms each loan into a Digital Twin, cont
 
 We built a loan monitoring system that predicts when loans might breach covenants or fail ESG requirements - basically giving banks a heads up 30-90 days before things go wrong. Think of it like a health monitor for loans, but with AI and blockchain thrown in.
 
-## Team
+## Team (TechBridle Team)
 
 - **Nicolette** - Backend & AI Integration Lead (APIs, AI, digital twin logic) ✅ **Complete**
 - **Lunga** - Blockchain & Backend Engineer (Blockchain, smart contracts) ✅ **Complete**
-- **Siya** - Frontend Engineer – Core UI (Dashboards, visualisation) ✅ **Complete**
 - **Sharon** - Frontend Engineer – Desktop & UX (Electron, navigation, UX) ✅ **Complete**
 
 ## Repository Structure
@@ -151,15 +152,17 @@ Open http://localhost:3000
 - Audit log with blockchain transaction hashes
 - Everything auto-refreshes so you see updates live
 
-## Status: Everything Works! 🎉
+## Status
 
-**Nicolette (Backend):** All API endpoints working, document parsing works, AI predictions are running, blockchain integration is solid.
+Everything's working. Here's what each person built:
+
+**Nicolette (Backend):** All API endpoints working, document parsing works, AI predictions running, blockchain integration is solid.
 
 **Lunga (Blockchain):** Smart contracts deployed, API bridge working, everything integrated with the backend. You can see blockchain transaction hashes in the audit logs.
 
-**Siya & Sharon (Frontend):** Full Next.js app, Electron desktop version, all components connected to real APIs, real-time updates working, looks pretty good too.
+**Sharon (Frontend):** Full Next.js app, Electron desktop version, all components connected to real APIs, real-time updates working, looks good.
 
-We hit all the requirements from the SRS. The whole thing works end-to-end.
+We hit all the requirements. The whole thing works end-to-end.
 
 ## API Endpoints
 
@@ -260,7 +263,7 @@ This will test all major API endpoints and verify the integration.
 ┌─────────────────────────────────────────────────────────────┐
 │        Electron Desktop App / Web App (Frontend)            │
 │                   Next.js + React + Electron                │
-│                      (Siya + Sharon) ✅                     │
+│                         (Sharon) ✅                          │
 │  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐     │
 │  │   React      │  │   API Client │  │   Hooks      │     │
 │  │  Components  │  │   (lib/api)  │  │  (hooks/)    │     │
@@ -321,14 +324,14 @@ This will test all major API endpoints and verify the integration.
 
 ## Things to Know
 
-**This is a hackathon demo**, so:
-- Data is stored in memory (restart = data gone). For real use, you'd want PostgreSQL.
-- The AI models are simulated. Real production would need actual trained models.
-- Blockchain is running locally on Hardhat. Production would use a real permissioned network.
-- CORS is wide open (we're lazy). Production needs proper auth.
+This is a hackathon demo, so keep in mind:
+- Data is stored in memory (restart = data gone). Real use would need PostgreSQL.
+- The AI models are simulated. Production would need actual trained models.
+- Blockchain runs locally on Hardhat. Production would use a real permissioned network.
+- CORS is wide open. Production needs proper auth.
 - Mobile UI could be better (we focused on desktop).
 
-**What we'd do differently for production:**
+**For production we'd:**
 - Add a real database
 - Implement proper authentication
 - Train actual ML models
@@ -337,7 +340,7 @@ This will test all major API endpoints and verify the integration.
 - Add comprehensive tests
 - Set up monitoring/logging
 
-But for a hackathon demo? This works great.
+But for a hackathon demo, this works great.
 
 ## License
 
