@@ -152,3 +152,5 @@ function AIInsights() {
     </Card>
   )
 }
+
+export const MemoizedAIInsights = memo(AIInsights)
