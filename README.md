@@ -87,75 +87,51 @@ LoanLife_Edge/
 
 ## Getting Started
 
-### The Easy Way (Windows)
+### Running Locally
 
-Just run the script:
+**Quick Start (Windows):**
 ```powershell
 .\scripts\start-all.ps1
 ```
 
-This fires up everything you need:
-- Blockchain node on port 8545
-- Blockchain API bridge on port 3001  
-- Backend API on port 8000
-
-### The Easy Way (Mac/Linux)
-
+**Quick Start (Mac/Linux):**
 ```bash
 chmod +x scripts/start-all.sh
 ./scripts/start-all.sh
 ```
 
-### Frontend Only
+This starts:
+- Blockchain node (port 8545)
+- Blockchain API bridge (port 3001)  
+- Backend API (port 8000)
 
-If you just want to work on the UI:
-
+Then start the frontend:
 ```bash
 npm install
 npm run dev
 ```
 
-Then open http://localhost:3000. Just make sure the backend is running on port 8000 or you'll see errors.
+Open http://localhost:3000
 
-### Manual Setup (If You Want to Understand What's Happening)
+**See [Quick Start Guide](docs/QUICK_START.md) for detailed steps.**
 
-**Blockchain stuff (Lunga built this):**
-```bash
-cd services/blockchain
-npm install
-npx hardhat node  # Leave this running
-```
+### Deploying to Free Platforms
 
-Then in another terminal:
-```bash
-cd services/blockchain/api
-npm install
-npm start  # This talks to the blockchain
-```
+**Backend → Render:**
+1. Go to render.com, sign up with GitHub
+2. New Web Service → Connect repo
+3. Root Directory: `services/api`
+4. Build: `pip install -r requirements.txt`
+5. Start: `uvicorn app.main:app --host 0.0.0.0 --port $PORT`
+6. Add env vars: `SEED_DATA=false`, `BLOCKCHAIN_ENABLED=false`
 
-**Backend API (Nicolette's work):**
-```bash
-cd services/api
-python -m venv venv
-venv\Scripts\activate  # Windows
-# or: source venv/bin/activate  # Mac/Linux
+**Frontend → Vercel:**
+1. Go to vercel.com, sign up with GitHub
+2. New Project → Import repo
+3. Add env var: `NEXT_PUBLIC_API_URL=https://your-backend.onrender.com`
+4. Deploy
 
-pip install -r requirements.txt
-
-# Windows PowerShell:
-$env:SEED_DATA="true"
-$env:BLOCKCHAIN_ENABLED="true"
-$env:BLOCKCHAIN_API_URL="http://localhost:3001"
-
-# Mac/Linux:
-export SEED_DATA=true
-export BLOCKCHAIN_ENABLED=true
-export BLOCKCHAIN_API_URL=http://localhost:3001
-
-uvicorn app.main:app --reload
-```
-
-Hit http://localhost:8000/docs to see the API docs (FastAPI auto-generates them, it's pretty cool).
+**See [Quick Start Guide](docs/QUICK_START.md) for complete deployment steps.**
 
 ## What We Built
 
