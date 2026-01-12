@@ -1,63 +1,42 @@
-# Frontend-Backend Integration Guide
+# How Frontend Talks to Backend
 
-## Overview
+We connected everything. The frontend now pulls real data from the backend API instead of using fake mock data.
 
-The frontend has been fully integrated with the backend API. All components now fetch real data from the FastAPI backend instead of using mock data.
-
-## Architecture
+## How It Works
 
 ```
-Frontend (Next.js/React)  ←→  API Client  ←→  Backend API (FastAPI)
-                              (lib/api/)
+Frontend (React) → API Client (lib/api/) → Backend (FastAPI)
 ```
 
-## Integration Components
+Simple HTTP requests, nothing fancy.
 
-### 1. API Client (`lib/api/`)
+## What We Built
 
-- **`config.ts`**: API configuration and endpoint definitions
-- **`client.ts`**: Centralized HTTP client with error handling
-- **`types.ts`**: TypeScript types matching backend models
-- **`loans.ts`**: Loan-related API functions
-- **`predictions.ts`**: Risk prediction API functions
-- **`esg.ts`**: ESG scoring API functions
-- **`audit.ts`**: Audit log API functions
+**API Client (`lib/api/`):**
+- `config.ts` - Where the API URL lives
+- `client.ts` - Handles all HTTP requests and errors
+- `types.ts` - TypeScript types so we don't mess up
+- `loans.ts`, `predictions.ts`, `esg.ts`, `audit.ts` - Functions for each API endpoint
 
-### 2. React Hooks (`hooks/`)
+**React Hooks (`hooks/`):**
+- `use-loans.ts` - Gets loans and their states
+- `use-predictions.ts` - Gets risk predictions
+- `use-audit.ts` - Gets audit logs
+- `use-esg.ts` - Gets ESG scores
 
-- **`use-loans.ts`**: Hook for fetching loans and loan states
-- **`use-predictions.ts`**: Hook for fetching risk predictions
-- **`use-audit.ts`**: Hook for fetching audit logs
-- **`use-esg.ts`**: Hook for fetching ESG scores and compliance
+**Components:**
+- All components now use these hooks to get real data
+- No more mock data!
 
-### 3. Updated Components
+## Setup
 
-- **`loan-health-grid.tsx`**: Now fetches real loans and displays health scores
-- **`audit-log-panel.tsx`**: Displays real audit logs from the backend
-- **`esg-compliance.tsx`**: Shows aggregated ESG scores across all loans
-
-## Configuration
-
-### Environment Variables
-
-Create a `.env.local` file in the root directory:
+Create `.env.local` in the root:
 
 ```env
 NEXT_PUBLIC_API_URL=http://localhost:8000
 ```
 
-The API client defaults to `http://localhost:8000` if the environment variable is not set.
-
-### API Base URL
-
-The API base URL is configured in `lib/api/config.ts`:
-
-```typescript
-export const API_CONFIG = {
-  baseUrl: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000',
-  timeout: 30000, // 30 seconds
-}
-```
+If you don't set this, it defaults to `localhost:8000` anyway.
 
 ## Usage Examples
 
@@ -172,29 +151,18 @@ Some components automatically refresh data:
    - Check the browser console for any API errors
    - Verify that loan data is displayed (if SEED_DATA=true)
 
-## Troubleshooting
+## If Something Breaks
 
-### API Connection Issues
+**Can't connect?**
+- Check that backend is running on port 8000
+- Check `NEXT_PUBLIC_API_URL` matches your backend URL
+- CORS is wide open, so that shouldn't be an issue
 
-- **Check API URL**: Ensure `NEXT_PUBLIC_API_URL` matches your backend URL
-- **CORS Errors**: Backend CORS is configured to allow all origins (for hackathon)
-- **Network Errors**: Ensure the backend API is running on the correct port
+**No data showing?**
+- Make sure backend is running
+- Check browser console for errors
+- Check Network tab to see if requests are failing
 
-### Empty Data
-
-- **Check backend**: Verify backend is running and seeded with data
-- **Check console**: Look for API errors in browser console
-- **Check network tab**: Inspect API requests in browser DevTools
-
-### Type Errors
-
-- **Type definitions**: Ensure `lib/api/types.ts` matches backend models
-- **Import paths**: Verify `@/` alias is configured correctly in `tsconfig.json`
-
-## Next Steps
-
-1. Add authentication/authorization headers to API requests
-2. Implement optimistic updates for better UX
-3. Add retry logic for failed requests
-4. Implement caching for frequently accessed data
-5. Add error boundaries for better error handling
+**TypeScript errors?**
+- Make sure `lib/api/types.ts` matches what the backend actually returns
+- Check that `@/` alias works in `tsconfig.json`

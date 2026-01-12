@@ -16,9 +16,9 @@ A secure desktop application that transforms each loan into a Digital Twin, cont
 ![shadcn/ui](https://img.shields.io/badge/shadcn/ui-000000?style=for-the-badge&logo=react&logoColor=white)
 ![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
 
-## Project Overview
+## What This Is
 
-LoanLife Edge predicts loan covenant breaches and ESG non-compliance 30–90 days in advance, enabling proactive intervention for banks and financial institutions.
+We built a loan monitoring system that predicts when loans might breach covenants or fail ESG requirements - basically giving banks a heads up 30-90 days before things go wrong. Think of it like a health monitor for loans, but with AI and blockchain thrown in.
 
 ## Team
 
@@ -85,161 +85,105 @@ LoanLife_Edge/
     └── ui-ux-review.md                  # UI/UX review & improvements
 ```
 
-## Quick Start
+## Getting Started
 
-### Option 1: Start All Services (Recommended)
+### The Easy Way (Windows)
 
-**Windows:**
+Just run the script:
 ```powershell
 .\scripts\start-all.ps1
 ```
 
-**Linux/Mac:**
+This fires up everything you need:
+- Blockchain node on port 8545
+- Blockchain API bridge on port 3001  
+- Backend API on port 8000
+
+### The Easy Way (Mac/Linux)
+
 ```bash
 chmod +x scripts/start-all.sh
 ./scripts/start-all.sh
 ```
 
-This will start:
-1. Hardhat blockchain node (port 8545)
-2. Blockchain API bridge (port 3001)
-3. Backend API (port 8000)
+### Frontend Only
 
-### Option 3: Frontend Application
+If you just want to work on the UI:
 
-**Start Frontend (Next.js + Electron):**
 ```bash
-# Install dependencies
 npm install
-
-# Start development server
 npm run dev
-
-# Or start with Electron
-npm run electron:dev
 ```
 
-Frontend will be available at:
-- Web: http://localhost:3000
-- Electron app launches automatically with `electron:dev`
+Then open http://localhost:3000. Just make sure the backend is running on port 8000 or you'll see errors.
 
-**Note:** Make sure the backend API is running on port 8000 for the frontend to connect.
+### Manual Setup (If You Want to Understand What's Happening)
 
-### Option 2: Manual Setup
-
-#### 1. Blockchain Services (Lunga's Work)
-
-**Start Hardhat Node:**
+**Blockchain stuff (Lunga built this):**
 ```bash
 cd services/blockchain
 npm install
-npx hardhat node
+npx hardhat node  # Leave this running
 ```
 
-**Start Blockchain API Bridge** (in a new terminal):
+Then in another terminal:
 ```bash
 cd services/blockchain/api
 npm install
-npm start
+npm start  # This talks to the blockchain
 ```
 
-The blockchain API bridge will be available at http://localhost:3001
-
-#### 2. Backend API (Nicolette's Work)
-
+**Backend API (Nicolette's work):**
 ```bash
 cd services/api
 python -m venv venv
-# Windows:
-venv\Scripts\activate
-# Linux/Mac:
-source venv/bin/activate
+venv\Scripts\activate  # Windows
+# or: source venv/bin/activate  # Mac/Linux
 
 pip install -r requirements.txt
 
-# Set environment variables
 # Windows PowerShell:
 $env:SEED_DATA="true"
 $env:BLOCKCHAIN_ENABLED="true"
 $env:BLOCKCHAIN_API_URL="http://localhost:3001"
-# Linux/Mac:
+
+# Mac/Linux:
 export SEED_DATA=true
 export BLOCKCHAIN_ENABLED=true
 export BLOCKCHAIN_API_URL=http://localhost:3001
 
-# Start the API
 uvicorn app.main:app --reload
 ```
 
-API will be available at:
-- API: http://localhost:8000
-- Interactive Docs: http://localhost:8000/docs
-- Health Check: http://localhost:8000/health
+Hit http://localhost:8000/docs to see the API docs (FastAPI auto-generates them, it's pretty cool).
 
-## Features
+## What We Built
 
-### ✅ Implemented & Working
+**Backend stuff:**
+- Upload a loan document (PDF/DOCX) and it extracts covenants and ESG stuff automatically
+- Each loan gets a "digital twin" that tracks its health in real-time
+- AI predicts if a loan will breach covenants 30/60/90 days ahead
+- ESG scoring that actually makes sense
+- Everything gets logged to blockchain (immutable audit trail)
+- Smart contracts handle covenant rules
 
-- **Loan Document Ingestion**: Parse PDF/DOCX documents and extract covenants/ESG clauses
-- **Digital Twin Creation**: One digital twin per loan with complete state tracking
-- **AI Risk Prediction**: Predict breach risk at 30/60/90-day horizons with explainability
-- **ESG Scoring**: Calculate ESG scores and track compliance
-- **Blockchain Governance**: Smart contract-based covenant registry with full integration
-- **Audit Logging**: Immutable audit trail with blockchain hashing
-- **Blockchain Integration**: Backend fully integrated with blockchain API bridge
-  - Covenant registration on-chain
-  - ESG score recording on-chain
-  - Breach detection on-chain
-  - Audit log hashing on-chain
+**Frontend stuff:**
+- Desktop app (Electron) + web version
+- Dashboard shows all loans with health scores
+- Risk timeline shows what's coming up
+- ESG compliance tracker
+- Audit log with blockchain transaction hashes
+- Everything auto-refreshes so you see updates live
 
-### ✅ Frontend & Integration - **Complete**
+## Status: Everything Works! 🎉
 
-- **Desktop Application**: Electron-based desktop app (Next.js + Electron)
-- **Frontend Dashboards**: Portfolio overview, loan health grid, risk timeline
-- **API Integration**: Complete frontend-backend integration with React hooks
-- **Real-time Updates**: Auto-refreshing components for live data
-- **Component Library**: shadcn/ui components with custom styling
+**Nicolette (Backend):** All API endpoints working, document parsing works, AI predictions are running, blockchain integration is solid.
 
-## Implementation Status
+**Lunga (Blockchain):** Smart contracts deployed, API bridge working, everything integrated with the backend. You can see blockchain transaction hashes in the audit logs.
 
-### Backend & AI (Nicolette) - ✅ **100% Complete**
+**Siya & Sharon (Frontend):** Full Next.js app, Electron desktop version, all components connected to real APIs, real-time updates working, looks pretty good too.
 
-- ✅ FastAPI backend with all endpoints
-- ✅ Document ingestion (PDF/DOCX parsing)
-- ✅ Digital twin service
-- ✅ AI risk prediction with explainability
-- ✅ ESG scoring engine
-- ✅ Audit logging service
-- ✅ Blockchain client integration
-- ✅ All SRS functional requirements met
-
-### Blockchain & Smart Contracts (Lunga) - ✅ **100% Complete**
-
-- ✅ Hardhat development environment
-- ✅ Smart contracts (CovenantRegistry, GovernanceRules, ESGCompliance, AuditLedger)
-- ✅ Blockchain API bridge (Node.js/Express)
-- ✅ Full integration with backend API
-- ✅ Covenant hashing and on-chain registration
-- ✅ Governance rule engine
-- ✅ Immutable audit ledger
-
-### Frontend (Siya + Sharon) - ✅ **100% Complete**
-
-- ✅ Next.js application with App Router
-- ✅ Electron desktop application setup
-- ✅ React components (Portfolio, Digital Twins, Risk Analytics, Audit Log)
-- ✅ Complete API integration with React hooks
-- ✅ Real-time data fetching with auto-refresh
-- ✅ Responsive UI components with shadcn/ui
-- ✅ TypeScript type safety throughout
-
-**Frontend Features:**
-- Portfolio dashboard with loan health scores
-- Digital twin monitoring with real-time state
-- Risk analytics timeline
-- ESG compliance tracking
-- Audit log viewer with blockchain transaction hashes
-- AI insights panel
+We hit all the requirements from the SRS. The whole thing works end-to-end.
 
 ## API Endpoints
 
@@ -399,36 +343,25 @@ This will test all major API endpoints and verify the integration.
 - **React Hooks**: `hooks/` - Custom hooks for data fetching (`useLoans`, `usePredictions`, `useAudit`, `useESG`)
 - **Components**: `components/` - Reusable UI components
 
-## Development Notes
+## Things to Know
 
-### Current Implementation (Hackathon Demo)
+**This is a hackathon demo**, so:
+- Data is stored in memory (restart = data gone). For real use, you'd want PostgreSQL.
+- The AI models are simulated. Real production would need actual trained models.
+- Blockchain is running locally on Hardhat. Production would use a real permissioned network.
+- CORS is wide open (we're lazy). Production needs proper auth.
+- Mobile UI could be better (we focused on desktop).
 
-- **Storage**: In-memory storage for demo. Replace with PostgreSQL/SQLite for production.
-- **ML Models**: Simulated ML models for demo. Replace with trained models for production.
-- **Blockchain**: Hardhat local node for demo. Replace with permissioned blockchain network for production.
-- **Security**: CORS is open for hackathon demo. Implement proper authentication/authorization in production.
-- **Frontend**: Complete API integration. See [UI/UX Review](docs/ui-ux-review.md) for recommended improvements.
+**What we'd do differently for production:**
+- Add a real database
+- Implement proper authentication
+- Train actual ML models
+- Use a production blockchain network
+- Make it fully mobile-responsive
+- Add comprehensive tests
+- Set up monitoring/logging
 
-### Known Limitations & Improvements
-
-See [UI/UX Review Document](docs/ui-ux-review.md) for a comprehensive analysis including:
-- Mobile responsiveness improvements needed
-- Accessibility enhancements required
-- Performance optimizations recommended
-- Missing features (search, pagination, filtering)
-
-### Production Readiness Checklist
-
-- [ ] Database integration (PostgreSQL)
-- [ ] Authentication & authorization
-- [ ] Trained ML models
-- [ ] Permissioned blockchain network
-- [ ] Mobile-responsive design improvements
-- [ ] Accessibility compliance (WCAG 2.1 AA)
-- [ ] Performance optimization
-- [ ] Error monitoring & logging
-- [ ] Comprehensive testing (unit, integration, E2E)
-- [ ] API rate limiting & security hardening
+But for a hackathon demo? This works great.
 
 ## License
 
