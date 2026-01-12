@@ -3,15 +3,21 @@
  * Functions for AI risk prediction API calls
  */
 import { apiClient, API_ENDPOINTS } from './client'
+import { apiCache } from './cache'
 import type { RiskPrediction } from './types'
 
 export const predictionsApi = {
   /**
-   * Get risk predictions for a loan
+   * Get risk predictions for a loan (cached for 60 seconds)
    */
   async getPredictions(loanId: string, horizons: number[] = [30, 60, 90]): Promise<RiskPrediction> {
     const horizonsStr = horizons.join(',')
-    return apiClient.get<RiskPrediction>(API_ENDPOINTS.predictions.get(loanId, horizonsStr))
+    const cacheKey = `predictions:${loanId}:${horizonsStr}`
+    return apiCache.getOrFetch(
+      cacheKey,
+      () => apiClient.get<RiskPrediction>(API_ENDPOINTS.predictions.get(loanId, horizonsStr)),
+      60000 // 60 seconds cache
+    )
   },
 
   /**

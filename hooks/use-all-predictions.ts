@@ -1,9 +1,10 @@
 /**
  * React hook for fetching predictions for all loans
+ * Optimized with parallel fetching and caching
  */
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { predictionsApi } from '@/lib/api/predictions'
 import { loansApi } from '@/lib/api/loans'
 import type { RiskPrediction, Loan } from '@/lib/api/types'
@@ -22,32 +23,49 @@ export function useAllPredictions() {
   const [events, setEvents] = useState<TimelineEvent[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<Error | null>(null)
+  const lastFetchRef = useRef<number>(0)
+  const isFetchingRef = useRef<boolean>(false)
 
   useEffect(() => {
     let cancelled = false
 
     async function fetchAllPredictions() {
+      // Prevent concurrent fetches
+      if (isFetchingRef.current) return
+      
+      // Throttle: don't fetch more than once every 5 seconds
+      const now = Date.now()
+      if (now - lastFetchRef.current < 5000 && events.length > 0) {
+        return
+      }
+
+      isFetchingRef.current = true
+      lastFetchRef.current = now
+
       try {
-        setLoading(true)
+        // Don't show loading if we have cached data (stale-while-revalidate)
+        const hasCachedData = events.length > 0
+        if (!hasCachedData) {
+          setLoading(true)
+        }
         setError(null)
 
         // Get all loans with timeout protection
         let loans: Loan[] = []
         try {
-          // Use Promise.race to add a timeout
           const timeoutPromise = new Promise<never>((_, reject) => 
-            setTimeout(() => reject(new Error('Loans fetch timeout')), 10000) // 10 second timeout
+            setTimeout(() => reject(new Error('Loans fetch timeout')), 8000) // 8 second timeout
           )
           
           loans = await Promise.race([loansApi.getAll(), timeoutPromise])
         } catch (err) {
           console.error('Failed to fetch loans:', err)
-          // Continue with empty array if loans fetch fails
           loans = []
         }
         
         if (cancelled) {
-          setLoading(false)
+          isFetchingRef.current = false
+          if (!hasCachedData) setLoading(false)
           return
         }
 
@@ -55,24 +73,55 @@ export function useAllPredictions() {
         if (loans.length === 0) {
           setEvents([])
           setLoading(false)
+          isFetchingRef.current = false
+          return
+        }
+
+        // Limit to first 10 loans for performance
+        const loansToProcess = loans.slice(0, 10)
+        
+        // PARALLEL FETCHING: Fetch all predictions simultaneously
+        const predictionPromises = loansToProcess.map(async (loan) => {
+          try {
+            return {
+              loan,
+              prediction: await predictionsApi.getPredictions(loan.id, [30, 60, 90]),
+            }
+          } catch (err: any) {
+            // Silently skip failed predictions
+            if (err?.status === 404 || err?.status === 500) {
+              return null
+            }
+            console.warn(`Failed to fetch predictions for loan ${loan.id}:`, err.message || err)
+            return null
+          }
+        })
+
+        // Wait for all predictions (with timeout)
+        const timeoutPromise = new Promise<never>((_, reject) =>
+          setTimeout(() => reject(new Error('Predictions fetch timeout')), 15000) // 15 second timeout
+        )
+
+        const results = await Promise.race([
+          Promise.all(predictionPromises),
+          timeoutPromise,
+        ])
+
+        if (cancelled) {
+          isFetchingRef.current = false
+          if (!hasCachedData) setLoading(false)
           return
         }
 
         const allEvents: TimelineEvent[] = []
 
-        // Fetch predictions for each loan (with error handling per loan)
-        // Limit to first 10 loans to prevent timeout issues with many loans
-        const loansToProcess = loans.slice(0, 10)
-        
-        for (const loan of loansToProcess) {
-          if (cancelled) {
-            setLoading(false)
-            return
-          }
+        // Process results
+        for (const result of results) {
+          if (!result || !result.prediction) continue
+          
+          const { loan, prediction } = result
           
           try {
-            const prediction = await predictionsApi.getPredictions(loan.id, [30, 60, 90])
-            
             // Verify prediction has the expected structure
             if (!prediction || !prediction.predictions) {
               console.warn(`Invalid prediction response for loan ${loan.id}`)
@@ -151,19 +200,21 @@ export function useAllPredictions() {
           setError(err instanceof Error ? err : new Error('Failed to fetch predictions'))
           setLoading(false)
         }
+      } finally {
+        isFetchingRef.current = false
       }
     }
 
     fetchAllPredictions()
 
-    // Refetch every 60 seconds
-    const interval = setInterval(fetchAllPredictions, 60000)
+    // Refetch every 120 seconds (reduced frequency for better performance)
+    const interval = setInterval(fetchAllPredictions, 120000)
 
     return () => {
       cancelled = true
       clearInterval(interval)
     }
-  }, [])
+  }, []) // Empty deps - fetch on mount and interval only
 
   return { events, loading, error }
 }

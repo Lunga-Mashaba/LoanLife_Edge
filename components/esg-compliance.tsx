@@ -3,7 +3,7 @@
 import { Card } from "@/components/ui/card"
 import { Leaf, Users, Shield, CheckCircle2, AlertCircle, Loader2 } from "lucide-react"
 import { useLoans } from "@/hooks/use-loans"
-import { useState, useEffect } from "react"
+import { useState, useEffect, memo } from "react"
 import { esgApi } from "@/lib/api/esg"
 
 interface ESGMetric {
@@ -41,15 +41,24 @@ export function ESGCompliance() {
         governance: [],
       }
 
-      // Fetch ESG scores for all loans
-      for (const loan of loans) {
+      // PARALLEL FETCHING: Fetch all ESG scores simultaneously
+      const scorePromises = loans.map(async (loan) => {
         try {
-          const score = await esgApi.getScore(loan.id)
+          return await esgApi.getScore(loan.id)
+        } catch (err) {
+          console.error(`Failed to fetch ESG for loan ${loan.id}:`, err)
+          return null
+        }
+      })
+
+      const results = await Promise.all(scorePromises)
+
+      // Process results
+      for (const score of results) {
+        if (score) {
           scores.environmental.push(score.environmental_score)
           scores.social.push(score.social_score)
           scores.governance.push(score.governance_score)
-        } catch (err) {
-          console.error(`Failed to fetch ESG for loan ${loan.id}:`, err)
         }
       }
 
@@ -168,3 +177,5 @@ export function ESGCompliance() {
     </Card>
   )
 }
+
+export const MemoizedESGCompliance = memo(ESGCompliance)

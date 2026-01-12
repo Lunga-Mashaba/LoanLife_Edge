@@ -5,8 +5,9 @@ import { AlertTriangle, Loader2 } from "lucide-react"
 import { useAllPredictions } from "@/hooks/use-all-predictions"
 import { SkeletonCard } from "@/components/ui/skeleton-loader"
 import Link from "next/link"
+import { memo } from "react"
 
-export function RiskTimeline() {
+function RiskTimeline() {
   const { events, loading, error } = useAllPredictions()
 
   return (
@@ -93,3 +94,5 @@ export function RiskTimeline() {
     </Card>
   )
 }
+
+export const MemoizedRiskTimeline = memo(RiskTimeline)

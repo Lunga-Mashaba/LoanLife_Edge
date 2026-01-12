@@ -1,10 +1,10 @@
 "use client"
 
-import { LoanHealthGrid } from "@/components/loan-health-grid"
-import { RiskTimeline } from "@/components/risk-timeline"
-import { ESGCompliance } from "@/components/esg-compliance"
-import { AuditLogPanel } from "@/components/audit-log-panel"
-import { AIInsights } from "@/components/ai-insights"
+import { MemoizedLoanHealthGrid } from "@/components/loan-health-grid"
+import { MemoizedRiskTimeline } from "@/components/risk-timeline"
+import { MemoizedESGCompliance } from "@/components/esg-compliance"
+import { MemoizedAuditLogPanel } from "@/components/audit-log-panel"
+import { MemoizedAIInsights } from "@/components/ai-insights"
 import { memo } from "react"
 
 export function PortfolioDashboard() {
@@ -17,17 +17,17 @@ export function PortfolioDashboard() {
       </header>
 
       {/* AI Insights Banner */}
-      <AIInsights />
+      <MemoizedAIInsights />
 
       {/* Main Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
         <div className="xl:col-span-2 space-y-6">
-          <LoanHealthGrid />
-          <RiskTimeline />
+          <MemoizedLoanHealthGrid />
+          <MemoizedRiskTimeline />
         </div>
         <div className="space-y-6">
-          <ESGCompliance />
-          <AuditLogPanel />
+          <MemoizedESGCompliance />
+          <MemoizedAuditLogPanel />
         </div>
       </div>
     </div>

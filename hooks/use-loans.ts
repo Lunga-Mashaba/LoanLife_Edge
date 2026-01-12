@@ -37,8 +37,12 @@ export function useLoans() {
 
     fetchLoans()
 
+    // Refetch every 120 seconds (reduced frequency)
+    const interval = setInterval(fetchLoans, 120000)
+
     return () => {
       cancelled = true
+      clearInterval(interval)
     }
   }, [])
 
@@ -126,8 +130,8 @@ export function useLoanState(loanId: string | null) {
 
     fetchState()
 
-    // Refetch every 60 seconds for real-time updates (throttled for performance)
-    const interval = setInterval(fetchState, 60000)
+    // Refetch every 120 seconds (reduced frequency, cache handles freshness)
+    const interval = setInterval(fetchState, 120000)
 
     return () => {
       cancelled = true

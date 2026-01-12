@@ -42,8 +42,8 @@ export function usePredictions(loanId: string | null, horizons: number[] = [30, 
 
     fetchPredictions()
 
-    // Refetch every 60 seconds for updated predictions
-    const interval = setInterval(fetchPredictions, 60000)
+    // Refetch every 120 seconds (reduced frequency, cache handles freshness)
+    const interval = setInterval(fetchPredictions, 120000)
 
     return () => {
       cancelled = true

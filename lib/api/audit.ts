@@ -3,6 +3,7 @@
  * Functions for audit log API calls
  */
 import { apiClient, API_ENDPOINTS } from './client'
+import { apiCache } from './cache'
 import type { AuditLogEntry } from './types'
 
 export interface AuditLogFilters {
@@ -14,7 +15,7 @@ export interface AuditLogFilters {
 
 export const auditApi = {
   /**
-   * Get audit logs with optional filtering
+   * Get audit logs with optional filtering (cached for 20 seconds)
    */
   async getLogs(filters: AuditLogFilters = {}): Promise<AuditLogEntry[]> {
     const params = new URLSearchParams()
@@ -25,8 +26,13 @@ export const auditApi = {
     
     const query = params.toString()
     const endpoint = query ? `${API_ENDPOINTS.audit.all}?${query}` : API_ENDPOINTS.audit.all
+    const cacheKey = `audit:logs:${query || 'all'}`
     
-    return apiClient.get<AuditLogEntry[]>(endpoint)
+    return apiCache.getOrFetch(
+      cacheKey,
+      () => apiClient.get<AuditLogEntry[]>(endpoint),
+      20000 // 20 seconds cache (more dynamic)
+    )
   },
 
   /**

@@ -3,28 +3,41 @@
  * Functions for loan-related API calls
  */
 import { apiClient, API_ENDPOINTS } from './client'
+import { apiCache } from './cache'
 import type { Loan, LoanState, UploadLoanResponse, CovenantCheck } from './types'
 
 export const loansApi = {
   /**
-   * Get all loans
+   * Get all loans (cached for 30 seconds)
    */
   async getAll(): Promise<Loan[]> {
-    return apiClient.get<Loan[]>(API_ENDPOINTS.loans.all)
+    return apiCache.getOrFetch(
+      'loans:all',
+      () => apiClient.get<Loan[]>(API_ENDPOINTS.loans.all),
+      30000 // 30 seconds cache
+    )
   },
 
   /**
-   * Get a specific loan by ID
+   * Get a specific loan by ID (cached for 60 seconds)
    */
   async getById(loanId: string): Promise<Loan> {
-    return apiClient.get<Loan>(API_ENDPOINTS.loans.get(loanId))
+    return apiCache.getOrFetch(
+      `loans:${loanId}`,
+      () => apiClient.get<Loan>(API_ENDPOINTS.loans.get(loanId)),
+      60000 // 60 seconds cache
+    )
   },
 
   /**
-   * Get complete loan state including health metrics
+   * Get complete loan state including health metrics (cached for 15 seconds)
    */
   async getState(loanId: string): Promise<LoanState> {
-    return apiClient.get<LoanState>(API_ENDPOINTS.loans.state(loanId))
+    return apiCache.getOrFetch(
+      `loans:${loanId}:state`,
+      () => apiClient.get<LoanState>(API_ENDPOINTS.loans.state(loanId)),
+      15000 // 15 seconds cache (more dynamic data)
+    )
   },
 
   /**

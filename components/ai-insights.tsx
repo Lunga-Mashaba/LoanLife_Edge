@@ -1,12 +1,12 @@
 "use client"
 
-import { useState, useEffect, useMemo } from "react"
+import { useState, useEffect, useMemo, memo } from "react"
 import { Card } from "@/components/ui/card"
 import { Sparkles, ChevronDown, ChevronUp, Brain, AlertTriangle, Loader2 } from "lucide-react"
 import { useAllPredictions } from "@/hooks/use-all-predictions"
 import Link from "next/link"
 
-export function AIInsights() {
+function AIInsights() {
   const [expanded, setExpanded] = useState(false)
   const { events, loading, error } = useAllPredictions()
 
