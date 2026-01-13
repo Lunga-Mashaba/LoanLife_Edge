@@ -1,6 +1,6 @@
 import Web3 from 'web3';
 // import { Account } from 'web3-eth-accounts';
-import type { Account } from 'web3-eth-accounts';
+import type { create } from 'web3-eth-accounts';
 import crypto from 'crypto';
 import fs from 'fs/promises';
 import path from 'path';
@@ -17,9 +17,11 @@ interface EncryptedWallet {
   version: string;
 }
 
+type Web3Account = ReturnType<typeof create>;
+
 export class WalletService {
   private web3: Web3;
-  private wallet: Account | null = null;
+  private wallet: Web3Account | null = null;
   private walletPath: string;
   private isInitialized: boolean = false;
 

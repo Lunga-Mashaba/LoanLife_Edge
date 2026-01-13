@@ -1,6 +1,6 @@
 import { ethers } from "hardhat";
 import { BlockchainService } from "../../src/services/BlockchainServices";
-import { Logger } from "../../src/utils/Logger";
+import { Logger, LogLevel } from "../../src/utils/Logger";
 import { Validator } from "../../src/utils/Validator";
 import { Hasher } from "../../src/utils/Hasher";
 import fs from "fs";
@@ -775,10 +775,14 @@ class LoanLifeSimulation {
  */
 async function runSimulation(): Promise<void> {
   Logger.initialize({
-    logLevel: "INFO",
+    logLevel: LogLevel.INFO,
     consoleOutput: true,
     fileOutput: false
   });
+
+  Logger.info("Simulation started");
+  Logger.success("Operation completed");
+
   
   const simulation = new LoanLifeSimulation();
   

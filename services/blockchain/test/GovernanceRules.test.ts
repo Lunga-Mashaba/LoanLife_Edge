@@ -1,7 +1,8 @@
 import { expect } from "chai";
 import { ethers } from "hardhat";
 import { time, loadFixture } from "@nomicfoundation/hardhat-network-helpers";
-import { GovernanceRules } from "../typechain-types";
+import { GovernanceRules } from "../typechain-types/GovernanceRules";
+
 
 describe("GovernanceRules", function () {
   async function deployGovernanceRulesFixture() {

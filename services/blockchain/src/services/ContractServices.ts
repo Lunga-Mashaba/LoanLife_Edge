@@ -5,7 +5,7 @@ import { Logger } from '../utils/Logger';
 
 export class ContractService {
   private web3: Web3;
-  private contracts: Map<string, Contract> = new Map();
+  private contracts: Map<string, any> = new Map();
 
   constructor(web3: Web3) {
     this.web3 = web3;
@@ -17,10 +17,11 @@ export class ContractService {
   async loadContract(
     contractName: string,
     address: string,
-    abi: AbiItem[]
-  ): Promise<Contract> {
+    abi: AbiItem[] | any // Use `any` for broader compatibility
+  ): Promise<any> {
     try {
-      const contract = new this.web3.eth.Contract(abi, address);
+      // Cast abi to appropriate type for web3 v4
+      const contract = new this.web3.eth.Contract(abi as any, address);
       this.contracts.set(contractName, contract);
       
       Logger.info(`Contract ${contractName} loaded at ${address}`);
@@ -34,7 +35,7 @@ export class ContractService {
   /**
    * Get a loaded contract
    */
-  getContract(contractName: string): Contract {
+  getContract(contractName: string): any {
     const contract = this.contracts.get(contractName);
     if (!contract) {
       throw new Error(`Contract ${contractName} not loaded`);
@@ -55,15 +56,17 @@ export class ContractService {
   async estimateGas(
     contractName: string,
     method: string,
-    params: any[],
+    params: any[] = [],
     from: string
-  ): Promise<number> {
+  ): Promise<bigint> { // Return bigint instead of number for web3 v4
     try {
       const contract = this.getContract(contractName);
       const gasEstimate = await contract.methods[method](...params)
         .estimateGas({ from });
       
-      return Math.floor(gasEstimate * 1.2); // Add 20% buffer
+      // Add 20% buffer and convert to BigInt
+      const gasWithBuffer = (gasEstimate * BigInt(120)) / BigInt(100);
+      return gasWithBuffer;
     } catch (error) {
       Logger.error(`Gas estimation failed for ${contractName}.${method}:`, error);
       throw error;
@@ -73,14 +76,20 @@ export class ContractService {
   /**
    * Call a view/pure function
    */
-  async call(
+  async call<T = any>(
     contractName: string,
     method: string,
-    params: any[] = []
-  ): Promise<any> {
+    params: any[] = [],
+    options: {
+      from?: string;
+      gas?: bigint | number;
+      gasPrice?: bigint | string;
+      value?: bigint | string;
+    } = {}
+  ): Promise<T> {
     try {
       const contract = this.getContract(contractName);
-      return await contract.methods[method](...params).call();
+      return await contract.methods[method](...params).call(options);
     } catch (error) {
       Logger.error(`Call failed for ${contractName}.${method}:`, error);
       throw error;
@@ -93,28 +102,44 @@ export class ContractService {
   async sendTransaction(
     contractName: string,
     method: string,
-    params: any[],
+    params: any[] = [],
     options: {
       from: string;
-      gas?: number;
-      gasPrice?: string;
-      value?: string;
+      gas?: bigint | number;
+      gasPrice?: bigint | string;
+      value?: bigint | string;
+      maxPriorityFeePerGas?: bigint | string;
+      maxFeePerGas?: bigint | string;
+      nonce?: number;
     }
   ): Promise<any> {
     try {
       const contract = this.getContract(contractName);
       
+      // Prepare transaction data
+      const tx = contract.methods[method](...params);
+      
       // Estimate gas if not provided
       if (!options.gas) {
-        options.gas = await this.estimateGas(contractName, method, params, options.from);
+        const estimatedGas = await this.estimateGas(
+          contractName,
+          method,
+          params,
+          options.from
+        );
+        options.gas = estimatedGas;
       }
       
-      // Get gas price if not provided
-      if (!options.gasPrice) {
-        options.gasPrice = await this.web3.eth.getGasPrice();
+      // Convert gasPrice to string if it's bigint
+      const txOptions: Record<string, any> = { ...options };
+      if (txOptions.gasPrice && typeof txOptions.gasPrice === 'bigint') {
+        txOptions.gasPrice = txOptions.gasPrice.toString();
+      }
+      if (txOptions.value && typeof txOptions.value === 'bigint') {
+        txOptions.value = txOptions.value.toString();
       }
       
-      return await contract.methods[method](...params).send(options);
+      return await tx.send(txOptions);
     } catch (error) {
       Logger.error(`Transaction failed for ${contractName}.${method}:`, error);
       throw error;
@@ -149,7 +174,11 @@ export class ContractService {
   async getPastEvents(
     contractName: string,
     eventName: string,
-    options: any = {}
+    options: {
+      filter?: any;
+      fromBlock?: number | string;
+      toBlock?: number | string;
+    } = {}
   ): Promise<any[]> {
     try {
       const contract = this.getContract(contractName);
@@ -165,7 +194,7 @@ export class ContractService {
    */
   getContractAddress(contractName: string): string {
     const contract = this.getContract(contractName);
-    return contract.options.address;
+    return contract.options.address as string;
   }
 
   /**
@@ -179,9 +208,12 @@ export class ContractService {
       const address = this.getContractAddress(contractName);
       const actualBytecode = await this.web3.eth.getCode(address);
       
-      // Compare bytecode (strip metadata)
-      const cleanActual = actualBytecode.replace(/a165627a7a72305820\w{64}0029$/, '');
-      const cleanExpected = expectedBytecode.replace(/a165627a7a72305820\w{64}0029$/, '');
+      // Compare bytecode (strip metadata which varies between compilers)
+      // Modern Solidity metadata format
+      const metadataRegex = /a264697066735822[0-9a-f]{68}64736f6c6343[0-9a-f]{6}0033$/;
+      
+      const cleanActual = actualBytecode.replace(metadataRegex, '');
+      const cleanExpected = expectedBytecode.replace(metadataRegex, '');
       
       return cleanActual === cleanExpected;
     } catch (error) {
