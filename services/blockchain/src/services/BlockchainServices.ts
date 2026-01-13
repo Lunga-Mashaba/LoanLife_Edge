@@ -1,5 +1,4 @@
 import Web3 from 'web3';
-import { AbiFragment } from 'web3-eth-abi';
 import { Contract } from 'web3-eth-contract';
 import { 
   Covenant, 
@@ -12,6 +11,7 @@ import {
 import { Hasher } from '../utils/Hasher';
 import { Logger } from '../utils/Logger';
 import config from '../config/blockchainConfig';
+import { AbiItem } from 'web3-utils'
 
 export interface BlockchainConfig {
   rpcUrl: string;
@@ -20,19 +20,19 @@ export interface BlockchainConfig {
   contracts: {
     covenantRegistry: {
       address: string;
-      abi: AbiFragment[];
+      abi: any[]; // Changed from AbiFragment[] to any[] for compatibility
     };
     governanceRules: {
       address: string;
-      abi: AbiFragment[];
+      abi: any[];
     };
     auditLedger: {
       address: string;
-      abi: AbiFragment[];
+      abi: any[];
     };
     esgCompliance: {
       address: string;
-      abi: AbiFragment[];
+      abi: any[];
     };
   };
 }
@@ -47,16 +47,16 @@ export interface TransactionResult {
 
 export class BlockchainService {
   private web3: Web3;
-  private covenantRegistry: Contract<any> | null = null;
-  private governanceRules: Contract<any> | null = null;
-  private auditLedger: Contract<any> | null = null;
-  private esgCompliance: Contract<any> | null = null;
+  private covenantRegistry: Contract | null = null;
+  private governanceRules: Contract | null = null;
+  private auditLedger: Contract | null = null;
+  private esgCompliance: Contract | null = null;
   private isConnected: boolean = false;
   private walletAddress: string | null = null;
   private eventListeners: Map<string, Function[]> = new Map();
 
   constructor(customConfig?: Partial<BlockchainConfig>) {
-    const finalConfig = { ...config, ...customConfig };
+    const finalConfig = { ...config, ...customConfig } as BlockchainConfig;
     this.web3 = new Web3(finalConfig.rpcUrl);
   }
 
@@ -110,33 +110,32 @@ export class BlockchainService {
    */
   private async loadContracts(): Promise<void> {
     try {
-      // Use the merged config from the constructor
-      const contractsConfig = (this.web3 as any)._provider?.contractsConfig || config.contracts;
+      const contractsConfig = config.contracts as BlockchainConfig['contracts'];
 
       // Load CovenantRegistry
       this.covenantRegistry = new this.web3.eth.Contract(
-        contractsConfig.covenantRegistry.abi as AbiFragment[],
+        contractsConfig.covenantRegistry.abi,
         contractsConfig.covenantRegistry.address
       );
       Logger.info('CovenantRegistry contract loaded');
 
       // Load GovernanceRules
       this.governanceRules = new this.web3.eth.Contract(
-        contractsConfig.governanceRules.abi as AbiFragment[],
+        contractsConfig.governanceRules.abi,
         contractsConfig.governanceRules.address
       );
       Logger.info('GovernanceRules contract loaded');
 
       // Load AuditLedger
       this.auditLedger = new this.web3.eth.Contract(
-        contractsConfig.auditLedger.abi as AbiFragment[],
+        contractsConfig.auditLedger.abi,
         contractsConfig.auditLedger.address
       );
       Logger.info('AuditLedger contract loaded');
 
       // Load ESGCompliance
       this.esgCompliance = new this.web3.eth.Contract(
-        contractsConfig.esgCompliance.abi as AbiFragment[],
+        contractsConfig.esgCompliance.abi,
         contractsConfig.esgCompliance.address
       );
       Logger.info('ESGCompliance contract loaded');
@@ -165,9 +164,11 @@ export class BlockchainService {
       Logger.info(`Generated covenant hash for ${loanId}: ${covenantHash}`);
 
       // Estimate gas
-      const gasEstimate = await this.covenantRegistry.methods
+      const gasEstimateBigInt = await this.covenantRegistry.methods
         .registerCovenant(loanId, covenantHash, covenantType)
         .estimateGas({ from: this.walletAddress });
+
+      const gasEstimate = Number(gasEstimateBigInt);
 
       // Send transaction
       const tx = await this.covenantRegistry.methods
@@ -181,7 +182,7 @@ export class BlockchainService {
       Logger.info(`Covenant registered: ${loanId}, TX: ${tx.transactionHash}`);
 
       // Log to audit ledger
-      if (this.auditLedger) {
+      if (this.auditLedger && this.walletAddress) {
         await this.auditLedger.methods
           .logAction(
             0, // COVENANT_REGISTERED
@@ -190,13 +191,16 @@ export class BlockchainService {
             covenantHash,
             JSON.stringify({ covenantType, timestamp: new Date().toISOString() })
           )
-          .send({ from: this.walletAddress, gas: config.gasLimit });
+          .send({ 
+            from: this.walletAddress, 
+            gas: BigInt(config.gasLimit) // Convert to bigint for web3 v4
+          });
       }
 
       return {
         success: true,
         transactionHash: tx.transactionHash,
-        blockNumber: Number(tx.blockNumber),
+        blockNumber: tx.blockNumber ? Number(tx.blockNumber) : undefined,
         data: { covenantHash }
       };
 
@@ -218,20 +222,41 @@ export class BlockchainService {
         throw new Error('CovenantRegistry contract not loaded');
       }
 
-      const result: any = await this.covenantRegistry.methods.getCovenant(loanId).call();
+      const result = await this.covenantRegistry.methods.getCovenant(loanId).call();
 
       // Check if covenant exists (timestamp > 0)
-      if (parseInt(result.timestamp) === 0) {
-        return null;
+      if (typeof result === 'object' && 'timestamp' in result) {
+        const timestamp = parseInt(result.timestamp as string);
+        if (timestamp === 0) {
+          return null;
+        }
+
+        return {
+          hash: result.hash as string,
+          timestamp: timestamp,
+          registeredBy: result.registeredBy as string,
+          loanId: result.loanId as string,
+          covenantType: result.covenantType as string,
+        };
       }
 
-      return {
-        hash: result.hash,
-        timestamp: parseInt(result.timestamp),
-        registeredBy: result.registeredBy,
-        loanId: result.loanId,
-        covenantType: result.covenantType,
-      };
+      // Handle case where result is an array (tuple)
+      if (Array.isArray(result)) {
+        const timestamp = parseInt(result[1] as string); // Assuming timestamp is at index 1
+        if (timestamp === 0) {
+          return null;
+        }
+
+        return {
+          hash: result[0] as string,
+          timestamp: timestamp,
+          registeredBy: result[2] as string,
+          loanId: result[3] as string,
+          covenantType: result[4] as string,
+        };
+      }
+
+      return null;
 
     } catch (error) {
       Logger.error('Error getting covenant:', error);
@@ -287,13 +312,13 @@ export class BlockchainService {
         )
         .send({
           from: this.walletAddress,
-          gas: config.gasLimit,
+          gas: BigInt(config.gasLimit), // Convert to bigint
         });
 
       Logger.info(`Rule created: ${ruleData.ruleId}, TX: ${tx.transactionHash}`);
 
       // Log to audit ledger
-      if (this.auditLedger) {
+      if (this.auditLedger && this.walletAddress) {
         await this.auditLedger.methods
           .logAction(
             3, // RULE_CREATED
@@ -302,13 +327,16 @@ export class BlockchainService {
             this.web3.utils.keccak256(ruleData.ruleId),
             JSON.stringify(ruleData)
           )
-          .send({ from: this.walletAddress, gas: config.gasLimit });
+          .send({ 
+            from: this.walletAddress, 
+            gas: BigInt(config.gasLimit) 
+          });
       }
 
       return {
         success: true,
         transactionHash: tx.transactionHash,
-        blockNumber: tx.blockNumber,
+        blockNumber: tx.blockNumber ? Number(tx.blockNumber) : undefined,
       };
 
     } catch (error: any) {
@@ -342,14 +370,14 @@ export class BlockchainService {
         .detectBreach(breachId, loanId, ruleId, severity, predictedValue)
         .send({
           from: this.walletAddress,
-          gas: config.gasLimit,
+          gas: BigInt(config.gasLimit),
           gasPrice: await this.web3.eth.getGasPrice(),
         });
 
       Logger.info(`Breach detected: ${breachId}, TX: ${tx.transactionHash}`);
 
       // Log to audit ledger
-      if (this.auditLedger) {
+      if (this.auditLedger && this.walletAddress) {
         await this.auditLedger.methods
           .logAction(
             5, // BREACH_DETECTED
@@ -358,13 +386,16 @@ export class BlockchainService {
             this.web3.utils.keccak256(breachId),
             JSON.stringify(breachData)
           )
-          .send({ from: this.walletAddress, gas: config.gasLimit });
+          .send({ 
+            from: this.walletAddress, 
+            gas: BigInt(config.gasLimit) 
+          });
       }
 
       return {
         success: true,
         transactionHash: tx.transactionHash,
-        blockNumber: tx.blockNumber,
+        blockNumber: tx.blockNumber ? Number(tx.blockNumber) : undefined,
       };
 
     } catch (error: any) {
@@ -393,7 +424,7 @@ export class BlockchainService {
         .updateBreachStatus(breachId, status, reason)
         .send({
           from: this.walletAddress,
-          gas: config.gasLimit,
+          gas: BigInt(config.gasLimit),
         });
 
       Logger.info(`Breach status updated: ${breachId}, TX: ${tx.transactionHash}`);
@@ -401,7 +432,7 @@ export class BlockchainService {
       return {
         success: true,
         transactionHash: tx.transactionHash,
-        blockNumber: tx.blockNumber,
+        blockNumber: tx.blockNumber ? Number(tx.blockNumber) : undefined,
       };
 
     } catch (error: any) {
@@ -432,7 +463,7 @@ export class BlockchainService {
         .recordESGScore(loanId, environmental, social, governance, evidenceHash)
         .send({
           from: this.walletAddress,
-          gas: config.gasLimit,
+          gas: BigInt(config.gasLimit),
         });
 
       Logger.info(`ESG score recorded for ${loanId}, TX: ${tx.transactionHash}`);
@@ -440,7 +471,7 @@ export class BlockchainService {
       return {
         success: true,
         transactionHash: tx.transactionHash,
-        blockNumber: tx.blockNumber,
+        blockNumber: tx.blockNumber ? Number(tx.blockNumber) : undefined,
       };
 
     } catch (error: any) {
@@ -461,27 +492,42 @@ export class BlockchainService {
         throw new Error('ESGCompliance contract not loaded');
       }
 
-      const result = await this.esgCompliance.methods.getCurrentESGScore(loanId).call() as {
-        environmental: string;
-        social: string;
-        governance: string;
-        timestamp: string;
-        scoredBy: string;
-        evidenceHash: string;
-      };
+      const result = await this.esgCompliance.methods.getCurrentESGScore(loanId).call();
 
-      if (!result || result.timestamp === '0') {
-        return null;
+      if (typeof result === 'object' && 'timestamp' in result) {
+        const timestamp = parseInt(result.timestamp as string);
+        if (timestamp === 0) {
+          return null;
+        }
+
+        return {
+          environmental: parseInt(result.environmental as string),
+          social: parseInt(result.social as string),
+          governance: parseInt(result.governance as string),
+          timestamp: timestamp,
+          scoredBy: result.scoredBy as string,
+          evidenceHash: result.evidenceHash as string,
+        };
       }
 
-      return {
-        environmental: parseInt(result.environmental),
-        social: parseInt(result.social),
-        governance: parseInt(result.governance),
-        timestamp: parseInt(result.timestamp),
-        scoredBy: result.scoredBy,
-        evidenceHash: result.evidenceHash,
-      };
+      // Handle array/tuple response
+      if (Array.isArray(result)) {
+        const timestamp = parseInt(result[3] as string); // Assuming timestamp is at index 3
+        if (timestamp === 0) {
+          return null;
+        }
+
+        return {
+          environmental: parseInt(result[0] as string),
+          social: parseInt(result[1] as string),
+          governance: parseInt(result[2] as string),
+          timestamp: timestamp,
+          scoredBy: result[4] as string,
+          evidenceHash: result[5] as string,
+        };
+      }
+
+      return null;
 
     } catch (error) {
       Logger.error('Error getting ESG score:', error);
@@ -498,39 +544,54 @@ export class BlockchainService {
         throw new Error('GovernanceRules contract not loaded');
       }
 
-      const result = await this.governanceRules.methods.getBreach(breachId).call() as {
-        breachId: string;
-        loanId: string;
-        ruleId: string;
-        severity: string;
-        status: string;
-        detectedAt: string;
-        resolvedAt: string;
-        detectedBy: string;
-        resolvedBy: string;
-        mitigationPlan: string;
-        predictedValue: string;
-        actualValue: string;
-      };
+      const result = await this.governanceRules.methods.getBreach(breachId).call();
 
-      if (!result || result.detectedAt === '0') {
-        return null;
+      if (typeof result === 'object' && 'detectedAt' in result) {
+        const detectedAt = parseInt(result.detectedAt as string);
+        if (detectedAt === 0) {
+          return null;
+        }
+
+        return {
+          breachId: result.breachId as string,
+          loanId: result.loanId as string,
+          ruleId: result.ruleId as string,
+          severity: parseInt(result.severity as string) as Severity,
+          status: parseInt(result.status as string),
+          detectedAt: detectedAt,
+          resolvedAt: parseInt(result.resolvedAt as string),
+          detectedBy: result.detectedBy as string,
+          resolvedBy: result.resolvedBy as string,
+          mitigationPlan: result.mitigationPlan as string,
+          predictedValue: parseInt(result.predictedValue as string),
+          actualValue: parseInt(result.actualValue as string),
+        };
       }
 
-      return {
-        breachId: result.breachId,
-        loanId: result.loanId,
-        ruleId: result.ruleId,
-        severity: parseInt(result.severity) as Severity,
-        status: parseInt(result.status),
-        detectedAt: parseInt(result.detectedAt),
-        resolvedAt: parseInt(result.resolvedAt),
-        detectedBy: result.detectedBy,
-        resolvedBy: result.resolvedBy,
-        mitigationPlan: result.mitigationPlan,
-        predictedValue: parseInt(result.predictedValue),
-        actualValue: parseInt(result.actualValue),
-      };
+      // Handle array/tuple response
+      if (Array.isArray(result)) {
+        const detectedAt = parseInt(result[5] as string); // Assuming detectedAt is at index 5
+        if (detectedAt === 0) {
+          return null;
+        }
+
+        return {
+          breachId: result[0] as string,
+          loanId: result[1] as string,
+          ruleId: result[2] as string,
+          severity: parseInt(result[3] as string) as Severity,
+          status: parseInt(result[4] as string),
+          detectedAt: detectedAt,
+          resolvedAt: parseInt(result[6] as string),
+          detectedBy: result[7] as string,
+          resolvedBy: result[8] as string,
+          mitigationPlan: result[9] as string,
+          predictedValue: parseInt(result[10] as string),
+          actualValue: parseInt(result[11] as string),
+        };
+      }
+
+      return null;
 
     } catch (error) {
       Logger.error('Error getting breach:', error);
@@ -554,16 +615,49 @@ export class BlockchainService {
         .getRecentAudits(limit, offset)
         .call();
 
-      return result.map((entry: any) => ({
-        entryId: parseInt(entry.entryId),
-        action: parseInt(entry.action),
-        entityId: entry.entityId,
-        actor: entry.actor,
-        timestamp: parseInt(entry.timestamp),
-        previousStateHash: entry.previousStateHash,
-        newStateHash: entry.newStateHash,
-        metadata: entry.metadata,
-      }));
+      // Ensure result is an array
+      const entries = Array.isArray(result) ? result : [];
+
+      return entries.map((entry: any) => {
+        if (typeof entry === 'object' && 'entryId' in entry) {
+          return {
+            entryId: parseInt(entry.entryId as string),
+            action: parseInt(entry.action as string),
+            entityId: entry.entityId as string,
+            actor: entry.actor as string,
+            timestamp: parseInt(entry.timestamp as string),
+            previousStateHash: entry.previousStateHash as string,
+            newStateHash: entry.newStateHash as string,
+            metadata: entry.metadata as string,
+          };
+        }
+
+        // Handle array/tuple response
+        if (Array.isArray(entry)) {
+          return {
+            entryId: parseInt(entry[0] as string),
+            action: parseInt(entry[1] as string),
+            entityId: entry[2] as string,
+            actor: entry[3] as string,
+            timestamp: parseInt(entry[4] as string),
+            previousStateHash: entry[5] as string,
+            newStateHash: entry[6] as string,
+            metadata: entry[7] as string,
+          };
+        }
+
+        // Return default entry if format is unknown
+        return {
+          entryId: 0,
+          action: 0,
+          entityId: '',
+          actor: '',
+          timestamp: 0,
+          previousStateHash: '',
+          newStateHash: '',
+          metadata: '',
+        };
+      });
 
     } catch (error) {
       Logger.error('Error getting audit entries:', error);
@@ -584,17 +678,18 @@ export class BlockchainService {
     timestamp: string;
   }> {
     try {
-      const networkId = await this.web3.eth.net.getId();
+      const networkId = Number(await this.web3.eth.net.getId());
       const blockNumberBigInt = await this.web3.eth.getBlockNumber();
       const blockNumber = Number(blockNumberBigInt);
-      const isSyncing = await this.web3.eth.isSyncing();
+      const isSyncingData = await this.web3.eth.isSyncing();
+      const isSyncing = isSyncingData !== false;
       const gasPrice = await this.web3.eth.getGasPrice();
 
       return {
         healthy: true,
-        networkId: Number(networkId),
+        networkId,
         blockNumber,
-        isSyncing: isSyncing !== false,
+        isSyncing,
         gasPrice: this.web3.utils.fromWei(gasPrice, 'gwei'),
         walletAddress: this.walletAddress,
         timestamp: new Date().toISOString(),
@@ -639,56 +734,68 @@ export class BlockchainService {
       return;
     }
 
-    // Covenant registered events
-    this.covenantRegistry.events.CovenantRegistered({
-      fromBlock: 'latest'
-    })
-      .on('data', (event: any) => {
-        Logger.info('New covenant registered:', event.returnValues);
-        this.emit('covenant-registered', event.returnValues);
-      })
-      .on('error', (error: any) => {
-        Logger.error('CovenantRegistry event error:', error);
+    try {
+      // Covenant registered events
+      const covenantRegisteredEvent = this.covenantRegistry.events.CovenantRegistered({
+        fromBlock: 'latest'
       });
 
-    // Breach detected events
-    this.governanceRules.events.BreachDetected({
-      fromBlock: 'latest'
-    })
-      .on('data', (event: any) => {
-        Logger.info('New breach detected:', event.returnValues);
-        this.emit('breach-detected', event.returnValues);
-      })
-      .on('error', (error: any) => {
-        Logger.error('GovernanceRules event error:', error);
+      covenantRegisteredEvent
+        .on('data', (event: any) => {
+          Logger.info('New covenant registered:', event.returnValues);
+          this.emit('covenant-registered', event.returnValues);
+        })
+        .on('error', (error: any) => {
+          Logger.error('CovenantRegistry event error:', error);
+        });
+
+      // Breach detected events
+      const breachDetectedEvent = this.governanceRules.events.BreachDetected({
+        fromBlock: 'latest'
       });
 
-    // Audit events
-    if (this.auditLedger) {
-      this.auditLedger.events.AuditEntryCreated({
-        fromBlock: 'latest'
-      })
+      breachDetectedEvent
         .on('data', (event: any) => {
-          Logger.info('New audit entry:', event.returnValues);
-          this.emit('audit-entry-created', event.returnValues);
+          Logger.info('New breach detected:', event.returnValues);
+          this.emit('breach-detected', event.returnValues);
         })
         .on('error', (error: any) => {
-          Logger.error('AuditLedger event error:', error);
+          Logger.error('GovernanceRules event error:', error);
         });
-    }
 
-    // ESG events
-    if (this.esgCompliance) {
-      this.esgCompliance.events.ESGScoreRecorded({
-        fromBlock: 'latest'
-      })
-        .on('data', (event: any) => {
-          Logger.info('New ESG score recorded:', event.returnValues);
-          this.emit('esg-score-recorded', event.returnValues);
-        })
-        .on('error', (error: any) => {
-          Logger.error('ESGCompliance event error:', error);
+      // Audit events
+      if (this.auditLedger) {
+        const auditEvent = this.auditLedger.events.AuditEntryCreated({
+          fromBlock: 'latest'
         });
+
+        auditEvent
+          .on('data', (event: any) => {
+            Logger.info('New audit entry:', event.returnValues);
+            this.emit('audit-entry-created', event.returnValues);
+          })
+          .on('error', (error: any) => {
+            Logger.error('AuditLedger event error:', error);
+          });
+      }
+
+      // ESG events
+      if (this.esgCompliance) {
+        const esgEvent = this.esgCompliance.events.ESGScoreRecorded({
+          fromBlock: 'latest'
+        });
+
+        esgEvent
+          .on('data', (event: any) => {
+            Logger.info('New ESG score recorded:', event.returnValues);
+            this.emit('esg-score-recorded', event.returnValues);
+          })
+          .on('error', (error: any) => {
+            Logger.error('ESGCompliance event error:', error);
+          });
+      }
+    } catch (error) {
+      Logger.error('Error setting up event listeners:', error);
     }
   }
 
@@ -741,6 +848,10 @@ export class BlockchainService {
     txObject: any,
     maxRetries: number = 3
   ): Promise<any> {
+    if (!this.walletAddress) {
+      throw new Error('Wallet not initialized');
+    }
+
     for (let i = 0; i < maxRetries; i++) {
       try {
         return await txObject.send({ from: this.walletAddress });
