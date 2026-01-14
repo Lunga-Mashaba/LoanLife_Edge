@@ -57,7 +57,7 @@ export function Sidebar() {
       {/* Sidebar */}
       <div
         className={cn(
-          "border-r border-[oklch(0.85_0.02_250)] dark:border-[oklch(0.25_0.04_250)] bg-[oklch(0.96_0.01_250)] dark:bg-[oklch(0.10_0.02_250)] flex flex-col z-50",
+          "border-r border-[oklch(0.25_0.04_250)] dark:border-[oklch(0.25_0.04_250)] light:border-[oklch(0.85_0.02_250)] bg-[oklch(0.10_0.02_250)] dark:bg-[oklch(0.10_0.02_250)] light:bg-[oklch(0.96_0.01_250)] flex flex-col z-50",
           "w-64 fixed h-screen",
           isMobile && !isMobileOpen && "-translate-x-full",
           isMobile && isMobileOpen && "translate-x-0",
@@ -65,7 +65,7 @@ export function Sidebar() {
         )}
       >
       {/* Logo */}
-      <div className="p-4 sm:p-6 border-b border-[oklch(0.85_0.02_250)] dark:border-[oklch(0.25_0.04_250)]">
+      <div className="p-4 sm:p-6 border-b border-[oklch(0.25_0.04_250)] dark:border-[oklch(0.25_0.04_250)] light:border-[oklch(0.85_0.02_250)]">
         <Link href="/" className="flex items-center gap-2 sm:gap-3" onClick={closeMobileMenu}>
           <div className="relative">
             <Image
@@ -78,8 +78,8 @@ export function Sidebar() {
             <div className="absolute inset-0 blur-md bg-[oklch(0.55_0.20_220)] opacity-30" />
           </div>
           <div>
-            <h1 className="text-lg sm:text-xl font-bold text-glow-blue text-[oklch(0.15_0.02_250)] dark:text-[oklch(0.95_0.01_250)]">LoanLife</h1>
-            <p className="text-xs text-[oklch(0.40_0.02_250)] dark:text-[oklch(0.60_0.02_250)] font-mono">EDGE v1.0</p>
+            <h1 className="text-lg sm:text-xl font-bold text-glow-blue text-[oklch(0.95_0.01_250)] dark:text-[oklch(0.95_0.01_250)] light:text-[oklch(0.15_0.02_250)]">LoanLife</h1>
+            <p className="text-xs text-[oklch(0.60_0.02_250)] dark:text-[oklch(0.60_0.02_250)] light:text-[oklch(0.40_0.02_250)] font-mono">EDGE v1.0</p>
           </div>
         </Link>
       </div>
@@ -97,7 +97,7 @@ export function Sidebar() {
                 "w-full flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg text-sm font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[oklch(0.55_0.20_220)] focus-visible:ring-offset-2 focus-visible:ring-offset-[oklch(0.10_0.02_250)]",
                 isActive
                   ? "bg-[oklch(0.55_0.20_220)] text-white glow-blue"
-                  : "text-[oklch(0.40_0.02_250)] dark:text-[oklch(0.70_0.02_250)] hover:bg-[oklch(0.92_0.01_250)] dark:hover:bg-[oklch(0.18_0.03_250)] hover:text-[oklch(0.15_0.02_250)] dark:hover:text-[oklch(0.90_0.01_250)]",
+                  : "text-[oklch(0.70_0.02_250)] dark:text-[oklch(0.70_0.02_250)] light:text-[oklch(0.40_0.02_250)] hover:bg-[oklch(0.18_0.03_250)] dark:hover:bg-[oklch(0.18_0.03_250)] light:hover:bg-[oklch(0.92_0.01_250)] hover:text-[oklch(0.90_0.01_250)] dark:hover:text-[oklch(0.90_0.01_250)] light:hover:text-[oklch(0.15_0.02_250)]",
               )}
               aria-current={isActive ? "page" : undefined}
             >

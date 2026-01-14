@@ -38,7 +38,7 @@ export function TopBar() {
   }, [])
 
   return (
-    <div className="sticky top-0 z-40 h-14 sm:h-16 border-b border-[oklch(0.85_0.02_250)] dark:border-[oklch(0.25_0.04_250)] bg-[oklch(0.99_0.01_250)]/80 dark:bg-[oklch(0.13_0.02_250)]/80 backdrop-blur-xl px-2 sm:px-4 md:px-6 flex items-center justify-between gap-2">
+    <div className="sticky top-0 z-40 h-14 sm:h-16 border-b border-[oklch(0.25_0.04_250)] dark:border-[oklch(0.25_0.04_250)] light:border-[oklch(0.85_0.02_250)] bg-[oklch(0.13_0.02_250)]/80 dark:bg-[oklch(0.13_0.02_250)]/80 light:bg-[oklch(0.99_0.01_250)]/80 backdrop-blur-xl px-2 sm:px-4 md:px-6 flex items-center justify-between gap-2">
       {/* Hamburger Menu Button - Mobile Only */}
       {mounted && isMobile && (
         <button
@@ -63,7 +63,7 @@ export function TopBar() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search... (⌘K)"
-            className="pl-8 sm:pl-10 pr-8 sm:pr-10 text-sm sm:text-base bg-[oklch(0.94_0.01_250)] dark:bg-[oklch(0.18_0.03_250)] border-[oklch(0.85_0.02_250)] dark:border-[oklch(0.25_0.04_250)] text-[oklch(0.15_0.02_250)] dark:text-[oklch(0.90_0.01_250)] placeholder:text-[oklch(0.50_0.02_250)] focus-visible:ring-2 focus-visible:ring-[oklch(0.55_0.20_220)]"
+            className="pl-8 sm:pl-10 pr-8 sm:pr-10 text-sm sm:text-base bg-[oklch(0.18_0.03_250)] dark:bg-[oklch(0.18_0.03_250)] light:bg-[oklch(0.94_0.01_250)] border-[oklch(0.25_0.04_250)] dark:border-[oklch(0.25_0.04_250)] light:border-[oklch(0.85_0.02_250)] text-[oklch(0.90_0.01_250)] dark:text-[oklch(0.90_0.01_250)] light:text-[oklch(0.15_0.02_250)] placeholder:text-[oklch(0.50_0.02_250)] focus-visible:ring-2 focus-visible:ring-[oklch(0.55_0.20_220)]"
             aria-label="Search loans, covenants, and ESG metrics"
           />
           {searchQuery && (

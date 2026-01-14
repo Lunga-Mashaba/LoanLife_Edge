@@ -25,7 +25,7 @@ export default function SettingsPage() {
   const [language, setLanguage] = useState("en")
 
   return (
-    <div className="flex min-h-screen overflow-hidden bg-gradient-to-br from-[oklch(0.98_0.01_250)] via-[oklch(0.96_0.01_250)] to-[oklch(0.98_0.01_250)] dark:from-[oklch(0.12_0.02_250)] dark:via-[oklch(0.10_0.03_240)] dark:to-[oklch(0.12_0.02_250)] gradient-animate relative">
+    <div className="flex min-h-screen overflow-hidden bg-gradient-to-br from-[oklch(0.12_0.02_250)] via-[oklch(0.10_0.03_240)] to-[oklch(0.12_0.02_250)] dark:from-[oklch(0.12_0.02_250)] dark:via-[oklch(0.10_0.03_240)] dark:to-[oklch(0.12_0.02_250)] light:from-[oklch(0.98_0.01_250)] light:via-[oklch(0.96_0.01_250)] light:to-[oklch(0.98_0.01_250)] gradient-animate relative">
       <AnimatedBackground />
       <ErrorBoundary>
         <Sidebar />
@@ -35,8 +35,8 @@ export default function SettingsPage() {
             <div className="max-w-[1600px] mx-auto w-full">
               <ErrorBoundary>
                 <header className="mb-4 md:mb-6">
-                  <h1 className="text-2xl md:text-3xl font-bold text-[oklch(0.15_0.02_250)] dark:text-[oklch(0.95_0.01_250)] mb-2">Settings</h1>
-                  <p className="text-sm md:text-base text-[oklch(0.40_0.02_250)] dark:text-[oklch(0.60_0.02_250)]">Configure your LoanLife Edge experience</p>
+                  <h1 className="text-2xl md:text-3xl font-bold text-[oklch(0.95_0.01_250)] dark:text-[oklch(0.95_0.01_250)] light:text-[oklch(0.15_0.02_250)] mb-2">Settings</h1>
+                  <p className="text-sm md:text-base text-[oklch(0.60_0.02_250)] dark:text-[oklch(0.60_0.02_250)] light:text-[oklch(0.40_0.02_250)]">Configure your LoanLife Edge experience</p>
                 </header>
 
                 <div className="space-y-4 md:space-y-6 max-w-3xl">
