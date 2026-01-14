@@ -35,13 +35,13 @@ export default function SettingsPage() {
             <div className="max-w-[1600px] mx-auto w-full">
               <ErrorBoundary>
                 <header className="mb-4 md:mb-6">
-                  <h1 className="text-2xl md:text-3xl font-bold text-[oklch(0.95_0.01_250)] mb-2">Settings</h1>
-                  <p className="text-sm md:text-base text-[oklch(0.60_0.02_250)]">Configure your LoanLife Edge experience</p>
+                  <h1 className="text-2xl md:text-3xl font-bold text-[oklch(0.15_0.02_250)] dark:text-[oklch(0.95_0.01_250)] mb-2">Settings</h1>
+                  <p className="text-sm md:text-base text-[oklch(0.40_0.02_250)] dark:text-[oklch(0.60_0.02_250)]">Configure your LoanLife Edge experience</p>
                 </header>
 
                 <div className="space-y-4 md:space-y-6 max-w-3xl">
             {/* Appearance */}
-            <Card className="bg-[oklch(0.14_0.02_250)] border-[oklch(0.25_0.04_250)] p-4 md:p-6">
+            <Card className="bg-[oklch(0.96_0.01_250)] dark:bg-[oklch(0.14_0.02_250)] border-[oklch(0.85_0.02_250)] dark:border-[oklch(0.25_0.04_250)] p-4 md:p-6">
               <div className="flex items-center gap-3 mb-4">
                 {theme === "dark" ? (
                   <Moon className="h-5 w-5 text-[oklch(0.55_0.20_220)] flex-shrink-0" aria-hidden="true" />
@@ -93,7 +93,7 @@ export default function SettingsPage() {
             </Card>
 
             {/* Notifications */}
-            <Card className="bg-[oklch(0.14_0.02_250)] border-[oklch(0.25_0.04_250)] p-4 md:p-6">
+            <Card className="bg-[oklch(0.96_0.01_250)] dark:bg-[oklch(0.14_0.02_250)] border-[oklch(0.85_0.02_250)] dark:border-[oklch(0.25_0.04_250)] p-4 md:p-6">
               <div className="flex items-center gap-3 mb-4">
                 <Bell className="h-5 w-5 text-[oklch(0.55_0.20_220)] flex-shrink-0" aria-hidden="true" />
                 <h2 className="text-lg font-semibold text-[oklch(0.95_0.01_250)]">Notifications</h2>
@@ -143,7 +143,7 @@ export default function SettingsPage() {
             </Card>
 
             {/* Security */}
-            <Card className="bg-[oklch(0.14_0.02_250)] border-[oklch(0.25_0.04_250)] p-4 md:p-6">
+            <Card className="bg-[oklch(0.96_0.01_250)] dark:bg-[oklch(0.14_0.02_250)] border-[oklch(0.85_0.02_250)] dark:border-[oklch(0.25_0.04_250)] p-4 md:p-6">
               <div className="flex items-center gap-3 mb-4">
                 <Shield className="h-5 w-5 text-[oklch(0.55_0.20_220)] flex-shrink-0" aria-hidden="true" />
                 <h2 className="text-lg font-semibold text-[oklch(0.95_0.01_250)]">Security</h2>
@@ -195,7 +195,7 @@ export default function SettingsPage() {
             </Card>
 
             {/* Data & Sync */}
-            <Card className="bg-[oklch(0.14_0.02_250)] border-[oklch(0.25_0.04_250)] p-4 md:p-6">
+            <Card className="bg-[oklch(0.96_0.01_250)] dark:bg-[oklch(0.14_0.02_250)] border-[oklch(0.85_0.02_250)] dark:border-[oklch(0.25_0.04_250)] p-4 md:p-6">
               <div className="flex items-center gap-3 mb-4">
                 <Database className="h-5 w-5 text-[oklch(0.55_0.20_220)] flex-shrink-0" aria-hidden="true" />
                 <h2 className="text-lg font-semibold text-[oklch(0.95_0.01_250)]">Data & Sync</h2>
@@ -251,7 +251,7 @@ export default function SettingsPage() {
               </div>
             </Card>
 
-            <Card className="bg-[oklch(0.14_0.02_250)] border-[oklch(0.25_0.04_250)] p-4 md:p-6">
+            <Card className="bg-[oklch(0.96_0.01_250)] dark:bg-[oklch(0.14_0.02_250)] border-[oklch(0.85_0.02_250)] dark:border-[oklch(0.25_0.04_250)] p-4 md:p-6">
               <div className="flex items-center gap-3 mb-4">
                 <Globe className="h-5 w-5 text-[oklch(0.55_0.20_220)] flex-shrink-0" aria-hidden="true" />
                 <h2 className="text-lg font-semibold text-[oklch(0.95_0.01_250)]">Language & Region</h2>
@@ -293,7 +293,7 @@ export default function SettingsPage() {
             </Card>
 
             {/* System Info */}
-            <Card className="bg-[oklch(0.14_0.02_250)] border-[oklch(0.25_0.04_250)] p-4 md:p-6">
+            <Card className="bg-[oklch(0.96_0.01_250)] dark:bg-[oklch(0.14_0.02_250)] border-[oklch(0.85_0.02_250)] dark:border-[oklch(0.25_0.04_250)] p-4 md:p-6">
               <h2 className="text-lg font-semibold text-[oklch(0.95_0.01_250)] mb-4">System Information</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
                 <div>

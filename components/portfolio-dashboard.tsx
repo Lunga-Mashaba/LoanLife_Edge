@@ -12,8 +12,8 @@ export function PortfolioDashboard() {
     <div className="space-y-4 sm:space-y-6 max-w-full">
       {/* Header */}
       <header className="mb-2">
-        <h1 className="text-2xl sm:text-3xl font-bold text-[oklch(0.95_0.01_250)] mb-1 sm:mb-2">Portfolio Overview</h1>
-        <p className="text-sm sm:text-base text-[oklch(0.60_0.02_250)]">Real-time loan health monitoring with AI-powered predictions</p>
+        <h1 className="text-2xl sm:text-3xl font-bold text-[oklch(0.15_0.02_250)] dark:text-[oklch(0.95_0.01_250)] mb-1 sm:mb-2">Portfolio Overview</h1>
+        <p className="text-sm sm:text-base text-[oklch(0.40_0.02_250)] dark:text-[oklch(0.60_0.02_250)]">Real-time loan health monitoring with AI-powered predictions</p>
       </header>
 
       {/* AI Insights Banner */}

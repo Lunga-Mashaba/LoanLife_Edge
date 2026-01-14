@@ -63,7 +63,7 @@ export function TopBar() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search... (⌘K)"
-            className="pl-8 sm:pl-10 pr-8 sm:pr-10 text-sm sm:text-base bg-[oklch(0.18_0.03_250)] border-[oklch(0.25_0.04_250)] text-[oklch(0.90_0.01_250)] placeholder:text-[oklch(0.50_0.02_250)] focus-visible:ring-2 focus-visible:ring-[oklch(0.55_0.20_220)]"
+            className="pl-8 sm:pl-10 pr-8 sm:pr-10 text-sm sm:text-base bg-[oklch(0.94_0.01_250)] dark:bg-[oklch(0.18_0.03_250)] border-[oklch(0.85_0.02_250)] dark:border-[oklch(0.25_0.04_250)] text-[oklch(0.15_0.02_250)] dark:text-[oklch(0.90_0.01_250)] placeholder:text-[oklch(0.50_0.02_250)] focus-visible:ring-2 focus-visible:ring-[oklch(0.55_0.20_220)]"
             aria-label="Search loans, covenants, and ESG metrics"
           />
           {searchQuery && (
