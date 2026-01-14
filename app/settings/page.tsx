@@ -25,7 +25,7 @@ export default function SettingsPage() {
   const [language, setLanguage] = useState("en")
 
   return (
-    <div className="flex min-h-screen overflow-hidden bg-gradient-to-br from-[oklch(0.12_0.02_250)] via-[oklch(0.10_0.03_240)] to-[oklch(0.12_0.02_250)] dark:from-[oklch(0.12_0.02_250)] dark:via-[oklch(0.10_0.03_240)] dark:to-[oklch(0.12_0.02_250)] light:from-[oklch(0.98_0.01_250)] light:via-[oklch(0.96_0.01_250)] light:to-[oklch(0.98_0.01_250)] gradient-animate relative">
+    <div className="flex min-h-screen overflow-hidden bg-background dark:bg-gradient-to-br dark:from-[oklch(0.12_0.02_250)] dark:via-[oklch(0.10_0.03_240)] dark:to-[oklch(0.12_0.02_250)] gradient-animate relative">
       <AnimatedBackground />
       <ErrorBoundary>
         <Sidebar />
@@ -35,26 +35,26 @@ export default function SettingsPage() {
             <div className="max-w-[1600px] mx-auto w-full">
               <ErrorBoundary>
                 <header className="mb-4 md:mb-6">
-                  <h1 className="text-2xl md:text-3xl font-bold text-[oklch(0.95_0.01_250)] dark:text-[oklch(0.95_0.01_250)] light:text-[oklch(0.15_0.02_250)] mb-2">Settings</h1>
-                  <p className="text-sm md:text-base text-[oklch(0.60_0.02_250)] dark:text-[oklch(0.60_0.02_250)] light:text-[oklch(0.40_0.02_250)]">Configure your LoanLife Edge experience</p>
+                  <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-2">Settings</h1>
+                  <p className="text-sm md:text-base text-muted-foreground">Configure your LoanLife Edge experience</p>
                 </header>
 
                 <div className="space-y-4 md:space-y-6 max-w-3xl">
             {/* Appearance */}
-            <Card className="bg-[oklch(0.96_0.01_250)] dark:bg-[oklch(0.14_0.02_250)] border-[oklch(0.85_0.02_250)] dark:border-[oklch(0.25_0.04_250)] p-4 md:p-6">
+            <Card className="bg-card border-border p-4 md:p-6">
               <div className="flex items-center gap-3 mb-4">
                 {theme === "dark" ? (
                   <Moon className="h-5 w-5 text-[oklch(0.55_0.20_220)] flex-shrink-0" aria-hidden="true" />
                 ) : (
                   <Sun className="h-5 w-5 text-[oklch(0.75_0.18_65)] flex-shrink-0" aria-hidden="true" />
                 )}
-                <h2 className="text-lg font-semibold text-[oklch(0.95_0.01_250)]">Appearance</h2>
+                <h2 className="text-lg font-semibold text-card-foreground">Appearance</h2>
               </div>
               <div className="space-y-4">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
                   <div className="flex-1 min-w-0">
-                    <div className="font-medium text-[oklch(0.90_0.01_250)] mb-1">Theme</div>
-                    <div className="text-sm text-[oklch(0.60_0.02_250)]">Choose your interface theme</div>
+                    <div className="font-medium text-card-foreground mb-1">Theme</div>
+                    <div className="text-sm text-muted-foreground">Choose your interface theme</div>
                   </div>
                   <div className="flex gap-2 flex-shrink-0">
                     <Button
@@ -93,16 +93,16 @@ export default function SettingsPage() {
             </Card>
 
             {/* Notifications */}
-            <Card className="bg-[oklch(0.96_0.01_250)] dark:bg-[oklch(0.14_0.02_250)] border-[oklch(0.85_0.02_250)] dark:border-[oklch(0.25_0.04_250)] p-4 md:p-6">
+            <Card className="bg-card border-border p-4 md:p-6">
               <div className="flex items-center gap-3 mb-4">
                 <Bell className="h-5 w-5 text-[oklch(0.55_0.20_220)] flex-shrink-0" aria-hidden="true" />
-                <h2 className="text-lg font-semibold text-[oklch(0.95_0.01_250)]">Notifications</h2>
+                <h2 className="text-lg font-semibold text-card-foreground">Notifications</h2>
               </div>
               <div className="space-y-4">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
                   <div className="flex-1 min-w-0">
-                    <div className="font-medium text-[oklch(0.90_0.01_250)] mb-1">Risk Alerts</div>
-                    <div className="text-sm text-[oklch(0.60_0.02_250)]">Get notified of covenant breaches</div>
+                    <div className="font-medium text-card-foreground mb-1">Risk Alerts</div>
+                    <div className="text-sm text-muted-foreground">Get notified of covenant breaches</div>
                   </div>
                   <Button
                     variant={notifications ? "default" : "outline"}
@@ -121,8 +121,8 @@ export default function SettingsPage() {
                 </div>
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
                   <div className="flex-1 min-w-0">
-                    <div className="font-medium text-[oklch(0.90_0.01_250)] mb-1">Sound Effects</div>
-                    <div className="text-sm text-[oklch(0.60_0.02_250)]">Play audio for critical alerts</div>
+                    <div className="font-medium text-card-foreground mb-1">Sound Effects</div>
+                    <div className="text-sm text-muted-foreground">Play audio for critical alerts</div>
                   </div>
                   <Button
                     variant={soundEffects ? "default" : "outline"}
@@ -143,21 +143,21 @@ export default function SettingsPage() {
             </Card>
 
             {/* Security */}
-            <Card className="bg-[oklch(0.96_0.01_250)] dark:bg-[oklch(0.14_0.02_250)] border-[oklch(0.85_0.02_250)] dark:border-[oklch(0.25_0.04_250)] p-4 md:p-6">
+            <Card className="bg-card border-border p-4 md:p-6">
               <div className="flex items-center gap-3 mb-4">
                 <Shield className="h-5 w-5 text-[oklch(0.55_0.20_220)] flex-shrink-0" aria-hidden="true" />
-                <h2 className="text-lg font-semibold text-[oklch(0.95_0.01_250)]">Security</h2>
+                <h2 className="text-lg font-semibold text-card-foreground">Security</h2>
               </div>
               <div className="space-y-4">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
                   <div className="flex-1 min-w-0">
-                    <div className="font-medium text-[oklch(0.90_0.01_250)] mb-1">Two-Factor Authentication</div>
-                    <div className="text-sm text-[oklch(0.60_0.02_250)]">Enhanced account security</div>
+                    <div className="font-medium text-card-foreground mb-1">Two-Factor Authentication</div>
+                    <div className="text-sm text-muted-foreground">Enhanced account security</div>
                   </div>
                   <Button
                     size="sm"
                     variant="outline"
-                    className="border-[oklch(0.30_0.04_250)] text-[oklch(0.90_0.01_250)] bg-transparent flex-shrink-0"
+                    className="border-border text-card-foreground bg-transparent flex-shrink-0"
                     aria-label="Configure two-factor authentication"
                   >
                     Configure
@@ -165,13 +165,13 @@ export default function SettingsPage() {
                 </div>
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
                   <div className="flex-1 min-w-0">
-                    <div className="font-medium text-[oklch(0.90_0.01_250)] mb-1">Change Password</div>
-                    <div className="text-sm text-[oklch(0.60_0.02_250)]">Update your login credentials</div>
+                    <div className="font-medium text-card-foreground mb-1">Change Password</div>
+                    <div className="text-sm text-muted-foreground">Update your login credentials</div>
                   </div>
                   <Button
                     size="sm"
                     variant="outline"
-                    className="border-[oklch(0.30_0.04_250)] text-[oklch(0.90_0.01_250)] bg-transparent flex-shrink-0"
+                    className="border-border text-card-foreground bg-transparent flex-shrink-0"
                     aria-label="Change password"
                   >
                     Update
@@ -179,13 +179,13 @@ export default function SettingsPage() {
                 </div>
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
                   <div className="flex-1 min-w-0">
-                    <div className="font-medium text-[oklch(0.90_0.01_250)] mb-1">API Keys</div>
-                    <div className="text-sm text-[oklch(0.60_0.02_250)]">Manage integration tokens</div>
+                    <div className="font-medium text-card-foreground mb-1">API Keys</div>
+                    <div className="text-sm text-muted-foreground">Manage integration tokens</div>
                   </div>
                   <Button
                     size="sm"
                     variant="outline"
-                    className="border-[oklch(0.30_0.04_250)] text-[oklch(0.90_0.01_250)] bg-transparent flex-shrink-0"
+                    className="border-border text-card-foreground bg-transparent flex-shrink-0"
                     aria-label="Manage API keys"
                   >
                     Manage
@@ -195,16 +195,16 @@ export default function SettingsPage() {
             </Card>
 
             {/* Data & Sync */}
-            <Card className="bg-[oklch(0.96_0.01_250)] dark:bg-[oklch(0.14_0.02_250)] border-[oklch(0.85_0.02_250)] dark:border-[oklch(0.25_0.04_250)] p-4 md:p-6">
+            <Card className="bg-card border-border p-4 md:p-6">
               <div className="flex items-center gap-3 mb-4">
                 <Database className="h-5 w-5 text-[oklch(0.55_0.20_220)] flex-shrink-0" aria-hidden="true" />
-                <h2 className="text-lg font-semibold text-[oklch(0.95_0.01_250)]">Data & Sync</h2>
+                <h2 className="text-lg font-semibold text-card-foreground">Data & Sync</h2>
               </div>
               <div className="space-y-4">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
                   <div className="flex-1 min-w-0">
-                    <div className="font-medium text-[oklch(0.90_0.01_250)] mb-1">Blockchain Sync</div>
-                    <div className="text-sm text-[oklch(0.60_0.02_250)]">Real-time audit log synchronization</div>
+                    <div className="font-medium text-card-foreground mb-1">Blockchain Sync</div>
+                    <div className="text-sm text-muted-foreground">Real-time audit log synchronization</div>
                   </div>
                   <Button
                     variant={blockchainSync ? "default" : "outline"}
@@ -223,15 +223,15 @@ export default function SettingsPage() {
                 </div>
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
                   <div className="flex-1 min-w-0">
-                    <div className="font-medium text-[oklch(0.90_0.01_250)] mb-1">Offline Mode</div>
-                    <div className="text-sm text-[oklch(0.60_0.02_250)]">Work without internet connection</div>
+                    <div className="font-medium text-card-foreground mb-1">Offline Mode</div>
+                    <div className="text-sm text-muted-foreground">Work without internet connection</div>
                   </div>
                   <span className="text-sm text-[oklch(0.70_0.25_145)] flex-shrink-0" aria-label="Offline mode ready">Ready</span>
                 </div>
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
                   <div className="flex-1 min-w-0">
-                    <div className="font-medium text-[oklch(0.90_0.01_250)] mb-1">Auto-Refresh Data</div>
-                    <div className="text-sm text-[oklch(0.60_0.02_250)]">Update dashboard every 60 seconds</div>
+                    <div className="font-medium text-card-foreground mb-1">Auto-Refresh Data</div>
+                    <div className="text-sm text-muted-foreground">Update dashboard every 60 seconds</div>
                   </div>
                   <Button
                     variant={autoRefresh ? "default" : "outline"}
@@ -251,21 +251,21 @@ export default function SettingsPage() {
               </div>
             </Card>
 
-            <Card className="bg-[oklch(0.96_0.01_250)] dark:bg-[oklch(0.14_0.02_250)] border-[oklch(0.85_0.02_250)] dark:border-[oklch(0.25_0.04_250)] p-4 md:p-6">
+            <Card className="bg-card border-border p-4 md:p-6">
               <div className="flex items-center gap-3 mb-4">
                 <Globe className="h-5 w-5 text-[oklch(0.55_0.20_220)] flex-shrink-0" aria-hidden="true" />
-                <h2 className="text-lg font-semibold text-[oklch(0.95_0.01_250)]">Language & Region</h2>
+                <h2 className="text-lg font-semibold text-card-foreground">Language & Region</h2>
               </div>
               <div className="space-y-4">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
                   <div className="flex-1 min-w-0">
-                    <label className="font-medium text-[oklch(0.90_0.01_250)] mb-1 block">Display Language</label>
-                    <div className="text-sm text-[oklch(0.60_0.02_250)]">Choose your preferred language</div>
+                    <label className="font-medium text-card-foreground mb-1 block">Display Language</label>
+                    <div className="text-sm text-muted-foreground">Choose your preferred language</div>
                   </div>
                   <select
                     value={language}
                     onChange={(e) => setLanguage(e.target.value)}
-                    className="bg-[oklch(0.18_0.03_250)] border border-[oklch(0.30_0.04_250)] text-[oklch(0.90_0.01_250)] px-3 py-1.5 rounded-md text-sm flex-shrink-0 w-full sm:w-auto focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[oklch(0.55_0.20_220)]"
+                    className="bg-input border border-border text-card-foreground px-3 py-1.5 rounded-md text-sm flex-shrink-0 w-full sm:w-auto focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[oklch(0.55_0.20_220)]"
                     aria-label="Display language"
                   >
                     <option value="en">English</option>
@@ -277,13 +277,13 @@ export default function SettingsPage() {
                 </div>
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
                   <div className="flex-1 min-w-0">
-                    <div className="font-medium text-[oklch(0.90_0.01_250)] mb-1">Time Zone</div>
-                    <div className="text-sm text-[oklch(0.60_0.02_250)]">UTC-5 (Eastern Time)</div>
+                    <div className="font-medium text-card-foreground mb-1">Time Zone</div>
+                    <div className="text-sm text-muted-foreground">UTC-5 (Eastern Time)</div>
                   </div>
                   <Button
                     size="sm"
                     variant="outline"
-                    className="border-[oklch(0.30_0.04_250)] text-[oklch(0.90_0.01_250)] bg-transparent flex-shrink-0"
+                    className="border-border text-card-foreground bg-transparent flex-shrink-0"
                     aria-label="Change time zone"
                   >
                     Change
@@ -293,24 +293,24 @@ export default function SettingsPage() {
             </Card>
 
             {/* System Info */}
-            <Card className="bg-[oklch(0.96_0.01_250)] dark:bg-[oklch(0.14_0.02_250)] border-[oklch(0.85_0.02_250)] dark:border-[oklch(0.25_0.04_250)] p-4 md:p-6">
-              <h2 className="text-lg font-semibold text-[oklch(0.95_0.01_250)] mb-4">System Information</h2>
+            <Card className="bg-card border-border p-4 md:p-6">
+              <h2 className="text-lg font-semibold text-card-foreground mb-4">System Information</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
                 <div>
-                  <div className="text-[oklch(0.60_0.02_250)] mb-1">Version</div>
-                  <div className="font-mono text-[oklch(0.90_0.01_250)]">v1.0.0</div>
+                  <div className="text-muted-foreground mb-1">Version</div>
+                  <div className="font-mono text-card-foreground">v1.0.0</div>
                 </div>
                 <div>
-                  <div className="text-[oklch(0.60_0.02_250)] mb-1">Build</div>
-                  <div className="font-mono text-[oklch(0.90_0.01_250)]">2025.12.15</div>
+                  <div className="text-muted-foreground mb-1">Build</div>
+                  <div className="font-mono text-card-foreground">2025.12.15</div>
                 </div>
                 <div>
-                  <div className="text-[oklch(0.60_0.02_250)] mb-1">Platform</div>
-                  <div className="font-mono text-[oklch(0.90_0.01_250)]">Electron + React</div>
+                  <div className="text-muted-foreground mb-1">Platform</div>
+                  <div className="font-mono text-card-foreground">Electron + React</div>
                 </div>
                 <div>
-                  <div className="text-[oklch(0.60_0.02_250)] mb-1">Database</div>
-                  <div className="font-mono text-[oklch(0.90_0.01_250)]">Offline-First</div>
+                  <div className="text-muted-foreground mb-1">Database</div>
+                  <div className="font-mono text-card-foreground">Offline-First</div>
                 </div>
               </div>
             </Card>

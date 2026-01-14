@@ -6,7 +6,7 @@ import { ErrorBoundary } from "@/components/error-boundary"
 
 export default function Page() {
   return (
-    <div className="flex min-h-screen overflow-hidden bg-gradient-to-br from-background via-background to-background dark:from-[oklch(0.12_0.02_250)] dark:via-[oklch(0.10_0.03_240)] dark:to-[oklch(0.12_0.02_250)] gradient-animate relative">
+    <div className="flex min-h-screen overflow-hidden bg-background dark:bg-gradient-to-br dark:from-[oklch(0.12_0.02_250)] dark:via-[oklch(0.10_0.03_240)] dark:to-[oklch(0.12_0.02_250)] gradient-animate relative">
       <AnimatedBackground />
       <ErrorBoundary>
         <Sidebar />
