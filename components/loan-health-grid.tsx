@@ -156,11 +156,11 @@ export function LoanHealthGrid() {
     )
   }
   return (
-    <Card className="p-6 bg-[oklch(0.15_0.03_250)] border-[oklch(0.25_0.04_250)]">
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="text-xl font-semibold text-[oklch(0.95_0.01_250)]">Loan Health Scores</h3>
+    <Card className="p-4 sm:p-6 bg-[oklch(0.15_0.03_250)] border-[oklch(0.25_0.04_250)]">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4">
+        <h3 className="text-lg sm:text-xl font-semibold text-[oklch(0.95_0.01_250)]">Loan Health Scores</h3>
         {searchQuery.trim() && (
-          <span className="text-sm text-[oklch(0.60_0.02_250)]" role="status" aria-live="polite">
+          <span className="text-xs sm:text-sm text-[oklch(0.60_0.02_250)]" role="status" aria-live="polite">
             {filteredLoans.length} of {loans.length} loans
           </span>
         )}
@@ -170,33 +170,33 @@ export function LoanHealthGrid() {
           <Link
             key={loan.id}
             href={`/digital-twins?loan=${loan.id}`}
-            className="block p-4 rounded-lg bg-[oklch(0.18_0.03_250)] border border-[oklch(0.25_0.04_250)] hover:border-[oklch(0.55_0.20_220)] transition-all duration-200 cursor-pointer group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[oklch(0.55_0.20_220)] focus-visible:ring-offset-2 focus-visible:ring-offset-[oklch(0.15_0.03_250)]"
+            className="block p-3 sm:p-4 rounded-lg bg-[oklch(0.18_0.03_250)] border border-[oklch(0.25_0.04_250)] hover:border-[oklch(0.55_0.20_220)] transition-all duration-200 cursor-pointer group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[oklch(0.55_0.20_220)] focus-visible:ring-offset-2 focus-visible:ring-offset-[oklch(0.15_0.03_250)]"
             aria-label={`Loan ${loan.borrower}, ${loan.amount}, Health: ${loan.health}%, Status: ${loan.covenant}. Click to view details`}
           >
-            <div className="flex items-center justify-between mb-2">
-              <div className="flex-1">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
+              <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
-                  <span className="text-sm font-mono text-[oklch(0.60_0.02_250)]">{loan.id}</span>
+                  <span className="text-xs sm:text-sm font-mono text-[oklch(0.60_0.02_250)] truncate">{loan.id}</span>
                   {loan.trend === "up" ? (
-                    <TrendingUp className="h-4 w-4 text-[oklch(0.70_0.25_145)]" />
+                    <TrendingUp className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-[oklch(0.70_0.25_145)] flex-shrink-0" />
                   ) : (
-                    <TrendingDown className="h-4 w-4 text-[oklch(0.55_0.20_25)]" />
+                    <TrendingDown className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-[oklch(0.55_0.20_25)] flex-shrink-0" />
                   )}
                 </div>
-                <p className="text-base font-medium text-[oklch(0.90_0.01_250)] mt-1">{loan.borrower}</p>
+                <p className="text-sm sm:text-base font-medium text-[oklch(0.90_0.01_250)] mt-1 truncate">{loan.borrower}</p>
               </div>
-              <div className="text-right">
-                <p className="text-lg font-bold text-[oklch(0.95_0.01_250)]">{loan.amount}</p>
+              <div className="text-left sm:text-right">
+                <p className="text-base sm:text-lg font-bold text-[oklch(0.95_0.01_250)]">{loan.amount}</p>
               </div>
             </div>
 
-            <div className="flex items-center gap-4 mt-3">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 mt-3">
               {/* Health Score */}
-              <div className="flex-1">
+              <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between mb-1">
                   <span className="text-xs text-[oklch(0.60_0.02_250)]">Health Score</span>
                   <span
-                    className={`text-sm font-bold ${
+                    className={`text-xs sm:text-sm font-bold ${
                       loan.health >= 80
                         ? "text-[oklch(0.70_0.25_145)]"
                         : loan.health >= 60
@@ -222,12 +222,12 @@ export function LoanHealthGrid() {
               </div>
 
               {/* Covenant Status */}
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 flex-shrink-0">
                 {loan.status === "healthy" ? (
-                  <CheckCircle2 className="h-5 w-5 text-[oklch(0.70_0.25_145)]" />
+                  <CheckCircle2 className="h-4 w-4 sm:h-5 sm:w-5 text-[oklch(0.70_0.25_145)]" />
                 ) : (
                   <AlertTriangle
-                    className={`h-5 w-5 ${
+                    className={`h-4 w-4 sm:h-5 sm:w-5 ${
                       loan.status === "warning" ? "text-[oklch(0.75_0.20_60)]" : "text-[oklch(0.55_0.20_25)]"
                     }`}
                   />

@@ -77,27 +77,27 @@ function AIInsights() {
   const keyFactors = criticalEvent.prediction?.key_factors || []
 
   return (
-    <Card className="p-6 bg-gradient-to-r from-[oklch(0.50_0.22_290)]/20 to-[oklch(0.55_0.20_220)]/20 border-[oklch(0.50_0.22_290)] glow-purple">
-      <div className="flex items-start justify-between">
-        <div className="flex items-start gap-4 flex-1">
-          <div className="p-3 rounded-lg bg-[oklch(0.50_0.22_290)] glow-purple">
-            <Brain className="h-6 w-6 text-white" aria-hidden="true" />
+    <Card className="p-4 sm:p-6 bg-gradient-to-r from-[oklch(0.50_0.22_290)]/20 to-[oklch(0.55_0.20_220)]/20 border-[oklch(0.50_0.22_290)] glow-purple">
+      <div className="flex items-start justify-between gap-3">
+        <div className="flex items-start gap-3 sm:gap-4 flex-1 min-w-0">
+          <div className="p-2 sm:p-3 rounded-lg bg-[oklch(0.50_0.22_290)] glow-purple flex-shrink-0">
+            <Brain className="h-5 w-5 sm:h-6 sm:w-6 text-white" aria-hidden="true" />
           </div>
-          <div className="flex-1">
-            <div className="flex items-center gap-2 mb-2">
-              <Sparkles className="h-5 w-5 text-[oklch(0.60_0.22_290)]" aria-hidden="true" />
-              <h3 className="text-lg font-semibold text-[oklch(0.95_0.01_250)]">AI Risk Prediction</h3>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 mb-2 flex-wrap">
+              <Sparkles className="h-4 w-4 sm:h-5 sm:w-5 text-[oklch(0.60_0.22_290)] flex-shrink-0" aria-hidden="true" />
+              <h3 className="text-base sm:text-lg font-semibold text-[oklch(0.95_0.01_250)]">AI Risk Prediction</h3>
               {criticalEvent.severity === 'critical' && (
-                <AlertTriangle className="h-5 w-5 text-[oklch(0.55_0.20_25)]" aria-label="Critical alert" />
+                <AlertTriangle className="h-4 w-4 sm:h-5 sm:w-5 text-[oklch(0.55_0.20_25)] flex-shrink-0" aria-label="Critical alert" />
               )}
             </div>
-            <p className="text-sm text-[oklch(0.80_0.01_250)] mb-3">
+            <p className="text-xs sm:text-sm text-[oklch(0.80_0.01_250)] mb-3">
               <span className={criticalEvent.severity === 'critical' ? 'font-semibold text-[oklch(0.55_0.20_25)]' : ''}>
                 {criticalEvent.severity === 'critical' ? 'Critical alert: ' : 'Alert: '}
               </span>
               <Link 
                 href={`/digital-twins?loan=${criticalEvent.loan_id}`}
-                className="underline hover:no-underline"
+                className="underline hover:no-underline break-words"
               >
                 {criticalEvent.loan_name}
               </Link>
@@ -105,11 +105,11 @@ function AIInsights() {
               {explanation?.summary && ` ${explanation.summary}`}
             </p>
             {expanded && explanation && (
-              <div className="mt-4 p-4 rounded-lg bg-[oklch(0.18_0.03_250)] border border-[oklch(0.25_0.04_250)] space-y-3" role="region" aria-label="Detailed AI insights">
+              <div className="mt-3 sm:mt-4 p-3 sm:p-4 rounded-lg bg-[oklch(0.18_0.03_250)] border border-[oklch(0.25_0.04_250)] space-y-3" role="region" aria-label="Detailed AI insights">
                 {keyFactors.length > 0 && (
                   <div>
                     <p className="text-xs font-medium text-[oklch(0.70_0.25_145)] mb-1">Key Indicators:</p>
-                    <ul className="text-sm text-[oklch(0.80_0.01_250)] space-y-1 ml-4">
+                    <ul className="text-xs sm:text-sm text-[oklch(0.80_0.01_250)] space-y-1 ml-4">
                       {keyFactors.slice(0, 3).map((factor, idx) => (
                         <li key={idx}>• {factor}</li>
                       ))}
@@ -119,7 +119,7 @@ function AIInsights() {
                 {explanation.factors && explanation.factors.length > 0 && (
                   <div>
                     <p className="text-xs font-medium text-[oklch(0.55_0.20_220)] mb-1">Recommended Actions:</p>
-                    <ul className="text-sm text-[oklch(0.80_0.01_250)] space-y-1 ml-4">
+                    <ul className="text-xs sm:text-sm text-[oklch(0.80_0.01_250)] space-y-1 ml-4">
                       {explanation.factors
                         .filter((f: any) => f.impact === 'high')
                         .slice(0, 3)
@@ -138,14 +138,14 @@ function AIInsights() {
         </div>
         <button
           onClick={() => setExpanded(!expanded)}
-          className="p-2 hover:bg-[oklch(0.18_0.03_250)] rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[oklch(0.55_0.20_220)]"
+          className="p-1.5 sm:p-2 hover:bg-[oklch(0.18_0.03_250)] rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[oklch(0.55_0.20_220)] flex-shrink-0"
           aria-label={expanded ? "Collapse insights" : "Expand insights"}
           aria-expanded={expanded}
         >
           {expanded ? (
-            <ChevronUp className="h-5 w-5 text-[oklch(0.60_0.02_250)]" aria-hidden="true" />
+            <ChevronUp className="h-4 w-4 sm:h-5 sm:w-5 text-[oklch(0.60_0.02_250)]" aria-hidden="true" />
           ) : (
-            <ChevronDown className="h-5 w-5 text-[oklch(0.60_0.02_250)]" aria-hidden="true" />
+            <ChevronDown className="h-4 w-4 sm:h-5 sm:w-5 text-[oklch(0.60_0.02_250)]" aria-hidden="true" />
           )}
         </button>
       </div>

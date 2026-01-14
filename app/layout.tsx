@@ -11,6 +11,11 @@ export const metadata: Metadata = {
   title: "LoanLife Edge - Banking Risk Management Platform",
   description: "AI-powered loan portfolio management with ESG compliance and predictive risk analytics",
   generator: "v0.app",
+  viewport: {
+    width: "device-width",
+    initialScale: 1,
+    maximumScale: 5,
+  },
   icons: {
     icon: [
       {

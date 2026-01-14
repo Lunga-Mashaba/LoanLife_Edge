@@ -40,7 +40,7 @@ export function Sidebar() {
       {isMobile && (
         <button
           onClick={() => setIsMobileOpen(!isMobileOpen)}
-          className="fixed top-4 left-4 z-50 p-2 rounded-lg bg-[oklch(0.15_0.03_250)] border border-[oklch(0.25_0.04_250)] text-[oklch(0.90_0.01_250)] md:hidden"
+          className="fixed top-3 left-3 z-50 p-2 rounded-lg bg-[oklch(0.15_0.03_250)] border border-[oklch(0.25_0.04_250)] text-[oklch(0.90_0.01_250)] md:hidden shadow-lg"
           aria-label="Toggle navigation menu"
           aria-expanded={isMobileOpen}
         >
@@ -51,7 +51,7 @@ export function Sidebar() {
       {/* Mobile overlay */}
       {isMobile && isMobileOpen && (
         <div
-          className="fixed inset-0 bg-black/50 z-40 md:hidden"
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 md:hidden"
           onClick={closeMobileMenu}
           aria-hidden="true"
         />
@@ -62,33 +62,33 @@ export function Sidebar() {
         className={cn(
           "border-r border-[oklch(0.25_0.04_250)] bg-[oklch(0.10_0.02_250)] flex flex-col z-50",
           "w-64 fixed md:static h-screen",
-          isMobile && !isMobileOpen && "hidden",
+          isMobile && !isMobileOpen && "-translate-x-full",
           isMobile && isMobileOpen && "translate-x-0",
           "transition-transform duration-300 ease-in-out"
         )}
       >
       {/* Logo */}
-      <div className="p-6 border-b border-[oklch(0.25_0.04_250)]">
-        <Link href="/" className="flex items-center gap-3">
+      <div className="p-4 sm:p-6 border-b border-[oklch(0.25_0.04_250)]">
+        <Link href="/" className="flex items-center gap-2 sm:gap-3" onClick={closeMobileMenu}>
           <div className="relative">
             <Image
               src="/images/copilot-20251227-191010.png"
               alt="LoanLife Edge Logo"
-              width={32}
-              height={32}
-              className="object-contain"
+              width={28}
+              height={28}
+              className="object-contain sm:w-8 sm:h-8"
             />
             <div className="absolute inset-0 blur-md bg-[oklch(0.55_0.20_220)] opacity-30" />
           </div>
           <div>
-            <h1 className="text-xl font-bold text-glow-blue text-[oklch(0.95_0.01_250)]">LoanLife</h1>
+            <h1 className="text-lg sm:text-xl font-bold text-glow-blue text-[oklch(0.95_0.01_250)]">LoanLife</h1>
             <p className="text-xs text-[oklch(0.60_0.02_250)] font-mono">EDGE v1.0</p>
           </div>
         </Link>
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 p-4 space-y-2" role="navigation" aria-label="Main navigation">
+      <nav className="flex-1 p-3 sm:p-4 space-y-1 sm:space-y-2 overflow-y-auto" role="navigation" aria-label="Main navigation">
         {navigation.map((item) => {
           const isActive = pathname === item.href
           return (
@@ -97,31 +97,31 @@ export function Sidebar() {
               href={item.href}
               onClick={closeMobileMenu}
               className={cn(
-                "w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[oklch(0.55_0.20_220)] focus-visible:ring-offset-2 focus-visible:ring-offset-[oklch(0.10_0.02_250)]",
+                "w-full flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg text-sm font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[oklch(0.55_0.20_220)] focus-visible:ring-offset-2 focus-visible:ring-offset-[oklch(0.10_0.02_250)]",
                 isActive
                   ? "bg-[oklch(0.55_0.20_220)] text-white glow-blue"
                   : "text-[oklch(0.70_0.02_250)] hover:bg-[oklch(0.18_0.03_250)] hover:text-[oklch(0.90_0.01_250)]",
               )}
               aria-current={isActive ? "page" : undefined}
             >
-              <item.icon className="h-5 w-5" aria-hidden="true" />
-              {item.name}
+              <item.icon className="h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0" aria-hidden="true" />
+              <span className="truncate">{item.name}</span>
             </Link>
           )
         })}
       </nav>
 
       {/* Status Footer */}
-      <div className="p-4 border-t border-[oklch(0.25_0.04_250)] space-y-3" role="status" aria-live="polite">
+      <div className="p-3 sm:p-4 border-t border-[oklch(0.25_0.04_250)] space-y-2 sm:space-y-3" role="status" aria-live="polite">
         <div className="flex items-center gap-2 text-xs">
-          <Shield className="h-4 w-4 text-[oklch(0.70_0.25_145)]" aria-hidden="true" />
-          <span className="text-[oklch(0.60_0.02_250)]">Offline-First</span>
-          <div className="h-2 w-2 rounded-full bg-[oklch(0.70_0.25_145)] animate-pulse-glow" aria-hidden="true" />
+          <Shield className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-[oklch(0.70_0.25_145)] flex-shrink-0" aria-hidden="true" />
+          <span className="text-[oklch(0.60_0.02_250)] truncate">Offline-First</span>
+          <div className="h-1.5 w-1.5 sm:h-2 sm:w-2 rounded-full bg-[oklch(0.70_0.25_145)] animate-pulse-glow flex-shrink-0" aria-hidden="true" />
         </div>
         <div className="flex items-center gap-2 text-xs">
-          <Database className="h-4 w-4 text-[oklch(0.55_0.20_220)]" aria-hidden="true" />
-          <span className="text-[oklch(0.60_0.02_250)]">Blockchain Synced</span>
-          <div className="h-2 w-2 rounded-full bg-[oklch(0.55_0.20_220)] animate-pulse" aria-hidden="true" />
+          <Database className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-[oklch(0.55_0.20_220)] flex-shrink-0" aria-hidden="true" />
+          <span className="text-[oklch(0.60_0.02_250)] truncate">Blockchain Synced</span>
+          <div className="h-1.5 w-1.5 sm:h-2 sm:w-2 rounded-full bg-[oklch(0.55_0.20_220)] animate-pulse flex-shrink-0" aria-hidden="true" />
         </div>
       </div>
     </div>
