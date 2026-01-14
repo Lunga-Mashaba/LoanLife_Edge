@@ -61,7 +61,7 @@ export function Sidebar() {
       <div
         className={cn(
           "border-r border-[oklch(0.25_0.04_250)] bg-[oklch(0.10_0.02_250)] flex flex-col z-50",
-          "w-64 fixed md:static h-screen",
+          "w-64 fixed h-screen",
           isMobile && !isMobileOpen && "-translate-x-full",
           isMobile && isMobileOpen && "translate-x-0",
           "transition-transform duration-300 ease-in-out"

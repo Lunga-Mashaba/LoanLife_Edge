@@ -9,9 +9,9 @@ import { memo } from "react"
 
 export function PortfolioDashboard() {
   return (
-    <div className="space-y-4 sm:space-y-6">
+    <div className="space-y-4 sm:space-y-6 max-w-full">
       {/* Header */}
-      <header>
+      <header className="mb-2">
         <h1 className="text-2xl sm:text-3xl font-bold text-[oklch(0.95_0.01_250)] mb-1 sm:mb-2">Portfolio Overview</h1>
         <p className="text-sm sm:text-base text-[oklch(0.60_0.02_250)]">Real-time loan health monitoring with AI-powered predictions</p>
       </header>
@@ -21,11 +21,11 @@ export function PortfolioDashboard() {
 
       {/* Main Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
-        <div className="xl:col-span-2 space-y-4 sm:space-y-6">
+        <div className="xl:col-span-2 space-y-4 sm:space-y-6 min-w-0">
           <MemoizedLoanHealthGrid />
           <MemoizedRiskTimeline />
         </div>
-        <div className="space-y-4 sm:space-y-6">
+        <div className="space-y-4 sm:space-y-6 min-w-0">
           <MemoizedESGCompliance />
           <MemoizedAuditLogPanel />
         </div>

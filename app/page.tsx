@@ -10,12 +10,14 @@ export default function Page() {
       <AnimatedBackground />
       <ErrorBoundary>
         <Sidebar />
-        <div className="flex flex-1 flex-col min-w-0 max-w-[1920px] mx-auto w-full md:ml-64">
+        <div className="flex flex-1 flex-col min-w-0 w-full md:pl-64">
           <TopBar />
-          <main className="flex-1 overflow-y-auto p-3 sm:p-4 md:p-6" role="main">
-            <ErrorBoundary>
-              <PortfolioDashboard />
-            </ErrorBoundary>
+          <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 max-w-full" role="main">
+            <div className="max-w-[1600px] mx-auto w-full">
+              <ErrorBoundary>
+                <PortfolioDashboard />
+              </ErrorBoundary>
+            </div>
           </main>
         </div>
       </ErrorBoundary>

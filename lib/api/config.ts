@@ -3,9 +3,27 @@
  * Centralized configuration for backend API
  */
 
+// Get API URL from environment or use default
+const getApiUrl = () => {
+  if (typeof window !== 'undefined') {
+    // Client-side: use environment variable
+    return process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+  }
+  // Server-side: use environment variable
+  return process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+}
+
 export const API_CONFIG = {
-  baseUrl: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000',
+  baseUrl: getApiUrl(),
   timeout: 30000, // 30 seconds
+}
+
+// Log API config in development
+if (process.env.NODE_ENV === 'development') {
+  console.log('🔌 API Config:', {
+    baseUrl: API_CONFIG.baseUrl,
+    envVar: process.env.NEXT_PUBLIC_API_URL,
+  })
 }
 
 export const API_ENDPOINTS = {

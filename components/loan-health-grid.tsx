@@ -131,11 +131,23 @@ export function LoanHealthGrid() {
   }
 
   if (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+    const isNetworkError = errorMessage.includes('Network') || errorMessage.includes('Failed to fetch')
+    
     return (
-      <Card className="p-6 bg-[oklch(0.15_0.03_250)] border-[oklch(0.25_0.04_250)]">
-        <h3 className="text-xl font-semibold text-[oklch(0.95_0.01_250)] mb-4">Loan Health Scores</h3>
+      <Card className="p-4 sm:p-6 bg-[oklch(0.15_0.03_250)] border-[oklch(0.25_0.04_250)]">
+        <h3 className="text-lg sm:text-xl font-semibold text-[oklch(0.95_0.01_250)] mb-3 sm:mb-4">Loan Health Scores</h3>
         <div className="p-4 rounded-lg bg-[oklch(0.18_0.03_250)] border border-[oklch(0.55_0.20_25)]">
-          <p className="text-[oklch(0.55_0.20_25)]">Failed to load loans. Please check your API connection.</p>
+          <p className="text-sm text-[oklch(0.55_0.20_25)] mb-2">
+            {isNetworkError 
+              ? "Unable to connect to the backend API. Please ensure the backend service is running."
+              : `Failed to load loans: ${errorMessage}`}
+          </p>
+          {process.env.NODE_ENV === 'development' && (
+            <p className="text-xs text-[oklch(0.60_0.02_250)] font-mono mt-2">
+              API URL: {process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}
+            </p>
+          )}
         </div>
       </Card>
     )
