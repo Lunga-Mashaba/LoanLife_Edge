@@ -24,7 +24,7 @@ export default function SettingsPage() {
         <Sidebar />
         <div className="flex flex-1 flex-col min-w-0 w-full md:pl-64">
           <TopBar />
-          <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 max-w-full" role="main">
+          <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 max-w-full pl-12 md:pl-4" role="main">
             <div className="max-w-[1600px] mx-auto w-full">
               <ErrorBoundary>
                 <header className="mb-4 md:mb-6">

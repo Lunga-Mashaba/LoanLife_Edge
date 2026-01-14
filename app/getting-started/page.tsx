@@ -18,7 +18,7 @@ export default function LandingPage() {
       <Sidebar />
       <div className="flex flex-1 flex-col min-w-0 w-full md:pl-64">
         <TopBar />
-        <main className="flex-1 overflow-y-auto">
+        <main className="flex-1 overflow-y-auto pl-12 md:pl-0">
           <section className="relative min-h-[85vh] sm:min-h-[90vh] flex items-center justify-center overflow-hidden py-8 sm:py-12 md:py-16">
             {/* Video Background */}
             <div className="absolute inset-0 z-0">
