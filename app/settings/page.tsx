@@ -8,9 +8,16 @@ import { Bell, Shield, Database, Moon, Sun, Globe } from "lucide-react"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { useState } from "react"
+import { useTheme } from "next-themes"
+import { useEffect } from "react"
 
 export default function SettingsPage() {
-  const [theme, setTheme] = useState<"dark" | "light">("dark")
+  const { theme, setTheme } = useTheme()
+  const [mounted, setMounted] = useState(false)
+  
+  useEffect(() => {
+    setMounted(true)
+  }, [])
   const [notifications, setNotifications] = useState(true)
   const [blockchainSync, setBlockchainSync] = useState(true)
   const [soundEffects, setSoundEffects] = useState(true)
@@ -54,6 +61,7 @@ export default function SettingsPage() {
                       variant={theme === "dark" ? "default" : "outline"}
                       size="sm"
                       onClick={() => setTheme("dark")}
+                      disabled={!mounted}
                       className={
                         theme === "dark"
                           ? "bg-[oklch(0.55_0.20_220)] hover:bg-[oklch(0.60_0.22_220)]"
@@ -68,7 +76,12 @@ export default function SettingsPage() {
                       variant={theme === "light" ? "default" : "outline"}
                       size="sm"
                       onClick={() => setTheme("light")}
-                      className="border-[oklch(0.30_0.04_250)]"
+                      disabled={!mounted}
+                      className={
+                        theme === "light"
+                          ? "bg-[oklch(0.55_0.20_220)] hover:bg-[oklch(0.60_0.22_220)]"
+                          : "border-[oklch(0.30_0.04_250)]"
+                      }
                       aria-label="Light theme"
                       aria-pressed={theme === "light"}
                     >
