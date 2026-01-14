@@ -71,7 +71,7 @@ export default function NotificationsPage() {
       <Sidebar />
       <div className="flex flex-1 flex-col min-w-0 w-full md:pl-64">
         <TopBar />
-        <main className="flex-1 overflow-y-auto p-3 sm:p-4 md:p-6 pl-12 md:pl-3">
+        <main className="flex-1 overflow-y-auto p-3 sm:p-4 md:p-6">
           <div className="mb-4 sm:mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
             <div>
               <h1 className="text-xl sm:text-2xl font-bold text-[oklch(0.95_0.01_250)] mb-1 sm:mb-2">Notifications</h1>

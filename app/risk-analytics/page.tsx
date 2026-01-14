@@ -44,7 +44,7 @@ export default function RiskAnalyticsPage() {
       <Sidebar />
       <div className="flex flex-1 flex-col min-w-0 w-full md:pl-64">
         <TopBar />
-        <main className="flex-1 overflow-y-auto p-3 sm:p-4 md:p-6 pl-12 md:pl-3">
+        <main className="flex-1 overflow-y-auto p-3 sm:p-4 md:p-6">
           <div className="mb-4 sm:mb-6">
             <h1 className="text-xl sm:text-2xl font-bold text-[oklch(0.95_0.01_250)] mb-1 sm:mb-2">Risk Analytics</h1>
             <p className="text-sm sm:text-base text-[oklch(0.60_0.02_250)]">AI-powered predictive risk assessment</p>

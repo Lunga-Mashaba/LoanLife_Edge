@@ -1,5 +1,5 @@
 "use client"
-import { Shield, BarChart3, FileText, Database, Settings, Rocket, Menu, X } from "lucide-react"
+import { Shield, BarChart3, FileText, Database, Settings, Rocket, X } from "lucide-react"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
@@ -32,21 +32,18 @@ export function Sidebar() {
     return () => window.removeEventListener("resize", checkMobile)
   }, [])
 
+  const toggleMobileMenu = () => setIsMobileOpen(!isMobileOpen)
   const closeMobileMenu = () => setIsMobileOpen(false)
+
+  // Listen for toggle events from TopBar
+  useEffect(() => {
+    const handleToggle = () => toggleMobileMenu()
+    window.addEventListener('toggleSidebar', handleToggle)
+    return () => window.removeEventListener('toggleSidebar', handleToggle)
+  }, [])
 
   return (
     <>
-      {/* Mobile hamburger button */}
-      {isMobile && (
-        <button
-          onClick={() => setIsMobileOpen(!isMobileOpen)}
-          className="fixed top-16 sm:top-18 left-3 z-50 p-2 rounded-lg bg-[oklch(0.15_0.03_250)] border border-[oklch(0.25_0.04_250)] text-[oklch(0.90_0.01_250)] md:hidden shadow-lg hover:bg-[oklch(0.20_0.03_250)] transition-colors"
-          aria-label="Toggle navigation menu"
-          aria-expanded={isMobileOpen}
-        >
-          {isMobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-        </button>
-      )}
 
       {/* Mobile overlay */}
       {isMobile && isMobileOpen && (
