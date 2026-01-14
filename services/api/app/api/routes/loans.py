@@ -134,9 +134,14 @@ async def upload_loan_document(
                 # Blockchain registration failed - continue without it
                 pass
         
+        # Convert document dict to match frontend type (upload_date -> uploaded_at)
+        doc_dict = loan_doc.dict()
+        if "upload_date" in doc_dict:
+            doc_dict["uploaded_at"] = doc_dict.pop("upload_date")
+        
         return {
             "loan": loan.dict(),
-            "document": loan_doc.dict(),
+            "document": doc_dict,
             "extracted": {
                 "covenants_count": len(covenants),
                 "esg_clauses_count": len(esg_clauses)
