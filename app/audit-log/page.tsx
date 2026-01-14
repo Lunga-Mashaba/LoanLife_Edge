@@ -90,52 +90,52 @@ export default function AuditLogPage() {
 
           {/* Audit Log Entries */}
           <Card className="bg-[oklch(0.14_0.02_250)] border-[oklch(0.25_0.04_250)]">
-            <div className="p-4 border-b border-[oklch(0.25_0.04_250)]">
-              <h2 className="text-lg font-semibold text-[oklch(0.95_0.01_250)]">Recent Transactions</h2>
+            <div className="p-3 sm:p-4 border-b border-[oklch(0.25_0.04_250)]">
+              <h2 className="text-base sm:text-lg font-semibold text-[oklch(0.95_0.01_250)]">Recent Transactions</h2>
             </div>
             <div className="divide-y divide-[oklch(0.20_0.04_250)]">
               {auditEntries.map((entry) => (
-                <div key={entry.id} className="p-4 hover:bg-[oklch(0.16_0.02_250)] transition-colors">
-                  <div className="flex items-start justify-between mb-2">
-                    <div className="flex items-start gap-3">
-                      <div className="relative mt-1">
+                <div key={entry.id} className="p-3 sm:p-4 hover:bg-[oklch(0.16_0.02_250)] transition-colors">
+                  <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-0 mb-2">
+                    <div className="flex items-start gap-2 sm:gap-3 min-w-0 flex-1">
+                      <div className="relative mt-0.5 sm:mt-1 flex-shrink-0">
                         {entry.status === "critical" && (
                           <>
-                            <AlertCircle className="h-5 w-5 text-[oklch(0.65_0.22_25)]" />
+                            <AlertCircle className="h-4 w-4 sm:h-5 sm:w-5 text-[oklch(0.65_0.22_25)]" />
                             <div className="absolute inset-0 blur-md bg-[oklch(0.65_0.22_25)] opacity-50" />
                           </>
                         )}
-                        {entry.status === "warning" && <AlertCircle className="h-5 w-5 text-[oklch(0.75_0.18_65)]" />}
-                        {entry.status === "success" && <CheckCircle className="h-5 w-5 text-[oklch(0.70_0.25_145)]" />}
-                        {entry.status === "info" && <FileText className="h-5 w-5 text-[oklch(0.55_0.20_220)]" />}
+                        {entry.status === "warning" && <AlertCircle className="h-4 w-4 sm:h-5 sm:w-5 text-[oklch(0.75_0.18_65)]" />}
+                        {entry.status === "success" && <CheckCircle className="h-4 w-4 sm:h-5 sm:w-5 text-[oklch(0.70_0.25_145)]" />}
+                        {entry.status === "info" && <FileText className="h-4 w-4 sm:h-5 sm:w-5 text-[oklch(0.55_0.20_220)]" />}
                       </div>
-                      <div>
-                        <div className="font-semibold text-[oklch(0.95_0.01_250)] mb-1">{entry.action}</div>
-                        <div className="flex items-center gap-3 text-xs text-[oklch(0.60_0.02_250)]">
+                      <div className="min-w-0 flex-1">
+                        <div className="font-semibold text-sm sm:text-base text-[oklch(0.95_0.01_250)] mb-1 break-words">{entry.action}</div>
+                        <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3 text-xs text-[oklch(0.60_0.02_250)]">
                           <span className="flex items-center gap-1">
-                            <Clock className="h-3 w-3" />
-                            {entry.timestamp}
+                            <Clock className="h-3 w-3 flex-shrink-0" />
+                            <span className="break-all">{entry.timestamp}</span>
                           </span>
-                          <span>•</span>
-                          <span>{entry.user}</span>
-                          <span>•</span>
-                          <span className="font-mono">{entry.loanId}</span>
+                          <span className="hidden sm:inline">•</span>
+                          <span className="break-all sm:break-normal">{entry.user}</span>
+                          <span className="hidden sm:inline">•</span>
+                          <span className="font-mono break-all">{entry.loanId}</span>
                         </div>
                       </div>
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 flex-shrink-0 sm:ml-4">
                       {entry.verified && (
-                        <div className="flex items-center gap-1 text-xs text-[oklch(0.70_0.25_145)]">
+                        <div className="flex items-center gap-1 text-xs text-[oklch(0.70_0.25_145)] whitespace-nowrap">
                           <Lock className="h-3 w-3 animate-lock-secure" />
                           <span>Verified</span>
                         </div>
                       )}
                     </div>
                   </div>
-                  <div className="ml-8 mt-2">
-                    <div className="inline-flex items-center gap-2 px-2 py-1 rounded bg-[oklch(0.10_0.02_250)] border border-[oklch(0.20_0.04_250)] animate-blockchain-link">
-                      <span className="text-xs text-[oklch(0.50_0.02_250)]">Block Hash:</span>
-                      <span className="text-xs font-mono text-[oklch(0.60_0.18_280)]">{entry.id}</span>
+                  <div className="ml-6 sm:ml-8 mt-2">
+                    <div className="inline-flex flex-wrap items-center gap-1.5 sm:gap-2 px-2 py-1 rounded bg-[oklch(0.10_0.02_250)] border border-[oklch(0.20_0.04_250)] animate-blockchain-link">
+                      <span className="text-xs text-[oklch(0.50_0.02_250)] whitespace-nowrap">Block Hash:</span>
+                      <span className="text-xs font-mono text-[oklch(0.60_0.18_280)] break-all">{entry.id}</span>
                     </div>
                   </div>
                 </div>
