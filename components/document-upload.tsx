@@ -157,10 +157,10 @@ function DocumentUpload() {
   }
 
   return (
-    <Card className="p-3 sm:p-4 md:p-6 bg-card border-border w-full">
+    <Card className="p-3 sm:p-4 md:p-6 bg-card border-border w-full max-w-full overflow-hidden">
       <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
-        <Upload className="h-4 w-4 sm:h-5 sm:w-5 text-[oklch(0.55_0.20_220)] flex-shrink-0" />
-        <h3 className="text-base sm:text-lg md:text-xl font-semibold text-card-foreground">Upload Loan Document</h3>
+        <Upload className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 text-[oklch(0.55_0.20_220)] flex-shrink-0" />
+        <h3 className="text-base sm:text-lg md:text-xl font-semibold text-card-foreground truncate">Upload Loan Document</h3>
       </div>
 
       <div
@@ -168,14 +168,24 @@ function DocumentUpload() {
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
         className={`
-          border-2 border-dashed rounded-lg p-4 sm:p-6 md:p-8 text-center transition-all w-full
+          border-2 border-dashed rounded-lg p-4 sm:p-6 md:p-8 lg:p-10 text-center transition-all w-full
+          min-h-[120px] sm:min-h-[140px] md:min-h-[160px] flex items-center justify-center
           ${isDragging 
-            ? 'border-[oklch(0.55_0.20_220)] bg-[oklch(0.55_0.20_220)]/10' 
-            : 'border-border hover:border-[oklch(0.55_0.20_220)]/50'
+            ? 'border-[oklch(0.55_0.20_220)] bg-[oklch(0.55_0.20_220)]/10 scale-[1.02]' 
+            : 'border-border hover:border-[oklch(0.55_0.20_220)]/50 active:scale-[0.98]'
           }
-          ${uploading ? 'opacity-50 pointer-events-none' : 'cursor-pointer'}
+          ${uploading ? 'opacity-50 pointer-events-none' : 'cursor-pointer touch-manipulation'}
         `}
         onClick={() => !uploading && fileInputRef.current?.click()}
+        role="button"
+        tabIndex={uploading ? -1 : 0}
+        onKeyDown={(e) => {
+          if (!uploading && (e.key === 'Enter' || e.key === ' ')) {
+            e.preventDefault()
+            fileInputRef.current?.click()
+          }
+        }}
+        aria-label="Upload loan document by clicking or dragging and dropping"
       >
         <input
           ref={fileInputRef}
@@ -187,60 +197,63 @@ function DocumentUpload() {
         />
 
         {uploading ? (
-          <div className="flex flex-col items-center gap-2 sm:gap-3">
+          <div className="flex flex-col items-center gap-2 sm:gap-3 w-full max-w-md mx-auto px-2">
             <Loader2 className="h-6 w-6 sm:h-8 sm:w-8 md:h-10 md:w-10 animate-spin text-[oklch(0.55_0.20_220)]" />
-            <p className="text-xs sm:text-sm md:text-base font-medium text-card-foreground text-center px-2">
+            <p className="text-xs sm:text-sm md:text-base font-medium text-card-foreground text-center break-words">
               {uploadProgress || 'Processing document...'}
             </p>
-            <p className="text-xs text-muted-foreground text-center px-2">This may take a few moments</p>
+            <p className="text-xs text-muted-foreground text-center break-words">This may take a few moments</p>
           </div>
         ) : (
-          <>
-            <FileText className="h-6 w-6 sm:h-8 sm:w-8 md:h-10 md:w-10 mx-auto mb-2 sm:mb-3 md:mb-4 text-muted-foreground" />
-            <p className="text-xs sm:text-sm md:text-base font-medium text-card-foreground mb-1 sm:mb-2 px-2">
+          <div className="w-full max-w-md mx-auto px-2">
+            <FileText className="h-6 w-6 sm:h-8 sm:w-8 md:h-10 md:w-10 lg:h-12 lg:w-12 mx-auto mb-2 sm:mb-3 md:mb-4 text-muted-foreground" />
+            <p className="text-xs sm:text-sm md:text-base lg:text-lg font-medium text-card-foreground mb-1 sm:mb-2 break-words">
               Drag and drop a loan document here
             </p>
-            <p className="text-xs sm:text-sm text-muted-foreground mb-2 sm:mb-3 md:mb-4 px-2">
+            <p className="text-xs sm:text-sm md:text-base text-muted-foreground mb-2 sm:mb-3 md:mb-4 break-words">
               or click to browse
             </p>
-            <p className="text-xs text-muted-foreground px-2 break-words">
+            <p className="text-xs sm:text-sm text-muted-foreground break-words">
               Supported formats: PDF, DOCX (max 10MB)
             </p>
-          </>
+          </div>
         )}
       </div>
 
       {uploadStatus.type && (
         <div
           className={`
-            mt-3 sm:mt-4 p-2.5 sm:p-3 md:p-4 rounded-lg flex items-start gap-2 sm:gap-3 w-full
+            mt-3 sm:mt-4 p-2.5 sm:p-3 md:p-4 rounded-lg flex items-start gap-2 sm:gap-3 w-full max-w-full overflow-hidden
             ${uploadStatus.type === 'success' 
               ? 'bg-[oklch(0.70_0.25_145)]/20 border border-[oklch(0.70_0.25_145)]/50' 
               : 'bg-[oklch(0.55_0.20_25)]/20 border border-[oklch(0.55_0.20_25)]/50'
             }
           `}
+          role="alert"
+          aria-live="polite"
         >
           {uploadStatus.type === 'success' ? (
-            <CheckCircle2 className="h-4 w-4 sm:h-5 sm:w-5 text-[oklch(0.70_0.25_145)] flex-shrink-0 mt-0.5" />
+            <CheckCircle2 className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 text-[oklch(0.70_0.25_145)] flex-shrink-0 mt-0.5" />
           ) : (
-            <AlertCircle className="h-4 w-4 sm:h-5 sm:w-5 text-[oklch(0.55_0.20_25)] flex-shrink-0 mt-0.5" />
+            <AlertCircle className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 text-[oklch(0.55_0.20_25)] flex-shrink-0 mt-0.5" />
           )}
-          <div className="flex-1 min-w-0 pr-2">
-            <p className={`text-xs sm:text-sm font-medium break-words ${uploadStatus.type === 'success' ? 'text-[oklch(0.70_0.25_145)]' : 'text-[oklch(0.55_0.20_25)]'}`}>
+          <div className="flex-1 min-w-0 pr-1 sm:pr-2">
+            <p className={`text-xs sm:text-sm md:text-base font-medium break-words ${uploadStatus.type === 'success' ? 'text-[oklch(0.70_0.25_145)]' : 'text-[oklch(0.55_0.20_25)]'}`}>
               {uploadStatus.message}
             </p>
             {uploadStatus.details && (
-              <p className={`text-xs mt-1 break-words ${uploadStatus.type === 'success' ? 'text-[oklch(0.70_0.25_145)]/80' : 'text-[oklch(0.55_0.20_25)]/80'}`}>
+              <p className={`text-xs sm:text-sm mt-1 break-words leading-relaxed ${uploadStatus.type === 'success' ? 'text-[oklch(0.70_0.25_145)]/80' : 'text-[oklch(0.55_0.20_25)]/80'}`}>
                 {uploadStatus.details}
               </p>
             )}
           </div>
           <button
             onClick={() => setUploadStatus({ type: null, message: '' })}
-            className="text-muted-foreground hover:text-card-foreground transition-colors flex-shrink-0 p-1 -mt-1 -mr-1"
-            aria-label="Dismiss"
+            className="text-muted-foreground hover:text-card-foreground active:text-card-foreground transition-colors flex-shrink-0 p-1.5 sm:p-2 -mt-1 -mr-1 touch-manipulation min-w-[32px] min-h-[32px] flex items-center justify-center"
+            aria-label="Dismiss message"
+            type="button"
           >
-            <X className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+            <X className="h-4 w-4 sm:h-4 sm:w-4 md:h-5 md:w-5" />
           </button>
         </div>
       )}
