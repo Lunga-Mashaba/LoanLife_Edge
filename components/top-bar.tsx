@@ -33,9 +33,9 @@ export function TopBar() {
   return (
     <div className="sticky top-0 z-40 h-14 sm:h-16 border-b border-[oklch(0.25_0.04_250)] bg-[oklch(0.13_0.02_250)]/80 backdrop-blur-xl px-2 sm:px-4 md:px-6 flex items-center justify-between gap-2">
       {/* Hamburger Menu Button - Mobile Only */}
-      {isMobile && onMenuClick && (
+      {isMobile && (
         <button
-          onClick={onMenuClick}
+          onClick={handleMenuClick}
           className="p-2 rounded-lg bg-[oklch(0.15_0.03_250)] border border-[oklch(0.25_0.04_250)] text-[oklch(0.90_0.01_250)] hover:bg-[oklch(0.20_0.03_250)] transition-colors flex-shrink-0"
           aria-label="Toggle navigation menu"
         >
