@@ -109,15 +109,15 @@ export function Sidebar() {
       </nav>
 
       {/* Status Footer */}
-      <div className="p-3 sm:p-4 border-t border-[oklch(0.25_0.04_250)] space-y-2 sm:space-y-3" role="status" aria-live="polite">
+      <div className="p-3 sm:p-4 border-t border-[oklch(0.25_0.04_250)] dark:border-[oklch(0.25_0.04_250)] light:border-[oklch(0.85_0.02_250)] space-y-2 sm:space-y-3" role="status" aria-live="polite">
         <div className="flex items-center gap-2 text-xs">
           <Shield className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-[oklch(0.70_0.25_145)] flex-shrink-0" aria-hidden="true" />
-          <span className="text-[oklch(0.40_0.02_250)] dark:text-[oklch(0.60_0.02_250)] truncate">Offline-First</span>
+          <span className="text-[oklch(0.60_0.02_250)] dark:text-[oklch(0.60_0.02_250)] light:text-[oklch(0.40_0.02_250)] truncate">Offline-First</span>
           <div className="h-1.5 w-1.5 sm:h-2 sm:w-2 rounded-full bg-[oklch(0.70_0.25_145)] animate-pulse-glow flex-shrink-0" aria-hidden="true" />
         </div>
         <div className="flex items-center gap-2 text-xs">
           <Database className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-[oklch(0.55_0.20_220)] flex-shrink-0" aria-hidden="true" />
-          <span className="text-[oklch(0.40_0.02_250)] dark:text-[oklch(0.60_0.02_250)] truncate">Blockchain Synced</span>
+          <span className="text-[oklch(0.60_0.02_250)] dark:text-[oklch(0.60_0.02_250)] light:text-[oklch(0.40_0.02_250)] truncate">Blockchain Synced</span>
           <div className="h-1.5 w-1.5 sm:h-2 sm:w-2 rounded-full bg-[oklch(0.55_0.20_220)] animate-pulse flex-shrink-0" aria-hidden="true" />
         </div>
       </div>
