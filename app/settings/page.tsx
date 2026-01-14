@@ -24,14 +24,15 @@ export default function SettingsPage() {
         <Sidebar />
         <div className="flex flex-1 flex-col min-w-0 w-full md:pl-64">
           <TopBar />
-          <main className="flex-1 overflow-y-auto p-4 md:p-6" role="main">
-            <ErrorBoundary>
-              <header className="mb-4 md:mb-6">
-                <h1 className="text-2xl md:text-3xl font-bold text-[oklch(0.95_0.01_250)] mb-2">Settings</h1>
-                <p className="text-sm md:text-base text-[oklch(0.60_0.02_250)]">Configure your LoanLife Edge experience</p>
-              </header>
+          <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 max-w-full" role="main">
+            <div className="max-w-[1600px] mx-auto w-full">
+              <ErrorBoundary>
+                <header className="mb-4 md:mb-6">
+                  <h1 className="text-2xl md:text-3xl font-bold text-[oklch(0.95_0.01_250)] mb-2">Settings</h1>
+                  <p className="text-sm md:text-base text-[oklch(0.60_0.02_250)]">Configure your LoanLife Edge experience</p>
+                </header>
 
-              <div className="space-y-4 md:space-y-6 max-w-3xl">
+                <div className="space-y-4 md:space-y-6 max-w-3xl">
             {/* Appearance */}
             <Card className="bg-[oklch(0.14_0.02_250)] border-[oklch(0.25_0.04_250)] p-4 md:p-6">
               <div className="flex items-center gap-3 mb-4">
@@ -300,8 +301,9 @@ export default function SettingsPage() {
                 </div>
               </div>
             </Card>
-              </div>
-            </ErrorBoundary>
+                </div>
+              </ErrorBoundary>
+            </div>
           </main>
         </div>
       </ErrorBoundary>
