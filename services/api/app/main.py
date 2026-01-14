@@ -31,20 +31,35 @@ app.include_router(audit.router, prefix="/api/v1", tags=["audit"])
 # Seed demo data if requested (for hackathon demo)
 if os.getenv("SEED_DATA", "false").lower() == "true":
     import sys
+    import traceback
     from pathlib import Path
     
-    # Add scripts to path
-    project_root = Path(__file__).parent.parent.parent.parent
-    scripts_path = project_root / "scripts" / "seed-data"
-    sys.path.insert(0, str(scripts_path))
-    
     try:
+        # Add project root and API directory to path
+        project_root = Path(__file__).parent.parent.parent.parent
+        api_path = project_root / "services" / "api"
+        scripts_path = project_root / "scripts" / "seed-data"
+        
+        # Add both paths to sys.path
+        sys.path.insert(0, str(api_path))
+        sys.path.insert(0, str(scripts_path))
+        
+        print(f"🌱 Seeding demo data...")
+        print(f"   Project root: {project_root}")
+        print(f"   API path: {api_path}")
+        print(f"   Scripts path: {scripts_path}")
+        
+        # Import and run seed function
         from seed_loans import create_sample_loans
-        print("🌱 Seeding demo data...")
         create_sample_loans()
         print("✅ Demo data seeded successfully!")
+    except ImportError as e:
+        print(f"⚠️  Failed to import seed script: {e}")
+        print(f"   sys.path: {sys.path}")
+        traceback.print_exc()
     except Exception as e:
         print(f"⚠️  Failed to seed data: {e}")
+        traceback.print_exc()
 
 
 @app.get("/")

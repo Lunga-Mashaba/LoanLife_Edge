@@ -3,16 +3,35 @@ Seed data script - creates sample loans for demo
 Run this to populate the API with demo data
 """
 import sys
+import os
 from pathlib import Path
 from datetime import datetime, timedelta
 
-# Add project root to path
-project_root = Path(__file__).parent.parent.parent
-sys.path.insert(0, str(project_root / "services" / "api"))
+# Add project root to path - handle both local and Render environments
+script_dir = Path(__file__).parent
+project_root = script_dir.parent.parent
+api_path = project_root / "services" / "api"
 
-from app.services.service_instances import twin_service, audit_service
-from app.models import Loan, Covenant, ESGClause
-from app.services.audit_service import AuditEventType
+# Add API path to sys.path if not already there
+if str(api_path) not in sys.path:
+    sys.path.insert(0, str(api_path))
+
+# Also add current directory for imports
+if str(script_dir) not in sys.path:
+    sys.path.insert(0, str(script_dir))
+
+try:
+    from app.services.service_instances import twin_service, audit_service
+    from app.models import Loan, Covenant, ESGClause
+    from app.services.audit_service import AuditEventType
+except ImportError as e:
+    print(f"❌ Import error in seed script: {e}")
+    print(f"   Current directory: {os.getcwd()}")
+    print(f"   Script directory: {script_dir}")
+    print(f"   Project root: {project_root}")
+    print(f"   API path: {api_path}")
+    print(f"   sys.path: {sys.path}")
+    raise
 
 
 def create_sample_loans():
