@@ -56,7 +56,7 @@ export default function AuditLogPage() {
   ]
 
   return (
-    <div className="flex min-h-screen overflow-hidden bg-gradient-to-br from-[oklch(0.12_0.02_250)] via-[oklch(0.10_0.03_240)] to-[oklch(0.12_0.02_250)] gradient-animate relative">
+    <div className="flex min-h-screen overflow-hidden bg-gradient-to-br from-background via-background to-background dark:from-[oklch(0.12_0.02_250)] dark:via-[oklch(0.10_0.03_240)] dark:to-[oklch(0.12_0.02_250)] gradient-animate relative">
       <AnimatedBackground />
       <Sidebar />
       <div className="flex flex-1 flex-col min-w-0 w-full md:pl-64">
@@ -64,38 +64,38 @@ export default function AuditLogPage() {
         <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 max-w-full">
           <div className="max-w-[1600px] mx-auto w-full">
           <div className="mb-4 sm:mb-6">
-            <h1 className="text-xl sm:text-2xl font-bold text-[oklch(0.95_0.01_250)] mb-1 sm:mb-2">Blockchain Audit Log</h1>
-            <p className="text-sm sm:text-base text-[oklch(0.60_0.02_250)]">Immutable transaction history with cryptographic verification</p>
+            <h1 className="text-xl sm:text-2xl font-bold text-foreground mb-1 sm:mb-2">Blockchain Audit Log</h1>
+            <p className="text-sm sm:text-base text-muted-foreground">Immutable transaction history with cryptographic verification</p>
           </div>
 
           {/* Stats Cards */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-4 sm:mb-6">
-            <Card className="bg-[oklch(0.14_0.02_250)] border-[oklch(0.25_0.04_250)] p-4">
-              <div className="text-xs text-[oklch(0.60_0.02_250)] mb-2">Total Events</div>
-              <div className="text-2xl font-bold text-[oklch(0.95_0.01_250)]">1,247</div>
+            <Card className="bg-card border-border p-4">
+              <div className="text-xs text-muted-foreground mb-2">Total Events</div>
+              <div className="text-2xl font-bold text-card-foreground">1,247</div>
             </Card>
-            <Card className="bg-[oklch(0.14_0.02_250)] border-[oklch(0.25_0.04_250)] p-4">
-              <div className="text-xs text-[oklch(0.60_0.02_250)] mb-2">Today</div>
+            <Card className="bg-card border-border p-4">
+              <div className="text-xs text-muted-foreground mb-2">Today</div>
               <div className="text-2xl font-bold text-[oklch(0.55_0.20_220)]">43</div>
             </Card>
-            <Card className="bg-[oklch(0.14_0.02_250)] border-[oklch(0.25_0.04_250)] p-4">
-              <div className="text-xs text-[oklch(0.60_0.02_250)] mb-2">Verified</div>
+            <Card className="bg-card border-border p-4">
+              <div className="text-xs text-muted-foreground mb-2">Verified</div>
               <div className="text-2xl font-bold text-[oklch(0.70_0.25_145)]">100%</div>
             </Card>
-            <Card className="bg-[oklch(0.14_0.02_250)] border-[oklch(0.25_0.04_250)] p-4">
-              <div className="text-xs text-[oklch(0.60_0.02_250)] mb-2">Chain Height</div>
+            <Card className="bg-card border-border p-4">
+              <div className="text-xs text-muted-foreground mb-2">Chain Height</div>
               <div className="text-2xl font-bold text-[oklch(0.60_0.18_280)]">8,492</div>
             </Card>
           </div>
 
           {/* Audit Log Entries */}
-          <Card className="bg-[oklch(0.14_0.02_250)] border-[oklch(0.25_0.04_250)]">
-            <div className="p-3 sm:p-4 border-b border-[oklch(0.25_0.04_250)]">
-              <h2 className="text-base sm:text-lg font-semibold text-[oklch(0.95_0.01_250)]">Recent Transactions</h2>
+          <Card className="bg-card border-border">
+            <div className="p-3 sm:p-4 border-b border-border">
+              <h2 className="text-base sm:text-lg font-semibold text-card-foreground">Recent Transactions</h2>
             </div>
-            <div className="divide-y divide-[oklch(0.20_0.04_250)]">
+            <div className="divide-y divide-border">
               {auditEntries.map((entry) => (
-                <div key={entry.id} className="p-3 sm:p-4 hover:bg-[oklch(0.16_0.02_250)] transition-colors">
+                <div key={entry.id} className="p-3 sm:p-4 hover:bg-muted/50 transition-colors">
                   <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-0 mb-2">
                     <div className="flex items-start gap-2 sm:gap-3 min-w-0 flex-1">
                       <div className="relative mt-0.5 sm:mt-1 flex-shrink-0">
@@ -110,8 +110,8 @@ export default function AuditLogPage() {
                         {entry.status === "info" && <FileText className="h-4 w-4 sm:h-5 sm:w-5 text-[oklch(0.55_0.20_220)]" />}
                       </div>
                       <div className="min-w-0 flex-1">
-                        <div className="font-semibold text-sm sm:text-base text-[oklch(0.95_0.01_250)] mb-1 break-words">{entry.action}</div>
-                        <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3 text-xs text-[oklch(0.60_0.02_250)]">
+                        <div className="font-semibold text-sm sm:text-base text-card-foreground mb-1 break-words">{entry.action}</div>
+                        <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3 text-xs text-muted-foreground">
                           <span className="flex items-center gap-1">
                             <Clock className="h-3 w-3 flex-shrink-0" />
                             <span className="break-all">{entry.timestamp}</span>
@@ -133,8 +133,8 @@ export default function AuditLogPage() {
                     </div>
                   </div>
                   <div className="ml-6 sm:ml-8 mt-2">
-                    <div className="inline-flex flex-wrap items-center gap-1.5 sm:gap-2 px-2 py-1 rounded bg-[oklch(0.10_0.02_250)] border border-[oklch(0.20_0.04_250)] animate-blockchain-link">
-                      <span className="text-xs text-[oklch(0.50_0.02_250)] whitespace-nowrap">Block Hash:</span>
+                    <div className="inline-flex flex-wrap items-center gap-1.5 sm:gap-2 px-2 py-1 rounded bg-muted border border-border animate-blockchain-link">
+                      <span className="text-xs text-muted-foreground whitespace-nowrap">Block Hash:</span>
                       <span className="text-xs font-mono text-[oklch(0.60_0.18_280)] break-all">{entry.id}</span>
                     </div>
                   </div>

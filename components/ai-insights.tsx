@@ -24,7 +24,7 @@ function AIInsights() {
       <Card className="p-6 bg-gradient-to-r from-[oklch(0.50_0.22_290)]/20 to-[oklch(0.55_0.20_220)]/20 border-[oklch(0.50_0.22_290)]">
         <div className="flex items-center justify-center py-4" role="status" aria-live="polite" aria-label="Loading AI insights">
           <Loader2 className="h-5 w-5 animate-spin text-[oklch(0.55_0.20_220)]" />
-          <span className="ml-2 text-sm text-[oklch(0.60_0.02_250)]">Loading AI insights...</span>
+          <span className="ml-2 text-sm text-muted-foreground">Loading AI insights...</span>
         </div>
       </Card>
     )
@@ -41,9 +41,9 @@ function AIInsights() {
           <div className="flex-1">
             <div className="flex items-center gap-2 mb-2">
               <Sparkles className="h-5 w-5 text-[oklch(0.60_0.22_290)]" aria-hidden="true" />
-              <h3 className="text-lg font-semibold text-[oklch(0.95_0.01_250)]">AI Risk Prediction</h3>
+              <h3 className="text-lg font-semibold text-card-foreground">AI Risk Prediction</h3>
             </div>
-            <p className="text-sm text-[oklch(0.80_0.01_250)]">
+            <p className="text-sm text-muted-foreground">
               Unable to load predictions. Please try refreshing the page.
             </p>
           </div>
@@ -62,9 +62,9 @@ function AIInsights() {
           <div className="flex-1">
             <div className="flex items-center gap-2 mb-2">
               <Sparkles className="h-5 w-5 text-[oklch(0.60_0.22_290)]" aria-hidden="true" />
-              <h3 className="text-lg font-semibold text-[oklch(0.95_0.01_250)]">AI Risk Prediction</h3>
+              <h3 className="text-lg font-semibold text-card-foreground">AI Risk Prediction</h3>
             </div>
-            <p className="text-sm text-[oklch(0.80_0.01_250)]">
+            <p className="text-sm text-muted-foreground">
               No critical risk alerts at this time. All loans are within acceptable risk parameters.
             </p>
           </div>
@@ -86,12 +86,12 @@ function AIInsights() {
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-2 flex-wrap">
               <Sparkles className="h-4 w-4 sm:h-5 sm:w-5 text-[oklch(0.60_0.22_290)] flex-shrink-0" aria-hidden="true" />
-              <h3 className="text-base sm:text-lg font-semibold text-[oklch(0.95_0.01_250)]">AI Risk Prediction</h3>
+              <h3 className="text-base sm:text-lg font-semibold text-card-foreground">AI Risk Prediction</h3>
               {criticalEvent.severity === 'critical' && (
                 <AlertTriangle className="h-4 w-4 sm:h-5 sm:w-5 text-[oklch(0.55_0.20_25)] flex-shrink-0" aria-label="Critical alert" />
               )}
             </div>
-            <p className="text-xs sm:text-sm text-[oklch(0.80_0.01_250)] mb-3">
+            <p className="text-xs sm:text-sm text-muted-foreground mb-3">
               <span className={criticalEvent.severity === 'critical' ? 'font-semibold text-[oklch(0.55_0.20_25)]' : ''}>
                 {criticalEvent.severity === 'critical' ? 'Critical alert: ' : 'Alert: '}
               </span>
@@ -105,11 +105,11 @@ function AIInsights() {
               {explanation?.summary && ` ${explanation.summary}`}
             </p>
             {expanded && explanation && (
-              <div className="mt-3 sm:mt-4 p-3 sm:p-4 rounded-lg bg-[oklch(0.18_0.03_250)] border border-[oklch(0.25_0.04_250)] space-y-3" role="region" aria-label="Detailed AI insights">
+              <div className="mt-3 sm:mt-4 p-3 sm:p-4 rounded-lg bg-muted border border-border space-y-3" role="region" aria-label="Detailed AI insights">
                 {keyFactors.length > 0 && (
                   <div>
                     <p className="text-xs font-medium text-[oklch(0.70_0.25_145)] mb-1">Key Indicators:</p>
-                    <ul className="text-xs sm:text-sm text-[oklch(0.80_0.01_250)] space-y-1 ml-4">
+                    <ul className="text-xs sm:text-sm text-muted-foreground space-y-1 ml-4">
                       {keyFactors.slice(0, 3).map((factor, idx) => (
                         <li key={idx}>• {factor}</li>
                       ))}
@@ -119,7 +119,7 @@ function AIInsights() {
                 {explanation.factors && explanation.factors.length > 0 && (
                   <div>
                     <p className="text-xs font-medium text-[oklch(0.55_0.20_220)] mb-1">Recommended Actions:</p>
-                    <ul className="text-xs sm:text-sm text-[oklch(0.80_0.01_250)] space-y-1 ml-4">
+                    <ul className="text-xs sm:text-sm text-muted-foreground space-y-1 ml-4">
                       {explanation.factors
                         .filter((f: any) => f.impact === 'high')
                         .slice(0, 3)
@@ -138,14 +138,14 @@ function AIInsights() {
         </div>
         <button
           onClick={() => setExpanded(!expanded)}
-          className="p-1.5 sm:p-2 hover:bg-[oklch(0.18_0.03_250)] rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[oklch(0.55_0.20_220)] flex-shrink-0"
+          className="p-1.5 sm:p-2 hover:bg-muted rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[oklch(0.55_0.20_220)] flex-shrink-0"
           aria-label={expanded ? "Collapse insights" : "Expand insights"}
           aria-expanded={expanded}
         >
           {expanded ? (
-            <ChevronUp className="h-4 w-4 sm:h-5 sm:w-5 text-[oklch(0.60_0.02_250)]" aria-hidden="true" />
+            <ChevronUp className="h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground" aria-hidden="true" />
           ) : (
-            <ChevronDown className="h-4 w-4 sm:h-5 sm:w-5 text-[oklch(0.60_0.02_250)]" aria-hidden="true" />
+            <ChevronDown className="h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground" aria-hidden="true" />
           )}
         </button>
       </div>

@@ -14,7 +14,7 @@ export default function LandingPage() {
   const [hoveredCard, setHoveredCard] = useState<number | null>(null)
 
   return (
-    <div className="flex min-h-screen overflow-hidden bg-gradient-to-br from-[oklch(0.12_0.02_250)] via-[oklch(0.10_0.03_240)] to-[oklch(0.12_0.02_250)] gradient-animate">
+    <div className="flex min-h-screen overflow-hidden bg-gradient-to-br from-background via-background to-background dark:from-[oklch(0.12_0.02_250)] dark:via-[oklch(0.10_0.03_240)] dark:to-[oklch(0.12_0.02_250)] gradient-animate">
       <Sidebar />
       <div className="flex flex-1 flex-col min-w-0 w-full md:pl-64">
         <TopBar />
@@ -55,10 +55,10 @@ export default function LandingPage() {
                 </div>
               </div>
 
-              <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-cyan-300 mb-3 sm:mb-4 font-light tracking-wide px-2">
+              <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-foreground dark:text-cyan-300 mb-3 sm:mb-4 font-light tracking-wide px-2">
                 AI-Powered Loan Risk Management
               </p>
-              <p className="text-sm sm:text-base md:text-lg text-purple-300/80 mb-8 sm:mb-12 max-w-3xl mx-auto leading-relaxed px-4">
+              <p className="text-sm sm:text-base md:text-lg text-muted-foreground dark:text-purple-300/80 mb-8 sm:mb-12 max-w-3xl mx-auto leading-relaxed px-4">
                 Experience next-generation banking security with digital twin technology, blockchain audit trails, and
                 real-time predictive analytics
               </p>
@@ -98,7 +98,7 @@ export default function LandingPage() {
                     >
                       {stat.value}
                     </div>
-                    <div className="text-xs sm:text-sm md:text-base text-gray-300 font-medium">{stat.label}</div>
+                    <div className="text-xs sm:text-sm md:text-base text-muted-foreground dark:text-gray-300 font-medium">{stat.label}</div>
                   </div>
                 ))}
               </div>
@@ -109,13 +109,12 @@ export default function LandingPage() {
             <div className="max-w-7xl mx-auto">
               <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-center mb-3 sm:mb-4 px-4">
                 <span
-                  className="bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 bg-clip-text text-transparent"
-                  style={{ textShadow: "0 0 50px rgba(34, 211, 238, 0.3)" }}
+                  className="bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 bg-clip-text text-transparent dark:[text-shadow:0_0_50px_rgba(34,211,238,0.3)]"
                 >
                   Powerful Features
                 </span>
               </h2>
-              <p className="text-center text-purple-300/70 text-base sm:text-lg md:text-xl mb-8 sm:mb-12 md:mb-16 px-4">
+              <p className="text-center text-muted-foreground dark:text-purple-300/70 text-base sm:text-lg md:text-xl mb-8 sm:mb-12 md:mb-16 px-4">
                 Everything you need to manage loan portfolios with confidence
               </p>
 
@@ -144,9 +143,9 @@ export default function LandingPage() {
                       <div className="p-2 sm:p-3 rounded-lg sm:rounded-xl bg-cyan-500/20 border border-cyan-500/50 flex-shrink-0">
                         <TrendingUp className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 text-cyan-400" />
                       </div>
-                      <h3 className="text-xl sm:text-2xl md:text-3xl font-bold text-cyan-300">Portfolio Analytics</h3>
+                      <h3 className="text-xl sm:text-2xl md:text-3xl font-bold text-foreground dark:text-cyan-300">Portfolio Analytics</h3>
                     </div>
-                    <p className="text-sm sm:text-base md:text-lg text-purple-200/80 leading-relaxed">
+                    <p className="text-sm sm:text-base md:text-lg text-muted-foreground dark:text-purple-200/80 leading-relaxed">
                       Real-time portfolio monitoring with AI-powered risk prediction and ESG compliance tracking.
                       Visualize trends and make data-driven decisions instantly.
                     </p>
@@ -177,9 +176,9 @@ export default function LandingPage() {
                       <div className="p-2 sm:p-3 rounded-lg sm:rounded-xl bg-pink-500/20 border border-pink-500/50 flex-shrink-0">
                         <Shield className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 text-pink-400" />
                       </div>
-                      <h3 className="text-xl sm:text-2xl md:text-3xl font-bold text-pink-300">Military-Grade Security</h3>
+                      <h3 className="text-xl sm:text-2xl md:text-3xl font-bold text-foreground dark:text-pink-300">Military-Grade Security</h3>
                     </div>
-                    <p className="text-sm sm:text-base md:text-lg text-purple-200/80 leading-relaxed">
+                    <p className="text-sm sm:text-base md:text-lg text-muted-foreground dark:text-purple-200/80 leading-relaxed">
                       Bank-level 256-bit encryption with blockchain-verified audit logs. Your data is protected with the
                       most advanced security protocols available.
                     </p>
@@ -253,9 +252,9 @@ export default function LandingPage() {
                           className={`absolute inset-0 blur-2xl bg-gradient-to-r ${feature.gradient} opacity-30 group-hover:opacity-60 transition-opacity -z-10`}
                         />
                       </div>
-                      <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-white mb-2 sm:mb-3">{feature.title}</h3>
-                      <p className="text-sm sm:text-base text-gray-300 leading-relaxed">{feature.description}</p>
-                      <ArrowRight className="absolute bottom-4 sm:bottom-6 md:bottom-8 right-4 sm:right-6 md:right-8 h-5 w-5 sm:h-6 sm:w-6 text-white/40 group-hover:text-white group-hover:translate-x-2 transition-all" />
+                      <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-foreground dark:text-white mb-2 sm:mb-3">{feature.title}</h3>
+                      <p className="text-sm sm:text-base text-muted-foreground dark:text-gray-300 leading-relaxed">{feature.description}</p>
+                      <ArrowRight className="absolute bottom-4 sm:bottom-6 md:bottom-8 right-4 sm:right-6 md:right-8 h-5 w-5 sm:h-6 sm:w-6 text-muted-foreground/40 dark:text-white/40 group-hover:text-foreground dark:group-hover:text-white group-hover:translate-x-2 transition-all" />
                     </Card>
                   )
                 })}
@@ -284,7 +283,7 @@ export default function LandingPage() {
                   Loan Portfolio?
                 </span>
               </h2>
-              <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-purple-300/80 mb-8 sm:mb-12 leading-relaxed px-4">
+              <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-muted-foreground dark:text-purple-300/80 mb-8 sm:mb-12 leading-relaxed px-4">
                 Join leading financial institutions using AI-powered risk management
               </p>
               <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center px-4">
