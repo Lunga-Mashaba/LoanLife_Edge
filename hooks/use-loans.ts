@@ -20,6 +20,18 @@ export function useLoans() {
       try {
         setLoading(true)
         setError(null)
+        
+        // First, try to wake up the backend with a health check (for Render free tier)
+        try {
+          await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/health`, {
+            signal: AbortSignal.timeout(5000),
+          }).catch(() => {
+            // Ignore health check errors, just trying to wake up the service
+          })
+        } catch {
+          // Health check failed, continue anyway
+        }
+        
         const data = await loansApi.getAll()
         if (!cancelled) {
           setLoans(data)

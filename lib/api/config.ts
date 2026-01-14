@@ -15,7 +15,7 @@ const getApiUrl = () => {
 
 export const API_CONFIG = {
   baseUrl: getApiUrl(),
-  timeout: 30000, // 30 seconds
+  timeout: 60000, // 60 seconds - increased for Render free tier cold starts
 }
 
 // Log API config in development and production (for debugging)

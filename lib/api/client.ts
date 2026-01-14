@@ -26,7 +26,8 @@ class ApiClient {
 
   private async request<T>(
     endpoint: string,
-    options: RequestInit = {}
+    options: RequestInit = {},
+    retries = 1
   ): Promise<T> {
     const url = `${this.baseUrl}${endpoint}`
     
@@ -76,10 +77,24 @@ class ApiClient {
       }
       
       if (error instanceof Error && error.name === 'AbortError') {
-        throw new ApiError(408, 'Request Timeout', { message: 'Request took too long' })
+        // Retry once for Render cold starts (free tier sleeps after inactivity)
+        if (retries > 0 && endpoint.includes('/health')) {
+          console.log('⏳ Service may be waking up, retrying...')
+          await new Promise(resolve => setTimeout(resolve, 2000))
+          return this.request<T>(endpoint, options, retries - 1)
+        }
+        throw new ApiError(408, 'Request Timeout', { 
+          message: 'Backend service may be sleeping (Render free tier). First request can take up to 60 seconds.' 
+        })
       }
       
-      throw new ApiError(500, 'Network Error', { message: error instanceof Error ? error.message : 'Unknown error' })
+      const errorMsg = error instanceof Error ? error.message : 'Unknown error'
+      console.error('🌐 API Request Failed:', {
+        url,
+        error: errorMsg,
+        baseUrl: this.baseUrl,
+      })
+      throw new ApiError(500, 'Network Error', { message: errorMsg })
     }
   }
 

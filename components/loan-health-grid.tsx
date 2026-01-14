@@ -140,15 +140,21 @@ export function LoanHealthGrid() {
         <div className="p-4 rounded-lg bg-[oklch(0.18_0.03_250)] border border-[oklch(0.55_0.20_25)]">
           <p className="text-sm text-[oklch(0.55_0.20_25)] mb-2">
             {isNetworkError 
-              ? "Unable to connect to the backend API. Please ensure the backend service is running."
+              ? "Unable to connect to the backend API. The Render free tier service may be sleeping (takes ~50 seconds to wake up). Please wait and refresh."
               : `Failed to load loans: ${errorMessage}`}
           </p>
           <p className="text-xs text-[oklch(0.60_0.02_250)] font-mono mt-2">
             API URL: {process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}
           </p>
           <p className="text-xs text-[oklch(0.60_0.02_250)] mt-1">
-            💡 Tip: Check browser console (F12) for detailed error messages
+            💡 Tip: Render free tier services sleep after 15 min of inactivity. First request may take up to 60 seconds.
           </p>
+          <button
+            onClick={() => window.location.reload()}
+            className="mt-3 text-xs text-[oklch(0.55_0.20_220)] hover:text-[oklch(0.70_0.25_145)] underline"
+          >
+            🔄 Retry Connection
+          </button>
         </div>
       </Card>
     )
