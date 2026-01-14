@@ -25,7 +25,7 @@ export default function SettingsPage() {
   const [language, setLanguage] = useState("en")
 
   return (
-    <div className="flex min-h-screen overflow-hidden bg-gradient-to-br from-[oklch(0.12_0.02_250)] via-[oklch(0.10_0.03_240)] to-[oklch(0.12_0.02_250)] gradient-animate relative">
+    <div className="flex min-h-screen overflow-hidden bg-gradient-to-br from-[oklch(0.98_0.01_250)] via-[oklch(0.96_0.01_250)] to-[oklch(0.98_0.01_250)] dark:from-[oklch(0.12_0.02_250)] dark:via-[oklch(0.10_0.03_240)] dark:to-[oklch(0.12_0.02_250)] gradient-animate relative">
       <AnimatedBackground />
       <ErrorBoundary>
         <Sidebar />

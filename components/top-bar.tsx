@@ -38,7 +38,7 @@ export function TopBar() {
   }, [])
 
   return (
-    <div className="sticky top-0 z-40 h-14 sm:h-16 border-b border-[oklch(0.25_0.04_250)] bg-[oklch(0.13_0.02_250)]/80 backdrop-blur-xl px-2 sm:px-4 md:px-6 flex items-center justify-between gap-2">
+    <div className="sticky top-0 z-40 h-14 sm:h-16 border-b border-[oklch(0.85_0.02_250)] dark:border-[oklch(0.25_0.04_250)] bg-[oklch(0.99_0.01_250)]/80 dark:bg-[oklch(0.13_0.02_250)]/80 backdrop-blur-xl px-2 sm:px-4 md:px-6 flex items-center justify-between gap-2">
       {/* Hamburger Menu Button - Mobile Only */}
       {mounted && isMobile && (
         <button

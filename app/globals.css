@@ -2,6 +2,7 @@
 @import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
+@custom-variant light (&:is(.light *));
 
 /* Updated to LMA EDGE Hackathon color palette with cyberpunk fintech theme */
 :root {
