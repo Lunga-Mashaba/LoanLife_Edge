@@ -4,11 +4,15 @@ Python client for interacting with blockchain HTTP API bridge
 Handles all blockchain operations with proper error handling and fallbacks
 """
 import os
-import requests
 import json
-from typing import Dict, Any, Optional
-from datetime import datetime
 import hashlib
+from typing import Dict, Any, Optional
+
+try:
+    import requests  # type: ignore
+except ImportError:
+    # requests is in requirements.txt, but handle gracefully if not installed
+    requests = None  # type: ignore
 
 
 class BlockchainClient:
@@ -19,8 +23,7 @@ class BlockchainClient:
             "BLOCKCHAIN_API_URL", 
             "http://localhost:3001"
         )
-        # Check if blockchain is enabled via environment variable
-        self.enabled = os.getenv("BLOCKCHAIN_ENABLED", "false").lower() == "true"
+        self.enabled = os.getenv("BLOCKCHAIN_ENABLED", "true").lower() == "true"
         self.timeout = 5  # 5 second timeout
     
     def _make_request(
@@ -32,6 +35,9 @@ class BlockchainClient:
         """Make HTTP request to blockchain API with error handling"""
         if not self.enabled:
             return {"success": False, "error": "Blockchain integration disabled"}
+        
+        if requests is None:
+            return {"success": False, "error": "requests library not available"}
         
         try:
             url = f"{self.base_url}{endpoint}"
@@ -232,6 +238,8 @@ class BlockchainClient:
     
     def is_available(self) -> bool:
         """Check if blockchain service is available"""
+        if requests is None:
+            return False
         try:
             response = requests.get(f"{self.base_url}/health", timeout=2)
             return response.status_code == 200
