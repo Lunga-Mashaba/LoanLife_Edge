@@ -9,15 +9,29 @@ import os
 
 from app.models import Loan, LoanDocument
 from app.services.ingestion_service import IngestionService
-from app.services.digital_twin_service import DigitalTwinService
-from app.services.audit_service import AuditService, AuditEventType
+from app.services.service_instances import twin_service, audit_service
+from app.services.audit_service import AuditEventType
+
+# Optional blockchain integration - check environment variable first
+BLOCKCHAIN_ENABLED = os.getenv("BLOCKCHAIN_ENABLED", "false").lower() == "true"
+blockchain_client = None
+if BLOCKCHAIN_ENABLED:
+    try:
+        from app.services.blockchain_client import get_blockchain_client
+        blockchain_client = get_blockchain_client()
+        # Verify client is actually enabled and available
+        if not blockchain_client.enabled:
+            blockchain_client = None
+            BLOCKCHAIN_ENABLED = False
+    except Exception:
+        # Graceful fallback - continue without blockchain
+        blockchain_client = None
+        BLOCKCHAIN_ENABLED = False
 
 router = APIRouter()
 
 # Service instances - in prod would use dependency injection
 ingestion_service = IngestionService()
-twin_service = DigitalTwinService()
-audit_service = AuditService()
 
 
 @router.post("/loans/upload", response_model=dict)
@@ -99,6 +113,27 @@ async def upload_loan_document(
             metadata={"loan_amount": loan_amount, "covenants_count": len(covenants)}
         )
         
+        # Register covenants on blockchain (non-blocking)
+        if BLOCKCHAIN_ENABLED and blockchain_client:
+            try:
+                for covenant in covenants:
+                    blockchain_result = blockchain_client.register_covenant(
+                        loan_id=loan.id,
+                        covenant_data={
+                            "id": covenant.id,
+                            "name": covenant.name,
+                            "type": covenant.type,
+                            "threshold": covenant.threshold,
+                            "operator": covenant.operator
+                        }
+                    )
+                    # Log blockchain result but don't fail if it doesn't work
+                    if not blockchain_result.get("success"):
+                        pass  # Graceful degradation
+            except Exception as e:
+                # Blockchain registration failed - continue without it
+                pass
+        
         return {
             "loan": loan.dict(),
             "document": loan_doc.dict(),
@@ -139,7 +174,39 @@ async def get_loan_state(loan_id: str):
     state = twin_service.get_twin_state(loan_id)
     if not state:
         raise HTTPException(status_code=404, detail="Loan not found")
-    return state
+    
+    # Transform to match frontend expectations
+    health_metrics = state.get("health_metrics", {})
+    total_covenants = health_metrics.get("total_covenants", 0)
+    breached_covenants = health_metrics.get("breached_covenants", 0)
+    at_risk_covenants = health_metrics.get("at_risk_covenants", 0)
+    compliant_covenants = total_covenants - breached_covenants - at_risk_covenants
+    
+    total_esg = health_metrics.get("total_esg_clauses", 0)
+    non_compliant_esg = health_metrics.get("non_compliant_esg", 0)
+    at_risk_esg = 0  # Not tracked separately in backend yet
+    compliant_esg = total_esg - non_compliant_esg - at_risk_esg
+    
+    # Calculate health score (0-100)
+    compliance_rate = health_metrics.get("compliance_rate", 1.0)
+    esg_compliance_rate = health_metrics.get("esg_compliance_rate", 1.0)
+    health_score = int((compliance_rate * 0.7 + esg_compliance_rate * 0.3) * 100)
+    
+    return {
+        "loan": state.get("loan", {}),
+        "health_score": health_score,
+        "covenant_status": {
+            "compliant": max(0, compliant_covenants),
+            "at_risk": at_risk_covenants,
+            "breached": breached_covenants
+        },
+        "esg_status": {
+            "compliant": max(0, compliant_esg),
+            "at_risk": at_risk_esg,
+            "non_compliant": non_compliant_esg
+        },
+        "last_updated": state.get("last_updated", "")
+    }
 
 
 @router.post("/loans/{loan_id}/covenant-check", response_model=dict)

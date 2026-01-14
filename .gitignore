@@ -10,8 +10,11 @@ dist/
 downloads/
 eggs/
 .eggs/
-lib/
-lib64/
+# Python lib directories (in venv and services, but not root lib/)
+**/venv/lib/
+**/venv/lib64/
+services/**/lib/
+services/**/lib64/
 parts/
 sdist/
 var/
@@ -75,3 +78,30 @@ Thumbs.db
 htmlcov/
 .pytest_cache/
 
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# env files
+.env*
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts

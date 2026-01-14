@@ -1,0 +1,443 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* Updated to LMA EDGE Hackathon color palette with cyberpunk fintech theme */
+:root {
+  --background: oklch(0.12 0.02 250);
+  --foreground: oklch(0.95 0.01 250);
+  --card: oklch(0.15 0.03 250);
+  --card-foreground: oklch(0.95 0.01 250);
+  --popover: oklch(0.13 0.02 250);
+  --popover-foreground: oklch(0.95 0.01 250);
+  --primary: oklch(0.55 0.2 220);
+  --primary-foreground: oklch(0.98 0 0);
+  --secondary: oklch(0.5 0.18 145);
+  --secondary-foreground: oklch(0.98 0 0);
+  --muted: oklch(0.22 0.03 250);
+  --muted-foreground: oklch(0.6 0.02 250);
+  --accent: oklch(0.6 0.22 290);
+  --accent-foreground: oklch(0.98 0 0);
+  --destructive: oklch(0.55 0.2 25);
+  --destructive-foreground: oklch(0.98 0 0);
+  --border: oklch(0.25 0.04 250);
+  --input: oklch(0.2 0.03 250);
+  --ring: oklch(0.55 0.2 220);
+  --chart-1: oklch(0.55 0.2 220);
+  --chart-2: oklch(0.5 0.18 145);
+  --chart-3: oklch(0.6 0.22 290);
+  --chart-4: oklch(0.45 0.1 200);
+  --chart-5: oklch(0.65 0.15 180);
+  --radius: 0.5rem;
+  --sidebar: oklch(0.1 0.02 250);
+  --sidebar-foreground: oklch(0.9 0.01 250);
+  --sidebar-primary: oklch(0.55 0.2 220);
+  --sidebar-primary-foreground: oklch(0.98 0 0);
+  --sidebar-accent: oklch(0.18 0.03 250);
+  --sidebar-accent-foreground: oklch(0.95 0.01 250);
+  --sidebar-border: oklch(0.22 0.03 250);
+  --sidebar-ring: oklch(0.55 0.2 220);
+
+  /* Custom hackathon colors */
+  --deep-navy: oklch(0.12 0.02 250);
+  --electric-blue: oklch(0.55 0.2 220);
+  --neon-green: oklch(0.7 0.25 145);
+  --cyber-purple: oklch(0.5 0.22 290);
+  --metallic-silver: oklch(0.75 0.01 250);
+  --glow-blue: oklch(0.65 0.25 220);
+  --glow-green: oklch(0.75 0.28 145);
+}
+
+@theme inline {
+  --font-sans: "Inter", "Geist", "Geist Fallback";
+  --font-mono: "Geist Mono", "Geist Mono Fallback";
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Enhanced cyberpunk glow effects and animations screaming cybersecurity, banking, AI */
+@layer utilities {
+  .glow-blue {
+    box-shadow: 0 0 20px rgba(0, 150, 255, 0.5), 0 0 40px rgba(0, 150, 255, 0.3);
+  }
+
+  .glow-green {
+    box-shadow: 0 0 20px rgba(0, 255, 150, 0.5), 0 0 40px rgba(0, 255, 150, 0.3);
+  }
+
+  .glow-purple {
+    box-shadow: 0 0 20px rgba(150, 50, 255, 0.5), 0 0 40px rgba(150, 50, 255, 0.3);
+  }
+
+  .text-glow-blue {
+    text-shadow: 0 0 10px rgba(0, 150, 255, 0.8), 0 0 20px rgba(0, 150, 255, 0.5);
+  }
+
+  .text-glow-green {
+    text-shadow: 0 0 10px rgba(0, 255, 150, 0.8), 0 0 20px rgba(0, 255, 150, 0.5);
+  }
+
+  .animate-pulse-glow {
+    animation: pulse-glow 2s ease-in-out infinite;
+  }
+
+  /* Added security scan line animation */
+  .animate-scan-line {
+    animation: scan-line 3s linear infinite;
+  }
+
+  @keyframes scan-line {
+    0% {
+      transform: translateY(-100%);
+      opacity: 0;
+    }
+    10% {
+      opacity: 1;
+    }
+    90% {
+      opacity: 1;
+    }
+    100% {
+      transform: translateY(100%);
+      opacity: 0;
+    }
+  }
+
+  /* Added data stream animation for AI/banking theme */
+  .animate-data-stream {
+    animation: data-stream 20s linear infinite;
+  }
+
+  @keyframes data-stream {
+    0% {
+      transform: translateY(0) translateX(0);
+      opacity: 0;
+    }
+    5% {
+      opacity: 0.8;
+    }
+    95% {
+      opacity: 0.8;
+    }
+    100% {
+      transform: translateY(100vh) translateX(20px);
+      opacity: 0;
+    }
+  }
+
+  /* Added binary code rain effect */
+  .animate-binary-rain {
+    animation: binary-rain 15s linear infinite;
+  }
+
+  @keyframes binary-rain {
+    0% {
+      transform: translateY(-100%);
+      opacity: 0;
+    }
+    10% {
+      opacity: 0.5;
+    }
+    90% {
+      opacity: 0.5;
+    }
+    100% {
+      transform: translateY(100vh);
+      opacity: 0;
+    }
+  }
+
+  /* Added shield pulse for security theme */
+  .animate-shield-pulse {
+    animation: shield-pulse 3s ease-in-out infinite;
+  }
+
+  @keyframes shield-pulse {
+    0%,
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+    50% {
+      transform: scale(1.05);
+      opacity: 0.8;
+    }
+  }
+
+  /* Added lock rotation for security */
+  .animate-lock-secure {
+    animation: lock-secure 2s ease-in-out;
+  }
+
+  @keyframes lock-secure {
+    0% {
+      transform: rotate(0deg);
+    }
+    25% {
+      transform: rotate(-10deg);
+    }
+    75% {
+      transform: rotate(10deg);
+    }
+    100% {
+      transform: rotate(0deg);
+    }
+  }
+
+  /* Added circuit board lines animation */
+  .animate-circuit {
+    animation: circuit-flow 4s linear infinite;
+  }
+
+  @keyframes circuit-flow {
+    0% {
+      stroke-dashoffset: 1000;
+    }
+    100% {
+      stroke-dashoffset: 0;
+    }
+  }
+
+  /* Added AI thinking dots animation */
+  .animate-ai-thinking {
+    animation: ai-thinking 1.5s ease-in-out infinite;
+  }
+
+  @keyframes ai-thinking {
+    0%,
+    100% {
+      opacity: 0.3;
+      transform: scale(0.8);
+    }
+    50% {
+      opacity: 1;
+      transform: scale(1.2);
+    }
+  }
+
+  /* Added blockchain link animation */
+  .animate-blockchain-link {
+    animation: blockchain-link 3s ease-in-out infinite;
+  }
+
+  @keyframes blockchain-link {
+    0%,
+    100% {
+      transform: translateX(0);
+    }
+    25% {
+      transform: translateX(-3px);
+    }
+    75% {
+      transform: translateX(3px);
+    }
+  }
+
+  /* Added loan risk meter animation */
+  .animate-risk-meter {
+    animation: risk-meter 4s ease-in-out infinite;
+  }
+
+  @keyframes risk-meter {
+    0% {
+      transform: rotate(-45deg);
+    }
+    50% {
+      transform: rotate(45deg);
+    }
+    100% {
+      transform: rotate(-45deg);
+    }
+  }
+
+  /* Added banking vault opening animation */
+  .animate-vault-open {
+    animation: vault-open 1.5s ease-out forwards;
+  }
+
+  @keyframes vault-open {
+    0% {
+      transform: rotateY(0deg);
+      opacity: 0.5;
+    }
+    100% {
+      transform: rotateY(90deg);
+      opacity: 1;
+    }
+  }
+
+  /* Added digital signature verification animation */
+  .animate-signature-verify {
+    animation: signature-verify 2s ease-in-out;
+  }
+
+  @keyframes signature-verify {
+    0% {
+      stroke-dasharray: 1000;
+      stroke-dashoffset: 1000;
+    }
+    80% {
+      stroke-dashoffset: 0;
+    }
+    100% {
+      stroke-dashoffset: 0;
+      filter: drop-shadow(0 0 10px rgba(0, 255, 150, 0.8));
+    }
+  }
+
+  /* Enhanced pulse glow for security indicators */
+  @keyframes pulse-glow {
+    0%,
+    100% {
+      box-shadow: 0 0 20px rgba(0, 150, 255, 0.3);
+      transform: scale(1);
+    }
+    50% {
+      box-shadow: 0 0 40px rgba(0, 150, 255, 0.6), 0 0 60px rgba(0, 150, 255, 0.4);
+      transform: scale(1.05);
+    }
+  }
+
+  /* Added gradient background animation */
+  .gradient-animate {
+    background-size: 200% 200%;
+    animation: gradient-shift 8s ease infinite;
+  }
+
+  @keyframes gradient-shift {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+
+  /* Added glitch effect for cyberpunk theme */
+  .animate-glitch {
+    animation: glitch 3s infinite;
+  }
+
+  @keyframes glitch {
+    0%,
+    90%,
+    100% {
+      transform: translate(0);
+    }
+    92% {
+      transform: translate(-2px, 2px);
+    }
+    94% {
+      transform: translate(2px, -2px);
+    }
+    96% {
+      transform: translate(-2px, -2px);
+    }
+    98% {
+      transform: translate(2px, 2px);
+    }
+  }
+
+  /* Added hologram flicker effect */
+  .animate-hologram {
+    animation: hologram 4s ease-in-out infinite;
+  }
+
+  @keyframes hologram {
+    0%,
+    100% {
+      opacity: 1;
+      filter: brightness(1);
+    }
+    50% {
+      opacity: 0.8;
+      filter: brightness(1.2);
+    }
+  }
+
+  /* Added money flow animation for banking theme */
+  .animate-money-flow {
+    animation: money-flow 5s linear infinite;
+  }
+
+  @keyframes money-flow {
+    0% {
+      transform: translateX(-100%);
+      opacity: 0;
+    }
+    10% {
+      opacity: 1;
+    }
+    90% {
+      opacity: 1;
+    }
+    100% {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+  }
+
+  /* Added encryption wave effect */
+  .animate-encryption-wave {
+    animation: encryption-wave 2s ease-in-out infinite;
+  }
+
+  @keyframes encryption-wave {
+    0%,
+    100% {
+      transform: scaleX(1) scaleY(1);
+      opacity: 0.6;
+    }
+    50% {
+      transform: scaleX(1.1) scaleY(0.9);
+      opacity: 1;
+    }
+  }
+}

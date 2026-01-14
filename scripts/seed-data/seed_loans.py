@@ -10,16 +10,14 @@ from datetime import datetime, timedelta
 project_root = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(project_root / "services" / "api"))
 
-from app.services.digital_twin_service import DigitalTwinService
+from app.services.service_instances import twin_service, audit_service
 from app.models import Loan, Covenant, ESGClause
-from app.services.audit_service import AuditService, AuditEventType
+from app.services.audit_service import AuditEventType
 
 
 def create_sample_loans():
     """Create sample loans with realistic data for demo"""
-    
-    twin_service = DigitalTwinService()
-    audit_service = AuditService()
+    # Uses shared service instances so data is visible to API
     
     # Sample Loan 1: Tech Startup
     loan1 = twin_service.create_digital_twin(
