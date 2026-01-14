@@ -26,7 +26,9 @@ export function useLoans() {
         }
       } catch (err) {
         if (!cancelled) {
-          setError(err instanceof Error ? err : new Error('Failed to fetch loans'))
+          const error = err instanceof Error ? err : new Error('Failed to fetch loans')
+          console.error('❌ Failed to fetch loans:', error)
+          setError(error)
         }
       } finally {
         if (!cancelled) {

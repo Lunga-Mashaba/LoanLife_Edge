@@ -18,11 +18,12 @@ export const API_CONFIG = {
   timeout: 30000, // 30 seconds
 }
 
-// Log API config in development
-if (process.env.NODE_ENV === 'development') {
+// Log API config in development and production (for debugging)
+if (typeof window !== 'undefined') {
   console.log('🔌 API Config:', {
     baseUrl: API_CONFIG.baseUrl,
     envVar: process.env.NEXT_PUBLIC_API_URL,
+    isProduction: process.env.NODE_ENV === 'production',
   })
 }
 

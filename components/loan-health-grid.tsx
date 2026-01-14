@@ -143,11 +143,12 @@ export function LoanHealthGrid() {
               ? "Unable to connect to the backend API. Please ensure the backend service is running."
               : `Failed to load loans: ${errorMessage}`}
           </p>
-          {process.env.NODE_ENV === 'development' && (
-            <p className="text-xs text-[oklch(0.60_0.02_250)] font-mono mt-2">
-              API URL: {process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}
-            </p>
-          )}
+          <p className="text-xs text-[oklch(0.60_0.02_250)] font-mono mt-2">
+            API URL: {process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}
+          </p>
+          <p className="text-xs text-[oklch(0.60_0.02_250)] mt-1">
+            💡 Tip: Check browser console (F12) for detailed error messages
+          </p>
         </div>
       </Card>
     )
