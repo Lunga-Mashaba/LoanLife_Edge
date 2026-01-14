@@ -40,7 +40,7 @@ export function Sidebar() {
       {isMobile && (
         <button
           onClick={() => setIsMobileOpen(!isMobileOpen)}
-          className="fixed top-3 left-3 z-50 p-2 rounded-lg bg-[oklch(0.15_0.03_250)] border border-[oklch(0.25_0.04_250)] text-[oklch(0.90_0.01_250)] md:hidden shadow-lg"
+          className="fixed top-16 sm:top-18 left-3 z-50 p-2 rounded-lg bg-[oklch(0.15_0.03_250)] border border-[oklch(0.25_0.04_250)] text-[oklch(0.90_0.01_250)] md:hidden shadow-lg hover:bg-[oklch(0.20_0.03_250)] transition-colors"
           aria-label="Toggle navigation menu"
           aria-expanded={isMobileOpen}
         >

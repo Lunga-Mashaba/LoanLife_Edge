@@ -26,7 +26,7 @@ export function TopBar() {
   return (
     <div className="sticky top-0 z-40 h-14 sm:h-16 border-b border-[oklch(0.25_0.04_250)] bg-[oklch(0.13_0.02_250)]/80 backdrop-blur-xl px-2 sm:px-4 md:px-6 flex items-center justify-between gap-2">
       {/* Search */}
-      <div className="flex-1 min-w-0 max-w-xl">
+      <div className="flex-1 min-w-0 max-w-xl md:max-w-xl pl-10 md:pl-0">
         <div className="relative">
           <Search 
             className="absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 sm:h-4 sm:w-4 text-[oklch(0.60_0.02_250)]" 
