@@ -66,16 +66,16 @@ const notifications = [
 
 export default function NotificationsPage() {
   return (
-    <div className="flex h-screen overflow-hidden">
+    <div className="flex min-h-screen overflow-hidden bg-gradient-to-br from-[oklch(0.12_0.02_250)] via-[oklch(0.10_0.03_240)] to-[oklch(0.12_0.02_250)] gradient-animate relative">
       <AnimatedBackground />
       <Sidebar />
-      <div className="flex flex-1 flex-col">
+      <div className="flex flex-1 flex-col min-w-0 w-full md:pl-64">
         <TopBar />
-        <main className="flex-1 overflow-y-auto p-6">
-          <div className="mb-6 flex items-center justify-between">
+        <main className="flex-1 overflow-y-auto p-3 sm:p-4 md:p-6">
+          <div className="mb-4 sm:mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
             <div>
-              <h1 className="text-2xl font-bold text-[oklch(0.95_0.01_250)] mb-2">Notifications</h1>
-              <p className="text-[oklch(0.60_0.02_250)]">Stay updated on critical alerts and system events</p>
+              <h1 className="text-xl sm:text-2xl font-bold text-[oklch(0.95_0.01_250)] mb-1 sm:mb-2">Notifications</h1>
+              <p className="text-sm sm:text-base text-[oklch(0.60_0.02_250)]">Stay updated on critical alerts and system events</p>
             </div>
             <Button
               variant="outline"

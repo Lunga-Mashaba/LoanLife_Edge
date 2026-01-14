@@ -22,7 +22,7 @@ export default function SettingsPage() {
       <AnimatedBackground />
       <ErrorBoundary>
         <Sidebar />
-        <div className="flex flex-1 flex-col min-w-0 max-w-[1920px] mx-auto w-full md:ml-0">
+        <div className="flex flex-1 flex-col min-w-0 w-full md:pl-64">
           <TopBar />
           <main className="flex-1 overflow-y-auto p-4 md:p-6" role="main">
             <ErrorBoundary>

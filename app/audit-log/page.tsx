@@ -56,19 +56,19 @@ export default function AuditLogPage() {
   ]
 
   return (
-    <div className="flex h-screen overflow-hidden bg-gradient-to-br from-[oklch(0.12_0.02_250)] via-[oklch(0.10_0.03_240)] to-[oklch(0.12_0.02_250)] gradient-animate relative">
+    <div className="flex min-h-screen overflow-hidden bg-gradient-to-br from-[oklch(0.12_0.02_250)] via-[oklch(0.10_0.03_240)] to-[oklch(0.12_0.02_250)] gradient-animate relative">
       <AnimatedBackground />
       <Sidebar />
-      <div className="flex flex-1 flex-col">
+      <div className="flex flex-1 flex-col min-w-0 w-full md:pl-64">
         <TopBar />
-        <main className="flex-1 overflow-y-auto p-6">
-          <div className="mb-6">
-            <h1 className="text-2xl font-bold text-[oklch(0.95_0.01_250)] mb-2">Blockchain Audit Log</h1>
-            <p className="text-[oklch(0.60_0.02_250)]">Immutable transaction history with cryptographic verification</p>
+        <main className="flex-1 overflow-y-auto p-3 sm:p-4 md:p-6">
+          <div className="mb-4 sm:mb-6">
+            <h1 className="text-xl sm:text-2xl font-bold text-[oklch(0.95_0.01_250)] mb-1 sm:mb-2">Blockchain Audit Log</h1>
+            <p className="text-sm sm:text-base text-[oklch(0.60_0.02_250)]">Immutable transaction history with cryptographic verification</p>
           </div>
 
           {/* Stats Cards */}
-          <div className="grid grid-cols-4 gap-4 mb-6">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-4 sm:mb-6">
             <Card className="bg-[oklch(0.14_0.02_250)] border-[oklch(0.25_0.04_250)] p-4">
               <div className="text-xs text-[oklch(0.60_0.02_250)] mb-2">Total Events</div>
               <div className="text-2xl font-bold text-[oklch(0.95_0.01_250)]">1,247</div>
