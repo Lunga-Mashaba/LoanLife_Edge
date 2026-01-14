@@ -5,6 +5,7 @@ import { MemoizedRiskTimeline } from "@/components/risk-timeline"
 import { MemoizedESGCompliance } from "@/components/esg-compliance"
 import { MemoizedAuditLogPanel } from "@/components/audit-log-panel"
 import { MemoizedAIInsights } from "@/components/ai-insights"
+import { MemoizedDocumentUpload } from "@/components/document-upload"
 import { memo } from "react"
 
 export function PortfolioDashboard() {
@@ -15,6 +16,9 @@ export function PortfolioDashboard() {
         <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-1 sm:mb-2">Portfolio Overview</h1>
         <p className="text-sm sm:text-base text-muted-foreground">Real-time loan health monitoring with AI-powered predictions</p>
       </header>
+
+      {/* Document Upload */}
+      <MemoizedDocumentUpload />
 
       {/* AI Insights Banner */}
       <MemoizedAIInsights />
